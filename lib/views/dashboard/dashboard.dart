@@ -11,6 +11,8 @@ import 'package:bett_box/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'widgets/start_fab.dart';
+
 final customDashboardTitleProvider =
     StateNotifierProvider<CustomDashboardTitleNotifier, String?>((ref) {
       return CustomDashboardTitleNotifier();
@@ -227,6 +229,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
       title:
           ref.watch(customDashboardTitleProvider) ?? appLocalizations.dashboard,
       actions: _buildActions(),
+      floatingActionButton: const StartFab(),
       body: Align(
         alignment: Alignment.topCenter,
         child: SingleChildScrollView(

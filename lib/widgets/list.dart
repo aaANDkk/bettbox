@@ -267,7 +267,7 @@ class ListItem<T> extends StatelessWidget {
       dense: dense,
       enabled: enabled,
       focusColor: context.colorScheme.primary.withValues(alpha: 0.1),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      shape: RoundedSuperellipseBorder(borderRadius: BorderRadius.circular(8)),
       titleTextStyle: titleTextStyle,
       subtitleTextStyle: subtitleTextStyle,
       leading: leading ?? this.leading,

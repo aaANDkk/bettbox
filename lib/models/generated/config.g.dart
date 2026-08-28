@@ -108,7 +108,6 @@ const _$DashboardWidgetEnumMap = {
   DashboardWidget.providersInfo: 'providersInfo',
   DashboardWidget.fcmStatus: 'fcmStatus',
   DashboardWidget.onlinePanel: 'onlinePanel',
-  DashboardWidget.startButton: 'startButton',
 };
 
 _AccessControl _$AccessControlFromJson(Map<String, dynamic> json) =>
@@ -347,6 +346,7 @@ const _$DelayAnimationTypeEnumMap = {
   DelayAnimationType.fadingFour: 'fadingFour',
   DelayAnimationType.wave: 'wave',
   DelayAnimationType.doubleBounce: 'doubleBounce',
+  DelayAnimationType.flclash: 'flclash',
 };
 
 _TextScale _$TextScaleFromJson(Map<String, dynamic> json) => _TextScale(

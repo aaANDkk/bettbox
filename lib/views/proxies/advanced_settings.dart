@@ -226,6 +226,7 @@ class _DelayAnimationItem extends ConsumerWidget {
       DelayAnimationType.fadingFour => appLocalizations.fadingFour,
       DelayAnimationType.wave => appLocalizations.wave,
       DelayAnimationType.doubleBounce => appLocalizations.doubleBounce,
+      DelayAnimationType.flclash => 'FlClash',
     };
   }
 
