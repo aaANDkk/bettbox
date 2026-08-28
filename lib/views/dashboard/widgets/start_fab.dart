@@ -16,7 +16,6 @@ class StartFab extends ConsumerStatefulWidget {
 class _StartFabState extends ConsumerState<StartFab> {
   bool _isDisabled = false;
   bool? _optimisticStart;
-  static const double _labelMinWidth = 88;
 
   Future<void> _handleStart() async {
     if (_isDisabled) return;
@@ -91,16 +90,12 @@ class _StartFabState extends ConsumerState<StartFab> {
                     ? _handleShowAddProfile
                     : null,
             icon: Icon(icon),
-            label: SizedBox(
-              width: _labelMinWidth,
-              child: Text(
-                labelText,
-                maxLines: 1,
-                overflow: TextOverflow.clip,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontFeatures: [FontFeature.tabularFigures()],
-                ),
+            label: Text(
+              labelText,
+              maxLines: 1,
+              overflow: TextOverflow.clip,
+              style: const TextStyle(
+                fontFeatures: [FontFeature.tabularFigures()],
               ),
             ),
           );

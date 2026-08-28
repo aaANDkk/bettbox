@@ -4,7 +4,6 @@ import 'package:bett_box/models/models.dart';
 import 'package:bett_box/providers/providers.dart';
 import 'package:bett_box/state.dart';
 import 'package:bett_box/views/proxies/common.dart';
-import 'package:bett_box/widgets/flclash_loading.dart';
 import 'package:bett_box/widgets/widgets.dart';
 import 'package:emoji_regex/emoji_regex.dart';
 import 'package:flutter/material.dart';
@@ -170,10 +169,6 @@ class ProxyCard extends StatelessWidget {
       DelayAnimationType.doubleBounce => SpinKitDoubleBounce(
         color: color,
         size: size,
-      ),
-      DelayAnimationType.flclash => CommonCircleLoading(
-        color: color,
-        constraints: BoxConstraints.tightFor(width: size, height: size),
       ),
     };
   }

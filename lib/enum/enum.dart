@@ -464,5 +464,4 @@ enum DelayAnimationType {
   fadingFour,
   wave,
   doubleBounce,
-  flclash,
 }

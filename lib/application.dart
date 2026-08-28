@@ -247,6 +247,11 @@ class ApplicationState extends ConsumerState<Application>
                 floatingActionButtonTheme: FloatingActionButtonThemeData(
                   shape: StadiumBorder(),
                 ),
+                dialogTheme: DialogThemeData(
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
                 fontFamily: fontFamily,
               ),
               darkTheme: ThemeData(
@@ -258,6 +263,11 @@ class ApplicationState extends ConsumerState<Application>
                 ).toPureBlack(themeProps.pureBlack),
                 floatingActionButtonTheme: FloatingActionButtonThemeData(
                   shape: StadiumBorder(),
+                ),
+                dialogTheme: DialogThemeData(
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
                 fontFamily: fontFamily,
               ),

@@ -346,7 +346,6 @@ const _$DelayAnimationTypeEnumMap = {
   DelayAnimationType.fadingFour: 'fadingFour',
   DelayAnimationType.wave: 'wave',
   DelayAnimationType.doubleBounce: 'doubleBounce',
-  DelayAnimationType.flclash: 'flclash',
 };
 
 _TextScale _$TextScaleFromJson(Map<String, dynamic> json) => _TextScale(
