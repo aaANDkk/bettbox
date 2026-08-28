@@ -244,6 +244,9 @@ class ApplicationState extends ConsumerState<Application>
                   brightness: Brightness.light,
                   primaryColor: themeProps.primaryColor,
                 ),
+                floatingActionButtonTheme: FloatingActionButtonThemeData(
+                  shape: StadiumBorder(),
+                ),
                 fontFamily: fontFamily,
               ),
               darkTheme: ThemeData(
@@ -253,6 +256,9 @@ class ApplicationState extends ConsumerState<Application>
                   brightness: Brightness.dark,
                   primaryColor: themeProps.primaryColor,
                 ).toPureBlack(themeProps.pureBlack),
+                floatingActionButtonTheme: FloatingActionButtonThemeData(
+                  shape: StadiumBorder(),
+                ),
                 fontFamily: fontFamily,
               ),
               home: child!,
