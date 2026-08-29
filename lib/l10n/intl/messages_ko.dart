@@ -869,6 +869,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "stackMode": MessageLookupByLibrary.simpleMessage("스택 모드"),
     "standard": MessageLookupByLibrary.simpleMessage("표준"),
     "start": MessageLookupByLibrary.simpleMessage("시작"),
+    "startRunning": MessageLookupByLibrary.simpleMessage("시작"),
     "startTest": MessageLookupByLibrary.simpleMessage("지연 시간 테스트"),
     "startVpn": MessageLookupByLibrary.simpleMessage("시작 중..."),
     "status": MessageLookupByLibrary.simpleMessage("상태"),

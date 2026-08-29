@@ -330,6 +330,7 @@
   "loose": "Максимальная",
   "profilesSort": "Сортировка профилей",
   "start": "Запуск",
+  "startRunning": "Запуск",
   "stop": "Остановка",
   "powerSwitch": "Запуск",
   "runTime": "Время работы",

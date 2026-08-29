@@ -70,7 +70,7 @@ class _StartFabState extends ConsumerState<StartFab> {
             ? appLocalizations.addProfile
             : displayStart
             ? _formatRunTime(runTime)
-            : '启动运行';
+            : appLocalizations.startRunning;
         final icon = showAddIcon
             ? Icons.add
             : displayStart

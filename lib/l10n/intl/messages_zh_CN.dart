@@ -759,6 +759,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "stackMode": MessageLookupByLibrary.simpleMessage("栈模式"),
     "standard": MessageLookupByLibrary.simpleMessage("标准"),
     "start": MessageLookupByLibrary.simpleMessage("启动"),
+    "startRunning": MessageLookupByLibrary.simpleMessage("启动运行"),
     "startTest": MessageLookupByLibrary.simpleMessage("延迟测试"),
     "startVpn": MessageLookupByLibrary.simpleMessage("正在启动"),
     "status": MessageLookupByLibrary.simpleMessage("状态"),

@@ -1104,6 +1104,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "stackMode": MessageLookupByLibrary.simpleMessage("حالت پشته"),
     "standard": MessageLookupByLibrary.simpleMessage("استاندارد"),
     "start": MessageLookupByLibrary.simpleMessage("شروع"),
+    "startRunning": MessageLookupByLibrary.simpleMessage("شروع"),
     "startTest": MessageLookupByLibrary.simpleMessage("تست تاخیر"),
     "startVpn": MessageLookupByLibrary.simpleMessage("در حال شروع..."),
     "status": MessageLookupByLibrary.simpleMessage("وضعیت"),

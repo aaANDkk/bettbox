@@ -330,6 +330,7 @@
   "loose": "宽松",
   "profilesSort": "配置排序",
   "start": "启动",
+  "startRunning": "启动运行",
   "stop": "停止",
   "powerSwitch": "启动开关",
   "runTime": "启动时间",

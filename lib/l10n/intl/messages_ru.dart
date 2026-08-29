@@ -1093,6 +1093,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "stackMode": MessageLookupByLibrary.simpleMessage("Режим стека"),
     "standard": MessageLookupByLibrary.simpleMessage("Стандарт"),
     "start": MessageLookupByLibrary.simpleMessage("Запуск"),
+    "startRunning": MessageLookupByLibrary.simpleMessage("Запуск"),
     "startTest": MessageLookupByLibrary.simpleMessage("Тест задержки"),
     "startVpn": MessageLookupByLibrary.simpleMessage("Запуск VPN"),
     "status": MessageLookupByLibrary.simpleMessage("Статус"),

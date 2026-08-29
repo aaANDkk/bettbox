@@ -330,6 +330,7 @@
   "loose": "Loose",
   "profilesSort": "Profile Sorting",
   "start": "Start",
+  "startRunning": "Start",
   "stop": "Stop",
   "powerSwitch": "Power",
   "runTime": "Uptime",

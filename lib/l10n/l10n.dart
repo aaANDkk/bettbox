@@ -2659,6 +2659,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Start Running`
+  String get startRunning {
+    return Intl.message(
+      'Start',
+      name: 'startRunning',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Start`
   String get start {
     return Intl.message('Start', name: 'start', desc: '', args: []);

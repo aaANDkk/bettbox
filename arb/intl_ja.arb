@@ -330,6 +330,7 @@
   "loose": "ルーズ",
   "profilesSort": "プロファイル並び替え",
   "start": "開始",
+  "startRunning": "開始",
   "stop": "停止",
   "powerSwitch": "電源スイッチ",
   "runTime": "稼働時間",
