@@ -24,6 +24,9 @@ jobs:
           - platform: android
             os: ubuntu-24.04
             arch: arm64
+          - platform: windows
+            os: windows-2022
+            arch: amd64
 
     steps:
       - name: Checkout

@@ -706,7 +706,7 @@ Widget generateSectionV2({
       if (items.isNotEmpty && title != null)
         ListHeader(title: title, actions: actions),
       CommonCard(
-        radius: 18,
+        radius: 20,
         type: CommonCardType.filled,
         child: Column(children: [...items]),
       ),

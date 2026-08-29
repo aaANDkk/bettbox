@@ -55,52 +55,45 @@ class _StartFabState extends ConsumerState<StartFab> {
 
   @override
   Widget build(BuildContext context) {
-    final isMobileView = ref.watch(isMobileViewProvider);
     final state = ref.watch(startButtonSelectorStateProvider);
     final canPress = state.isInit && state.hasProfile && !_isDisabled;
     final hasNoProfile = state.isInit && !state.hasProfile && !_isDisabled;
 
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom:
-            isMobileView ? getFloatingBottomBarFABReserveHeight(context) : 0,
-      ),
-      child: ValueListenableBuilder<int>(
-        valueListenable: dashboardRefreshManager.tick1s,
-        builder: (_, _, _) {
-          final runTime = ref.read(runTimeProvider);
-          final isStart = runTime != null;
-          final displayStart = _optimisticStart ?? isStart;
-          final showAddIcon = hasNoProfile;
-          final labelText = showAddIcon
-              ? appLocalizations.addProfile
-              : displayStart
-              ? _formatRunTime(runTime)
-              : '启动运行';
-          final icon = showAddIcon
-              ? Icons.add
-              : displayStart
-              ? Icons.pause
-              : Icons.play_arrow;
-          return FloatingActionButton.extended(
-            heroTag: null,
-            onPressed: canPress
-                ? _handleStart
-                : hasNoProfile
-                    ? _handleShowAddProfile
-                    : null,
-            icon: Icon(icon),
-            label: Text(
-              labelText,
-              maxLines: 1,
-              overflow: TextOverflow.clip,
-              style: const TextStyle(
-                fontFeatures: [FontFeature.tabularFigures()],
-              ),
+    return ValueListenableBuilder<int>(
+      valueListenable: dashboardRefreshManager.tick1s,
+      builder: (_, _, _) {
+        final runTime = ref.read(runTimeProvider);
+        final isStart = runTime != null;
+        final displayStart = _optimisticStart ?? isStart;
+        final showAddIcon = hasNoProfile;
+        final labelText = showAddIcon
+            ? appLocalizations.addProfile
+            : displayStart
+            ? _formatRunTime(runTime)
+            : '启动运行';
+        final icon = showAddIcon
+            ? Icons.add
+            : displayStart
+            ? Icons.pause
+            : Icons.play_arrow;
+        return FloatingActionButton.extended(
+          heroTag: null,
+          onPressed: canPress
+              ? _handleStart
+              : hasNoProfile
+                  ? _handleShowAddProfile
+                  : null,
+          icon: Icon(icon),
+          label: Text(
+            labelText,
+            maxLines: 1,
+            overflow: TextOverflow.clip,
+            style: const TextStyle(
+              fontFeatures: [FontFeature.tabularFigures()],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 

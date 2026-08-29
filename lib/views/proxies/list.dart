@@ -298,7 +298,7 @@ class _GroupHeader extends ConsumerWidget {
     );
 
     return CommonCard(
-      radius: 16,
+      radius: 20,
       type: CommonCardType.filled,
       onPressed: globalState.isAndroidTV ? null : onToggle,
       child: Padding(

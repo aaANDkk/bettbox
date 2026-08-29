@@ -276,7 +276,7 @@ class OverrideSwitch extends ConsumerWidget {
     return CommonCard(
       onPressed: () {},
       type: CommonCardType.filled,
-      radius: 18,
+      radius: 20,
       child: ListItem.switchItem(
         padding: const EdgeInsets.only(left: 16, right: 16),
         title: Text(appLocalizations.enableOverride),
@@ -418,7 +418,7 @@ class RuleContent extends ConsumerWidget {
         margin: EdgeInsets.symmetric(vertical: 4),
         child: CommonCard(
           padding: EdgeInsets.zero,
-          radius: 18,
+          radius: 20,
           type: CommonCardType.filled,
           isSelected: isSelected,
           // decoration: BoxDecoration(
