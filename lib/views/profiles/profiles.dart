@@ -508,50 +508,45 @@ class ProfileItem extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 52),
-                  child: EmojiText(
-                    profile.label ?? profile.id,
-                    style: context.textTheme.titleMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                SizedBox(
-                  height: 22 + globalState.measure.labelMediumHeight,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: Row(
                     children: [
-                      ...switch (profile.type) {
-                        ProfileType.file => _buildFileProfileInfo(context),
-                        ProfileType.url => _buildUrlProfileInfo(context),
-                      },
+                      Flexible(
+                        child: EmojiText(
+                          profile.label ?? profile.id,
+                          style: context.textTheme.titleMedium,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (profile.subscriptionInfo != null) ...[
+                        const SizedBox(width: 8),
+                        Text(
+                          _getExpireText(profile.subscriptionInfo!),
+                          style: context.textTheme.labelMedium?.toLight,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ],
                   ),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ...switch (profile.type) {
+                      ProfileType.file => _buildFileProfileInfo(context),
+                      ProfileType.url => _buildUrlProfileInfo(context),
+                    },
+                  ],
                 ),
               ],
             ),
           ),
           tileTitleAlignment: ListTileTitleAlignment.titleHeight,
         ),
-        Positioned(
-          top: 6,
-          right: 6,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (profile.type == ProfileType.url &&
-                  profile.subscriptionInfo != null)
-                Text(
-                  _getExpireText(profile.subscriptionInfo!),
-                  style: context.textTheme.labelMedium?.toLight,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              const SizedBox(width: 8),
-              trailingWidget,
-            ],
-          ),
-        ),
+        Positioned(top: 6, right: 6, child: trailingWidget),
       ],
     );
   }
@@ -572,24 +567,37 @@ class ProfileItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    EmojiText(
-                      profile.label ?? profile.id,
-                      style: context.textTheme.titleMedium,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(
-                      height: 22 + globalState.measure.labelMediumHeight,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ...switch (profile.type) {
-                            ProfileType.file => _buildFileProfileInfo(context),
-                            ProfileType.url => _buildUrlProfileInfo(context),
-                          },
+                    Row(
+                      children: [
+                        Flexible(
+                          child: EmojiText(
+                            profile.label ?? profile.id,
+                            style: context.textTheme.titleMedium,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (profile.subscriptionInfo != null) ...[
+                          const SizedBox(width: 8),
+                          Text(
+                            _getExpireText(profile.subscriptionInfo!),
+                            style: context.textTheme.labelMedium?.toLight,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ],
-                      ),
+                      ],
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ...switch (profile.type) {
+                          ProfileType.file => _buildFileProfileInfo(context),
+                          ProfileType.url => _buildUrlProfileInfo(context),
+                        },
+                      ],
                     ),
                   ],
                 ),
