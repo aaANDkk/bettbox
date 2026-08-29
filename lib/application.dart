@@ -199,7 +199,7 @@ class ApplicationState extends ConsumerState<Application>
             );
             final themeProps = ref.watch(themeSettingProvider);
             final fontFamily = themeProps.useHarmonyFont
-                ? 'HarmonyOS_Sans'
+                ? 'Sleek'
                 : null;
 
             return MaterialApp(
@@ -245,7 +245,9 @@ class ApplicationState extends ConsumerState<Application>
                   primaryColor: themeProps.primaryColor,
                 ),
                 floatingActionButtonTheme: FloatingActionButtonThemeData(
-                  shape: StadiumBorder(),
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
                 dialogTheme: DialogThemeData(
                   shape: RoundedSuperellipseBorder(
@@ -262,7 +264,9 @@ class ApplicationState extends ConsumerState<Application>
                   primaryColor: themeProps.primaryColor,
                 ).toPureBlack(themeProps.pureBlack),
                 floatingActionButtonTheme: FloatingActionButtonThemeData(
-                  shape: StadiumBorder(),
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
                 dialogTheme: DialogThemeData(
                   shape: RoundedSuperellipseBorder(

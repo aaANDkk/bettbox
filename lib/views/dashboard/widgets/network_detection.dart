@@ -92,9 +92,9 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
                                   .titleMedium
                                   ?.toLight
                                   .copyWith(
-                                    fontFamily: FontFamily.twEmoji.value,
+                                    fontFamily: FontFamily.openMoji.value,
                                     fontFamilyFallback: [
-                                      FontFamily.twEmoji.value,
+                                      FontFamily.openMoji.value,
                                     ],
                                   ),
                             )
