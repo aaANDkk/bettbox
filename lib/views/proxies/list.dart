@@ -91,9 +91,6 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
   String? _enterGroupName;
   Timer? _enterTimer;
   static const _enterWindow = Duration(milliseconds: 600);
-  String? _closingGroupName;
-  Timer? _closingTimer;
-  static const _closingWindow = Duration(milliseconds: 360);
 
   void _startEnterAnimated(String groupName) {
     _enterTimer?.cancel();
@@ -112,32 +109,13 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
     }
   }
 
-  void _startClosingAnimated(String groupName) {
-    _closingTimer?.cancel();
-    _closingGroupName = groupName;
-    _closingTimer = Timer(_closingWindow, () {
-      if (mounted) _stopClosingAnimated();
-    });
-  }
-
-  void _stopClosingAnimated() {
-    _closingTimer?.cancel();
-    _closingTimer = null;
-    if (_closingGroupName != null) {
-      _closingGroupName = null;
-      if (mounted) setState(() {});
-    }
-  }
-
   void _handleToggle(String groupName) {
     final tempUnfoldSet = Set<String>.from(widget.currentUnfoldSet);
     if (tempUnfoldSet.contains(groupName)) {
       tempUnfoldSet.remove(groupName);
       _stopEnterAnimated();
-      _startClosingAnimated(groupName);
     } else {
       tempUnfoldSet.add(groupName);
-      _stopClosingAnimated();
       _startEnterAnimated(groupName);
     }
     globalState.appController.updateCurrentUnfoldSet(tempUnfoldSet);
@@ -205,8 +183,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
       flatItems.add(_SpacingItem(8.0));
 
       final isExpand = widget.currentUnfoldSet.contains(group.name);
-      final isClosing = _closingGroupName == group.name;
-      if (isExpand || isClosing) {
+      if (isExpand) {
         final sortedProxies = globalState.appController.getSortProxies(
           proxies: group.all,
           sortType: widget.sortType,
@@ -230,9 +207,6 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
     _enterTimer?.cancel();
     _enterTimer = null;
     _enterGroupName = null;
-    _closingTimer?.cancel();
-    _closingTimer = null;
-    _closingGroupName = null;
     _scrollController.dispose();
     super.dispose();
   }
@@ -275,7 +249,6 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
             return SizedBox(height: item.height);
           } else if (item is _RowItem) {
             final isEnterAnimated = _enterGroupName == item.group.name;
-            final isClosingAnimated = _closingGroupName == item.group.name;
             final cardWidgets = <Widget>[];
             for (var i = 0; i < widget.columns; i++) {
               if (i < item.proxies.length) {
@@ -292,8 +265,6 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
                   Expanded(
                     child: isEnterAnimated
                         ? FadeScaleEnterBox(child: card)
-                        : isClosingAnimated
-                        ? FadeScaleExitBox(child: card)
                         : card,
                   ),
                 );

@@ -117,49 +117,6 @@ class _FadeScaleEnterBoxState extends State<FadeScaleEnterBox>
   }
 }
 
-class FadeScaleExitBox extends StatefulWidget {
-  final Widget child;
-
-  const FadeScaleExitBox({super.key, required this.child});
-
-  @override
-  State<FadeScaleExitBox> createState() => _FadeScaleExitBoxState();
-}
-
-class _FadeScaleExitBoxState extends State<FadeScaleExitBox>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(vsync: this, duration: commonDuration);
-    _animation = Tween<double>(
-      begin: 1,
-      end: 0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller.view,
-      builder: (_, child) {
-        return FadeScaleEnterTransition(animation: _animation, child: child!);
-      },
-      child: widget.child,
-    );
-  }
-}
-
 class FadeScaleEnterTransition extends StatelessWidget {
   const FadeScaleEnterTransition({
     super.key,
