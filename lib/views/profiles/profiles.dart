@@ -306,13 +306,12 @@ class ProfileItem extends StatelessWidget {
     String? subtitleText;
     if (profile.type == ProfileType.file) {
       subtitleText = appLocalizations.localFile;
-    } else if (profile.subscriptionInfo != null) {
-      final info = profile.subscriptionInfo!;
-      final hasData = info.upload > 0 ||
-          info.download > 0 ||
-          info.total > 0 ||
-          info.expire > 0;
-      if (hasData) {
+    } else if (profile.type == ProfileType.url) {
+      final info = profile.subscriptionInfo;
+      if (info != null &&
+          (info.total > 0 ||
+              info.upload + info.download > 0 ||
+              info.expire > 0)) {
         if (info.expire > 0 &&
             info.expire * 1000 < DateTime.now().millisecondsSinceEpoch) {
           subtitleText = appLocalizations.expired;
@@ -324,6 +323,8 @@ class ProfileItem extends StatelessWidget {
           subtitleText =
               DateTime.fromMillisecondsSinceEpoch(info.expire * 1000).show;
         }
+      } else {
+        subtitleText = appLocalizations.expired;
       }
     }
 
@@ -376,20 +377,46 @@ class ProfileItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(height: 8),
-        if (hasUsageBar)
-          SubscriptionInfoView(subscriptionInfo: subscriptionInfo)
-        else
-          Container(
-            height: 14,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              appLocalizations.noUsageData,
-              style: context.textTheme.labelSmall?.toLight,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+        const SizedBox(height: 6),
+        SizedBox(
+          height: 16,
+          child: hasUsageBar
+              ? Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(3),
+                    child: Container(
+                      height: 6,
+                      alignment: Alignment.centerLeft,
+                      color:
+                          context.colorScheme.primary.withValues(alpha: 0.15),
+                      child: FractionallySizedBox(
+                        widthFactor: (subscriptionInfo!.total > 0
+                                ? (subscriptionInfo.upload +
+                                        subscriptionInfo.download) /
+                                    subscriptionInfo.total
+                                : 0.0)
+                            .clamp(0.0, 1.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: context.colorScheme.primary,
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    appLocalizations.noUsageData,
+                    style: context.textTheme.labelSmall?.toLight,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+        ),
+        const SizedBox(height: 6),
         Text(
           bottomText,
           style: context.textTheme.labelMedium?.toLight,
