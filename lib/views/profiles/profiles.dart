@@ -380,7 +380,7 @@ class ProfileItem extends StatelessWidget {
         if (hasUsageBar)
           SubscriptionInfoView(subscriptionInfo: subscriptionInfo)
         else
-          SizedBox(
+          Container(
             height: 14,
             alignment: Alignment.centerLeft,
             child: Text(
