@@ -148,10 +148,8 @@ class _ProfilesViewState extends ConsumerState<ProfilesView> {
           if (profilesSelectorState.profiles.isEmpty) {
             return NullStatus(label: appLocalizations.nullProfileDesc);
           }
-          final columns = system.isAndroid
-              ? 1
-              : profilesSelectorState.profiles.length <
-                    profilesSelectorState.columns
+          final columns = profilesSelectorState.profiles.length <
+                  profilesSelectorState.columns
               ? profilesSelectorState.profiles.length
               : profilesSelectorState.columns;
           return Align(
