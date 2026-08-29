@@ -24,9 +24,6 @@ jobs:
           - platform: android
             os: ubuntu-24.04
             arch: arm64
-          - platform: windows
-            os: windows-2022
-            arch: amd64
 
     steps:
       - name: Checkout
@@ -34,6 +31,17 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 1
+
+      - name: Free disk space (Android)
+        if: matrix.platform == 'android'
+        shell: bash
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/swift
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /tmp/* || true
+          sudo apt-get clean
+          df -h -B1G | grep -E 'Filesystem|/dev/root|overlay|/'
 
       - name: Setup Rust (Windows)
         if: matrix.platform == 'windows'
