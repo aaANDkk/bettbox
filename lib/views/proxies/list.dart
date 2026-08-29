@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bett_box/common/common.dart';
 import 'package:bett_box/enum/enum.dart';
 import 'package:bett_box/models/models.dart';
@@ -86,13 +88,35 @@ class _RowItem extends _FlatItem {
 
 class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
   final ScrollController _scrollController = ScrollController();
+  String? _enterGroupName;
+  Timer? _enterTimer;
+  static const _enterWindow = Duration(milliseconds: 600);
+
+  void _startEnterAnimated(String groupName) {
+    _enterTimer?.cancel();
+    _enterGroupName = groupName;
+    _enterTimer = Timer(_enterWindow, () {
+      if (mounted) _stopEnterAnimated();
+    });
+  }
+
+  void _stopEnterAnimated() {
+    _enterTimer?.cancel();
+    _enterTimer = null;
+    if (_enterGroupName != null) {
+      _enterGroupName = null;
+      if (mounted) setState(() {});
+    }
+  }
 
   void _handleToggle(String groupName) {
     final tempUnfoldSet = Set<String>.from(widget.currentUnfoldSet);
     if (tempUnfoldSet.contains(groupName)) {
       tempUnfoldSet.remove(groupName);
+      _stopEnterAnimated();
     } else {
       tempUnfoldSet.add(groupName);
+      _startEnterAnimated(groupName);
     }
     globalState.appController.updateCurrentUnfoldSet(tempUnfoldSet);
   }
@@ -180,6 +204,9 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
 
   @override
   void dispose() {
+    _enterTimer?.cancel();
+    _enterTimer = null;
+    _enterGroupName = null;
     _scrollController.dispose();
     super.dispose();
   }
@@ -221,20 +248,24 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
           } else if (item is _SpacingItem) {
             return SizedBox(height: item.height);
           } else if (item is _RowItem) {
+            final isEnterAnimated = _enterGroupName == item.group.name;
             final cardWidgets = <Widget>[];
             for (var i = 0; i < widget.columns; i++) {
               if (i < item.proxies.length) {
                 final proxy = item.proxies[i];
+                final card = ProxyCard(
+                  key: ValueKey('${item.group.name}.${proxy.name}'),
+                  proxy: proxy,
+                  groupName: item.group.name,
+                  type: widget.cardType,
+                  groupType: item.group.type,
+                  testUrl: item.group.testUrl,
+                );
                 cardWidgets.add(
                   Expanded(
-                    child: ProxyCard(
-                      key: ValueKey('${item.group.name}.${proxy.name}'),
-                      proxy: proxy,
-                      groupName: item.group.name,
-                      type: widget.cardType,
-                      groupType: item.group.type,
-                      testUrl: item.group.testUrl,
-                    ),
+                    child: isEnterAnimated
+                        ? FadeScaleEnterBox(child: card)
+                        : card,
                   ),
                 );
               } else {
