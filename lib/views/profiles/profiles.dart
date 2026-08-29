@@ -302,40 +302,112 @@ class ProfileItem extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildUrlProfileInfo(BuildContext context) {
+  Widget _buildTitleRow(BuildContext context) {
+    String? subtitleText;
+    if (profile.type == ProfileType.file) {
+      subtitleText = appLocalizations.localFile;
+    } else if (profile.subscriptionInfo != null) {
+      final info = profile.subscriptionInfo!;
+      final hasData = info.upload > 0 ||
+          info.download > 0 ||
+          info.total > 0 ||
+          info.expire > 0;
+      if (hasData) {
+        if (info.expire > 0 &&
+            info.expire * 1000 < DateTime.now().millisecondsSinceEpoch) {
+          subtitleText = appLocalizations.expired;
+        } else if (info.expire == 0) {
+          if (info.total > 0) {
+            subtitleText = appLocalizations.infiniteTime;
+          }
+        } else {
+          subtitleText =
+              DateTime.fromMillisecondsSinceEpoch(info.expire * 1000).show;
+        }
+      }
+    }
+
+    return Row(
+      children: [
+        Flexible(
+          child: EmojiText(
+            profile.label ?? profile.id,
+            style: context.textTheme.titleMedium,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        if (subtitleText != null && subtitleText.isNotEmpty) ...[
+          const SizedBox(width: 6),
+          Text(
+            '·',
+            style: context.textTheme.labelMedium?.toLight,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            subtitleText,
+            style: context.textTheme.labelMedium?.toLight,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildContentInfo(BuildContext context) {
     final subscriptionInfo = profile.subscriptionInfo;
     final updateTimeText = profile.lastUpdateDate?.lastUpdateTimeDesc ?? '';
+    final hasUsageBar = subscriptionInfo != null &&
+        ((subscriptionInfo.upload + subscriptionInfo.download > 0) ||
+            subscriptionInfo.total > 0);
 
-    return [
-      const SizedBox(height: 8),
-      if (subscriptionInfo != null) ...[
-        SubscriptionInfoView(subscriptionInfo: subscriptionInfo),
+    String bottomText;
+    if (hasUsageBar) {
+      bottomText = '${_getTrafficText(subscriptionInfo!)} · $updateTimeText';
+    } else if (profile.type == ProfileType.url) {
+      bottomText = '0.00 B · $updateTimeText';
+    } else {
+      bottomText = updateTimeText;
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(height: 8),
+        if (hasUsageBar)
+          SubscriptionInfoView(subscriptionInfo: subscriptionInfo)
+        else
+          SizedBox(
+            height: 14,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              appLocalizations.noUsageData,
+              style: context.textTheme.labelSmall?.toLight,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         Text(
-          '${_getTrafficText(subscriptionInfo)} · $updateTimeText',
+          bottomText,
           style: context.textTheme.labelMedium?.toLight,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-      ] else
-        Text(
-          updateTimeText,
-          style: context.textTheme.labelMedium?.toLight,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-    ];
+      ],
+    );
   }
 
   String _getTrafficText(SubscriptionInfo subscriptionInfo) {
     final use = subscriptionInfo.upload + subscriptionInfo.download;
     final total = subscriptionInfo.total;
 
-    // Show Unlimited when no traffic info
     if (use == 0 && total == 0) {
-      return 'Unlimited';
+      return '0.00 B';
     }
 
-    // Total is 0 but has usage
     if (total == 0) {
       final useShow = TrafficValue(value: use).show;
       return '$useShow / Unlimited';
@@ -345,36 +417,6 @@ class ProfileItem extends StatelessWidget {
     final totalShow = TrafficValue(value: total).show;
     return '$useShow / $totalShow';
   }
-
-  String _getExpireText(SubscriptionInfo subscriptionInfo) {
-    if (subscriptionInfo.expire == 0) {
-      return appLocalizations.infiniteTime;
-    }
-    return DateTime.fromMillisecondsSinceEpoch(
-      subscriptionInfo.expire * 1000,
-    ).show;
-  }
-
-  List<Widget> _buildFileProfileInfo(BuildContext context) {
-    return [
-      const SizedBox(height: 8),
-      Text(
-        profile.lastUpdateDate?.lastUpdateTimeDesc ?? '',
-        style: context.textTheme.labelMedium?.toLight,
-      ),
-    ];
-  }
-
-  // _handleCopyLink(BuildContext context) async {
-  //   await Clipboard.setData(
-  //     ClipboardData(
-  //       text: profile.url,
-  //     ),
-  //   );
-  //   if (context.mounted) {
-  //     context.showNotifier(appLocalizations.copySuccess);
-  //   }
-  // }
 
   Future<void> _handleExportFile(BuildContext context) async {
     final res = await globalState.appController.safeRun<bool>(
@@ -508,44 +550,9 @@ class ProfileItem extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 52),
-                  child: Row(
-                    children: [
-                      Flexible(
-                        child: EmojiText(
-                          profile.label ?? profile.id,
-                          style: context.textTheme.titleMedium,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (profile.subscriptionInfo != null) ...[
-                        const SizedBox(width: 6),
-                        Text(
-                          '·',
-                          style: context.textTheme.labelMedium?.toLight,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          _getExpireText(profile.subscriptionInfo!),
-                          style: context.textTheme.labelMedium?.toLight,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ],
-                  ),
+                  child: _buildTitleRow(context),
                 ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ...switch (profile.type) {
-                      ProfileType.file => _buildFileProfileInfo(context),
-                      ProfileType.url => _buildUrlProfileInfo(context),
-                    },
-                  ],
-                ),
+                _buildContentInfo(context),
               ],
             ),
           ),
@@ -572,43 +579,8 @@ class ProfileItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(
-                      children: [
-                        Flexible(
-                          child: EmojiText(
-                            profile.label ?? profile.id,
-                            style: context.textTheme.titleMedium,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (profile.subscriptionInfo != null) ...[
-                          const SizedBox(width: 6),
-                          Text(
-                            '·',
-                            style: context.textTheme.labelMedium?.toLight,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            _getExpireText(profile.subscriptionInfo!),
-                            style: context.textTheme.labelMedium?.toLight,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ],
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ...switch (profile.type) {
-                          ProfileType.file => _buildFileProfileInfo(context),
-                          ProfileType.url => _buildUrlProfileInfo(context),
-                        },
-                      ],
-                    ),
+                    _buildTitleRow(context),
+                    _buildContentInfo(context),
                   ],
                 ),
               ),

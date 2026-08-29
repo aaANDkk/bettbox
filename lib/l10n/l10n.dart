@@ -2660,7 +2660,37 @@ class AppLocalizations {
   }
 
   /// `Start Running`
-  String get startRunning {
+    /// `No usage data`
+  String get noUsageData {
+    return Intl.message(
+      'No usage data',
+      name: 'noUsageData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Local File`
+  String get localFile {
+    return Intl.message(
+      'Local File',
+      name: 'localFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expired`
+  String get expired {
+    return Intl.message(
+      'Expired',
+      name: 'expired',
+      desc: '',
+      args: [],
+    );
+  }
+
+String get startRunning {
     return Intl.message(
       'Start',
       name: 'startRunning',
