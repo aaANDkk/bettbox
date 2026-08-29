@@ -334,8 +334,6 @@ class ProfileItem extends StatelessWidget {
           child: EmojiText(
             profile.label ?? profile.id,
             style: context.textTheme.titleMedium,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           ),
         ),
         if (subtitleText != null && subtitleText.isNotEmpty) ...[
@@ -348,8 +346,6 @@ class ProfileItem extends StatelessWidget {
           Text(
             subtitleText,
             style: context.textTheme.labelMedium?.toLight,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           ),
         ],
       ],
@@ -411,8 +407,6 @@ class ProfileItem extends StatelessWidget {
                   child: Text(
                     appLocalizations.noUsageData,
                     style: context.textTheme.labelSmall?.toLight,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
         ),
@@ -420,8 +414,6 @@ class ProfileItem extends StatelessWidget {
         Text(
           bottomText,
           style: context.textTheme.labelMedium?.toLight,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
         ),
       ],
     );
