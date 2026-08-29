@@ -519,7 +519,12 @@ class ProfileItem extends StatelessWidget {
                         ),
                       ),
                       if (profile.subscriptionInfo != null) ...[
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 6),
+                        Text(
+                          '·',
+                          style: context.textTheme.labelMedium?.toLight,
+                        ),
+                        const SizedBox(width: 6),
                         Text(
                           _getExpireText(profile.subscriptionInfo!),
                           style: context.textTheme.labelMedium?.toLight,
@@ -578,7 +583,12 @@ class ProfileItem extends StatelessWidget {
                           ),
                         ),
                         if (profile.subscriptionInfo != null) ...[
-                          const SizedBox(width: 8),
+                          const SizedBox(width: 6),
+                          Text(
+                            '·',
+                            style: context.textTheme.labelMedium?.toLight,
+                          ),
+                          const SizedBox(width: 6),
                           Text(
                             _getExpireText(profile.subscriptionInfo!),
                             style: context.textTheme.labelMedium?.toLight,
