@@ -311,13 +311,17 @@ class ProfileItem extends StatelessWidget {
       if (subscriptionInfo != null) ...[
         SubscriptionInfoView(subscriptionInfo: subscriptionInfo),
         Text(
-          '${_getTrafficText(subscriptionInfo)} · ${_getExpireText(subscriptionInfo)} - $updateTimeText',
+          '${_getTrafficText(subscriptionInfo)} · $updateTimeText',
           style: context.textTheme.labelMedium?.toLight,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ] else
         Text(
           updateTimeText,
           style: context.textTheme.labelMedium?.toLight,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
     ];
   }
@@ -511,23 +515,43 @@ class ProfileItem extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ...switch (profile.type) {
-                      ProfileType.file => _buildFileProfileInfo(context),
-                      ProfileType.url => _buildUrlProfileInfo(context),
-                    },
-                  ],
+                SizedBox(
+                  height: 22 + globalState.measure.labelMediumHeight,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ...switch (profile.type) {
+                        ProfileType.file => _buildFileProfileInfo(context),
+                        ProfileType.url => _buildUrlProfileInfo(context),
+                      },
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
           tileTitleAlignment: ListTileTitleAlignment.titleHeight,
         ),
-        Positioned(top: 6, right: 6, child: trailingWidget),
+        Positioned(
+          top: 6,
+          right: 6,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (profile.type == ProfileType.url &&
+                  profile.subscriptionInfo != null)
+                Text(
+                  _getExpireText(profile.subscriptionInfo!),
+                  style: context.textTheme.labelMedium?.toLight,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              const SizedBox(width: 8),
+              trailingWidget,
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -554,16 +578,18 @@ class ProfileItem extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ...switch (profile.type) {
-                          ProfileType.file => _buildFileProfileInfo(context),
-                          ProfileType.url => _buildUrlProfileInfo(context),
-                        },
-                      ],
+                    SizedBox(
+                      height: 22 + globalState.measure.labelMediumHeight,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ...switch (profile.type) {
+                            ProfileType.file => _buildFileProfileInfo(context),
+                            ProfileType.url => _buildUrlProfileInfo(context),
+                          },
+                        ],
+                      ),
                     ),
                   ],
                 ),

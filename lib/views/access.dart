@@ -680,12 +680,18 @@ class PackageListItem extends ConsumerWidget {
           ),
           title: EmojiText(
             package.label,
-            style: const TextStyle(overflow: TextOverflow.ellipsis),
+            style: TextStyle(
+              overflow: TextOverflow.ellipsis,
+              color: context.colorScheme.onSurface,
+            ),
             maxLines: 1,
           ),
           subtitle: Text(
             package.packageName,
-            style: const TextStyle(overflow: TextOverflow.ellipsis),
+            style: TextStyle(
+              overflow: TextOverflow.ellipsis,
+              color: context.colorScheme.onSurface,
+            ),
             maxLines: 1,
           ),
           delegate: CheckboxDelegate(value: value, onChanged: onChanged),
