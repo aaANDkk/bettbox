@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bett_box/common/common.dart';
 import 'package:bett_box/enum/enum.dart';
@@ -11,6 +12,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'card.dart';
 import 'common.dart';
+
+const _enterStaggerLimit = 8;
+const _enterStaggerStep = Duration(milliseconds: 20);
+const _enterSlideBase = 32.0;
+const _enterSlideStep = 8.0;
+final _enterWindow = commonDuration + _enterStaggerStep * _enterStaggerLimit;
 
 class ProxiesListView extends ConsumerWidget {
   const ProxiesListView({super.key});
@@ -57,63 +64,35 @@ class _ProxyGroupsList extends ConsumerStatefulWidget {
   ConsumerState<_ProxyGroupsList> createState() => _ProxyGroupsListState();
 }
 
-abstract class _FlatItem {
-  double getHeight(double headerHeight, double itemHeight);
-}
-
-class _HeaderItem extends _FlatItem {
-  final Group group;
-  _HeaderItem(this.group);
-
-  @override
-  double getHeight(double headerHeight, double itemHeight) => headerHeight;
-}
-
-class _SpacingItem extends _FlatItem {
-  final String groupName;
-  final double height;
-  _SpacingItem(this.groupName, this.height);
-
-  @override
-  double getHeight(double headerHeight, double itemHeight) => height;
-}
-
-class _RowItem extends _FlatItem {
-  final Group group;
-  final List<Proxy> proxies;
-  final int rowIndex;
-  _RowItem(this.group, this.proxies, this.rowIndex);
-
-  @override
-  double getHeight(double headerHeight, double itemHeight) => itemHeight + 8.0;
-}
-
 class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
   final ScrollController _scrollController = ScrollController();
-  final Set<String> _animatingGroups = {};
-  final Map<String, Timer> _enterTimers = {};
-  static const _enterWindow = Duration(milliseconds: 350);
+  String? _enterGroupName;
+  Timer? _enterTimer;
 
-  void _startEnterAnimated(String groupName) {
-    _enterTimers[groupName]?.cancel();
-    _animatingGroups.add(groupName);
-    _enterTimers[groupName] = Timer(_enterWindow, () {
-      _enterTimers.remove(groupName);
-      _animatingGroups.remove(groupName);
-    });
+  @override
+  void dispose() {
+    _stopEnterAnimated();
+    _scrollController.dispose();
+    super.dispose();
   }
 
-  void _stopEnterAnimated(String groupName) {
-    _enterTimers[groupName]?.cancel();
-    _enterTimers.remove(groupName);
-    _animatingGroups.remove(groupName);
+  void _startEnterAnimated(String groupName) {
+    _enterTimer?.cancel();
+    _enterGroupName = groupName;
+    _enterTimer = Timer(_enterWindow, _stopEnterAnimated);
+  }
+
+  void _stopEnterAnimated() {
+    _enterTimer?.cancel();
+    _enterTimer = null;
+    _enterGroupName = null;
   }
 
   void _handleToggle(String groupName) {
     final tempUnfoldSet = Set<String>.from(widget.currentUnfoldSet);
     if (tempUnfoldSet.contains(groupName)) {
       tempUnfoldSet.remove(groupName);
-      _stopEnterAnimated(groupName);
+      _stopEnterAnimated();
     } else {
       tempUnfoldSet.add(groupName);
       _startEnterAnimated(groupName);
@@ -137,36 +116,32 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
         .getSafeValue('');
     if (selectedName.isEmpty) return;
 
-    final headerHeight = _getHeaderHeight();
-    final itemHeight = getItemHeight(widget.cardType);
+    final headerHeight = _getHeaderHeight() + 8.0;
+    final rowHeight = getItemHeight(widget.cardType) + 8.0;
 
-    final tempFlatItems = _buildFlatItems();
-    var targetIndex = -1;
-    for (var i = 0; i < tempFlatItems.length; i++) {
-      final item = tempFlatItems[i];
-      if (item is _HeaderItem && item.group.name == groupName) {
-        targetIndex = i;
+    var targetOffset = 16.0;
+    for (final group in widget.groups) {
+      if (group.name == groupName) {
+        targetOffset += headerHeight;
+        final sortedProxies = globalState.appController.getSortProxies(
+          proxies: group.all,
+          sortType: widget.sortType,
+          testUrl: group.testUrl,
+        );
+        final proxyIndex =
+            sortedProxies.indexWhere((p) => p.name == selectedName);
+        if (proxyIndex >= 0) {
+          final rowIndex = proxyIndex ~/ widget.columns;
+          targetOffset += rowIndex * rowHeight;
+        }
         break;
       }
-    }
-    if (targetIndex < 0) return;
-
-    var targetOffset = 0.0;
-    for (var i = 0; i < targetIndex; i++) {
-      targetOffset += tempFlatItems[i].getHeight(headerHeight, itemHeight);
-    }
-
-    final group = widget.groups.firstWhere((g) => g.name == groupName);
-    final sortedProxies = globalState.appController.getSortProxies(
-      proxies: group.all,
-      sortType: widget.sortType,
-      testUrl: group.testUrl,
-    );
-    final proxyIndex = sortedProxies.indexWhere((p) => p.name == selectedName);
-    if (proxyIndex >= 0) {
-      final rowIndex = proxyIndex ~/ widget.columns;
-      targetOffset += headerHeight + 8.0;
-      targetOffset += rowIndex * (itemHeight + 8.0);
+      targetOffset += headerHeight;
+      if (widget.currentUnfoldSet.contains(group.name)) {
+        final rowCount =
+            (group.all.length + widget.columns - 1) ~/ widget.columns;
+        targetOffset += rowCount * rowHeight;
+      }
     }
 
     _scrollController.animateTo(
@@ -176,130 +151,155 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
     );
   }
 
-  List<_FlatItem> _buildFlatItems() {
-    final flatItems = <_FlatItem>[];
-    for (final group in widget.groups) {
-      flatItems.add(_HeaderItem(group));
-      flatItems.add(_SpacingItem(group.name, 8.0));
-
-      final isExpand = widget.currentUnfoldSet.contains(group.name);
-      if (isExpand) {
-        final sortedProxies = globalState.appController.getSortProxies(
-          proxies: group.all,
-          sortType: widget.sortType,
+  Widget _buildProxyRow({
+    required Group group,
+    required List<Proxy> proxies,
+    required int rowIndex,
+    required int columns,
+    required ProxyCardType cardType,
+  }) {
+    final groupName = group.name;
+    final enterAnimated = _enterGroupName == groupName;
+    final cardWidgets = <Widget>[];
+    for (var i = 0; i < columns; i++) {
+      if (i < proxies.length) {
+        final proxy = proxies[i];
+        final card = ProxyCard(
+          key: ValueKey('$groupName.${proxy.name}'),
+          proxy: proxy,
+          groupName: groupName,
+          type: cardType,
+          groupType: group.type,
           testUrl: group.testUrl,
         );
-
-        for (var i = 0; i < sortedProxies.length; i += widget.columns) {
-          final end = (i + widget.columns < sortedProxies.length)
-              ? i + widget.columns
-              : sortedProxies.length;
-          final chunk = sortedProxies.sublist(i, end);
-          flatItems.add(_RowItem(group, chunk, i ~/ widget.columns));
+        if (!enterAnimated) {
+          cardWidgets.add(Expanded(child: card));
+        } else {
+          final stagger = min(
+            rowIndex * columns + i,
+            _enterStaggerLimit,
+          );
+          cardWidgets.add(
+            Expanded(
+              child: FadeSlideEnterBox(
+                delay: _enterStaggerStep * stagger,
+                distance: _enterSlideBase + _enterSlideStep * stagger,
+                child: card,
+              ),
+            ),
+          );
         }
+      } else {
+        cardWidgets.add(const Expanded(child: SizedBox()));
       }
     }
-    return flatItems;
+
+    final rowChildren = <Widget>[];
+    for (var i = 0; i < cardWidgets.length; i++) {
+      rowChildren.add(cardWidgets[i]);
+      if (i < cardWidgets.length - 1) {
+        rowChildren.add(const SizedBox(width: 8));
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
+      child: SizedBox(
+        height: getItemHeight(cardType),
+        child: Row(children: rowChildren),
+      ),
+    );
   }
 
-  @override
-  void dispose() {
-    for (final timer in _enterTimers.values) {
-      timer.cancel();
+  Widget _buildGroup(
+    BuildContext context, {
+    required Group group,
+    required bool isExpand,
+    required int columns,
+    required ProxyCardType cardType,
+  }) {
+    final sortedProxies = isExpand
+        ? globalState.appController.getSortProxies(
+            proxies: group.all,
+            sortType: widget.sortType,
+            testUrl: group.testUrl,
+          )
+        : const <Proxy>[];
+
+    final rows = <List<Proxy>>[];
+    if (isExpand) {
+      for (var i = 0; i < sortedProxies.length; i += columns) {
+        final end = (i + columns < sortedProxies.length)
+            ? i + columns
+            : sortedProxies.length;
+        rows.add(sortedProxies.sublist(i, end));
+      }
     }
-    _enterTimers.clear();
-    _animatingGroups.clear();
-    _scrollController.dispose();
-    super.dispose();
+
+    return SliverMainAxisGroup(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
+            child: _GroupHeader(
+              key: ValueKey('header_${group.name}'),
+              group: group,
+              isExpand: isExpand,
+              onToggle: () => _handleToggle(group.name),
+              cardType: cardType,
+              columns: columns,
+              onScrollToSelected: () => _scrollToSelected(group.name),
+            ),
+          ),
+        ),
+        if (isExpand)
+          SliverFixedExtentList(
+            itemExtent: getItemHeight(cardType) + 8.0,
+            delegate: SliverChildBuilderDelegate(
+              (_, index) => _buildProxyRow(
+                group: group,
+                proxies: rows[index],
+                rowIndex: index,
+                columns: columns,
+                cardType: cardType,
+              ),
+              childCount: rows.length,
+            ),
+          ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final isMobileView = ref.watch(isMobileViewProvider);
-    final flatItems = _buildFlatItems();
-    final headerHeight = _getHeaderHeight();
-    final itemHeight = getItemHeight(widget.cardType);
 
     return CommonScrollBar(
       controller: _scrollController,
-      child: ListView.builder(
+      child: CustomScrollView(
         key: const PageStorageKey<String>('proxies_list'),
         controller: _scrollController,
-        padding: EdgeInsets.all(16).copyWith(
-          bottom:
-              16 +
-              (isMobileView ? getFloatingBottomBarReserveHeight(context) : 0),
-        ),
-        itemCount: flatItems.length,
-        itemExtentBuilder: (index, _) {
-          return flatItems[index].getHeight(headerHeight, itemHeight);
-        },
-        itemBuilder: (context, index) {
-          final item = flatItems[index];
-          if (item is _HeaderItem) {
-            final isExpand = widget.currentUnfoldSet.contains(item.group.name);
-            return _GroupHeader(
-              key: ValueKey('header_${item.group.name}'),
-              group: item.group,
-              isExpand: isExpand,
-              onToggle: () => _handleToggle(item.group.name),
-              cardType: widget.cardType,
+        slivers: [
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 16),
+          ),
+          for (final group in widget.groups)
+            _buildGroup(
+              context,
+              group: group,
+              isExpand: widget.currentUnfoldSet.contains(group.name),
               columns: widget.columns,
-              onScrollToSelected: () => _scrollToSelected(item.group.name),
-            );
-          } else if (item is _SpacingItem) {
-            return SizedBox(
-              key: ValueKey('spacing_${item.groupName}'),
-              height: item.height,
-            );
-          } else if (item is _RowItem) {
-            final isEnterAnimated = _animatingGroups.contains(item.group.name);
-            final cardWidgets = <Widget>[];
-            for (var i = 0; i < widget.columns; i++) {
-              if (i < item.proxies.length) {
-                final proxy = item.proxies[i];
-                final cardKey = ValueKey('${item.group.name}.${proxy.name}');
-                final card = ProxyCard(
-                  key: cardKey,
-                  proxy: proxy,
-                  groupName: item.group.name,
-                  type: widget.cardType,
-                  groupType: item.group.type,
-                  testUrl: item.group.testUrl,
-                );
-                cardWidgets.add(
-                  Expanded(
-                    child: FadeScaleEnterBox(
-                      key: ValueKey('enter_${item.group.name}.${proxy.name}'),
-                      animate: isEnterAnimated,
-                      child: card,
-                    ),
-                  ),
-                );
-              } else {
-                cardWidgets.add(const Expanded(child: SizedBox()));
-              }
-            }
-
-            final rowChildren = <Widget>[];
-            for (var i = 0; i < cardWidgets.length; i++) {
-              rowChildren.add(cardWidgets[i]);
-              if (i < cardWidgets.length - 1) {
-                rowChildren.add(const SizedBox(width: 8));
-              }
-            }
-
-            return Padding(
-              key: ValueKey('row_${item.group.name}_${item.rowIndex}'),
-              padding: const EdgeInsets.only(bottom: 8),
-              child: SizedBox(
-                height: itemHeight,
-                child: Row(children: rowChildren),
-              ),
-            );
-          }
-          return const SizedBox();
-        },
+              cardType: widget.cardType,
+            ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 16 +
+                  (isMobileView
+                      ? getFloatingBottomBarReserveHeight(context)
+                      : 0),
+            ),
+          ),
+        ],
       ),
     );
   }
