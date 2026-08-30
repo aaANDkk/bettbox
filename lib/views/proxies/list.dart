@@ -13,11 +13,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'card.dart';
 import 'common.dart';
 
-const _enterStaggerLimit = 8;
-const _enterStaggerStep = Duration(milliseconds: 20);
-const _enterSlideBase = 16.0;
-const _enterSlideStep = 2.0;
-final _enterWindow = commonDuration + _enterStaggerStep * _enterStaggerLimit;
+const _staggerRowStepMs = 18;
+const _staggerColStepMs = 6;
+const _cardDuration = Duration(milliseconds: 240);
 
 class ProxiesListView extends ConsumerWidget {
   const ProxiesListView({super.key});
@@ -69,13 +67,14 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
   final ScrollController _scrollController = ScrollController();
   late final AnimationController _expandController;
   String? _enterGroupName;
+  Duration _totalWindow = const Duration(milliseconds: 500);
 
   @override
   void initState() {
     super.initState();
     _expandController = AnimationController(
       vsync: this,
-      duration: _enterWindow,
+      duration: _totalWindow,
     );
     _expandController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -95,8 +94,23 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
     super.dispose();
   }
 
+  int _calculateMaxVisibleRows() {
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    final rowHeight = getItemHeight(widget.cardType) + 8.0;
+    return (screenHeight / rowHeight).ceil() + 2;
+  }
+
+  Duration _calculateTotalWindow(int maxVisibleRows) {
+    final maxDelayMs =
+        maxVisibleRows * _staggerRowStepMs + widget.columns * _staggerColStepMs;
+    return _cardDuration + Duration(milliseconds: maxDelayMs);
+  }
+
   void _startEnterAnimated(String groupName) {
+    final maxVisibleRows = _calculateMaxVisibleRows();
+    _totalWindow = _calculateTotalWindow(maxVisibleRows);
     _enterGroupName = groupName;
+    _expandController.duration = _totalWindow;
     _expandController.forward(from: 0.0);
   }
 
@@ -174,10 +188,12 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
     required int rowIndex,
     required int columns,
     required ProxyCardType cardType,
+    required int maxVisibleRows,
   }) {
     final groupName = group.name;
     final isGroupAnimating =
         _enterGroupName == groupName && _expandController.isAnimating;
+    final totalWindowMs = _totalWindow.inMilliseconds;
     final cardWidgets = <Widget>[];
     for (var i = 0; i < columns; i++) {
       if (i < proxies.length) {
@@ -190,16 +206,12 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
           groupType: group.type,
           testUrl: group.testUrl,
         );
-        final itemIndex = rowIndex * columns + i;
-        if (!isGroupAnimating || itemIndex >= _enterStaggerLimit) {
+        if (!isGroupAnimating || rowIndex >= maxVisibleRows) {
           cardWidgets.add(Expanded(child: card));
         } else {
-          final stagger = itemIndex;
-          final start = (stagger * _enterStaggerStep.inMilliseconds) /
-              _enterWindow.inMilliseconds;
-          final end = (stagger * _enterStaggerStep.inMilliseconds +
-                  commonDuration.inMilliseconds) /
-              _enterWindow.inMilliseconds;
+          final delayMs = rowIndex * _staggerRowStepMs + i * _staggerColStepMs;
+          final start = delayMs / totalWindowMs;
+          final end = (delayMs + _cardDuration.inMilliseconds) / totalWindowMs;
           final itemAnimation = CurvedAnimation(
             parent: _expandController,
             curve: Interval(
@@ -212,7 +224,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
             Expanded(
               child: FadeSlideEnterTransition(
                 animation: itemAnimation,
-                distance: _enterSlideBase + _enterSlideStep * stagger,
+                distance: 18.0,
                 child: card,
               ),
             ),
@@ -246,6 +258,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
     required bool isExpand,
     required int columns,
     required ProxyCardType cardType,
+    required int maxVisibleRows,
   }) {
     final sortedProxies = isExpand
         ? globalState.appController.getSortProxies(
@@ -291,6 +304,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
                 rowIndex: index,
                 columns: columns,
                 cardType: cardType,
+                maxVisibleRows: maxVisibleRows,
               ),
               childCount: rows.length,
             ),
@@ -302,6 +316,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
   @override
   Widget build(BuildContext context) {
     final isMobileView = ref.watch(isMobileViewProvider);
+    final maxVisibleRows = _calculateMaxVisibleRows();
 
     return CommonScrollBar(
       controller: _scrollController,
@@ -319,6 +334,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
               isExpand: widget.currentUnfoldSet.contains(group.name),
               columns: widget.columns,
               cardType: widget.cardType,
+              maxVisibleRows: maxVisibleRows,
             ),
           SliverToBoxAdapter(
             child: SizedBox(
