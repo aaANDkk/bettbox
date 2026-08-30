@@ -98,12 +98,8 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
     _enterTimers[groupName]?.cancel();
     _animatingGroups.add(groupName);
     _enterTimers[groupName] = Timer(_enterWindow, () {
-      if (mounted) {
-        _enterTimers.remove(groupName);
-        if (_animatingGroups.remove(groupName)) {
-          setState(() {});
-        }
-      }
+      _enterTimers.remove(groupName);
+      _animatingGroups.remove(groupName);
     });
   }
 
@@ -273,12 +269,11 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
                 );
                 cardWidgets.add(
                   Expanded(
-                    child: isEnterAnimated
-                        ? FadeScaleEnterBox(
-                            key: ValueKey('enter_${item.group.name}.${proxy.name}'),
-                            child: card,
-                          )
-                        : card,
+                    child: FadeScaleEnterBox(
+                      key: ValueKey('enter_${item.group.name}.${proxy.name}'),
+                      animate: isEnterAnimated,
+                      child: card,
+                    ),
                   ),
                 );
               } else {

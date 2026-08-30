@@ -76,8 +76,13 @@ class FadeScaleBox extends StatelessWidget {
 
 class FadeScaleEnterBox extends StatefulWidget {
   final Widget child;
+  final bool animate;
 
-  const FadeScaleEnterBox({super.key, required this.child});
+  const FadeScaleEnterBox({
+    super.key,
+    required this.child,
+    this.animate = true,
+  });
 
   @override
   State<FadeScaleEnterBox> createState() => _FadeScaleEnterBoxState();
@@ -91,18 +96,30 @@ class _FadeScaleEnterBoxState extends State<FadeScaleEnterBox>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: commonDuration);
+    _controller = AnimationController(
+      vsync: this,
+      duration: commonDuration,
+      value: widget.animate ? 0.0 : 1.0,
+    );
     _animation = Tween<double>(
       begin: 0,
       end: 1,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-    _controller.forward();
+    if (widget.animate) {
+      _controller.forward();
+    }
   }
 
   @override
   void didUpdateWidget(covariant FadeScaleEnterBox oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.child.key != widget.child.key) {
+      if (widget.animate) {
+        _controller.forward(from: 0);
+      } else {
+        _controller.value = 1.0;
+      }
+    } else if (!oldWidget.animate && widget.animate) {
       _controller.forward(from: 0);
     }
   }
@@ -118,6 +135,9 @@ class _FadeScaleEnterBoxState extends State<FadeScaleEnterBox>
     return AnimatedBuilder(
       animation: _controller.view,
       builder: (_, child) {
+        if (_controller.value >= 1.0) {
+          return child!;
+        }
         return FadeScaleEnterTransition(animation: _animation, child: child!);
       },
       child: widget.child,
