@@ -375,15 +375,15 @@ class ProfileItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(height: 6),
+        const SizedBox(height: 5),
         SizedBox(
-          height: 16,
+          height: 14,
           child: hasUsageBar
               ? Center(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(3),
+                    borderRadius: BorderRadius.circular(2.5),
                     child: Container(
-                      height: 6,
+                      height: 5,
                       alignment: Alignment.centerLeft,
                       color:
                           context.colorScheme.primary.withValues(alpha: 0.15),
@@ -397,7 +397,7 @@ class ProfileItem extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             color: context.colorScheme.primary,
-                            borderRadius: BorderRadius.circular(3),
+                            borderRadius: BorderRadius.circular(2.5),
                           ),
                         ),
                       ),
@@ -414,7 +414,7 @@ class ProfileItem extends StatelessWidget {
                   ),
                 ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 5),
         Text(
           bottomText,
           style: context.textTheme.labelMedium?.toLight,
@@ -539,23 +539,24 @@ class ProfileItem extends StatelessWidget {
 
   Widget _buildNormalLayout(BuildContext context) {
     final trailingWidget = SizedBox(
-      height: 40,
-      width: 40,
+      height: 36,
+      width: 36,
       child: FadeThroughBox(
         child: profile.isUpdating
             ? const Padding(
-                padding: EdgeInsets.all(8),
-                child: CircularProgressIndicator(),
+                padding: EdgeInsets.all(6),
+                child: CircularProgressIndicator(strokeWidth: 2.5),
               )
             : CommonPopupBox(
                 popup: CommonPopupMenu(items: _buildMenuItems(context)),
                 targetBuilder: (open) {
                   return IconButton(
+                    padding: EdgeInsets.zero,
                     onPressed: () {
                       open();
                     },
                     tooltip: appLocalizations.more,
-                    icon: const Icon(Icons.more_vert),
+                    icon: const Icon(Icons.more_vert, size: 20),
                   );
                 },
               ),
@@ -563,25 +564,19 @@ class ProfileItem extends StatelessWidget {
     );
     return Stack(
       children: [
-        ListItem(
-          key: Key(profile.id),
-          horizontalTitleGap: 16,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          title: Container(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 52),
-                  child: _buildTitleRow(context),
-                ),
-                _buildContentInfo(context),
-              ],
-            ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 36),
+                child: _buildTitleRow(context),
+              ),
+              _buildContentInfo(context),
+            ],
           ),
-          tileTitleAlignment: ListTileTitleAlignment.titleHeight,
         ),
         Positioned(top: 6, right: 6, child: trailingWidget),
       ],
@@ -594,22 +589,16 @@ class ProfileItem extends StatelessWidget {
         Expanded(
           child: InkWell(
             onTap: () => onChanged(profile.id),
-            child: ListItem(
-              key: Key(profile.id),
-              horizontalTitleGap: 16,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              title: Container(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildTitleRow(context),
-                    _buildContentInfo(context),
-                  ],
-                ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildTitleRow(context),
+                  _buildContentInfo(context),
+                ],
               ),
-              tileTitleAlignment: ListTileTitleAlignment.titleHeight,
             ),
           ),
         ),
@@ -693,42 +682,40 @@ class _ReorderableProfilesSheetState extends State<ReorderableProfilesSheet> {
           icon: Icon(Icons.save),
         ),
       ],
-      body: Padding(
-        padding: EdgeInsets.only(bottom: 32, top: 16),
-        child: ReorderableListView.builder(
-          buildDefaultDragHandles: false,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          proxyDecorator: proxyDecorator,
-          // ignore: deprecated_member_use
-          onReorder: (oldIndex, newIndex) {
-            setState(() {
-              if (oldIndex < newIndex) {
-                newIndex -= 1;
-              }
-              final profile = profiles.removeAt(oldIndex);
-              profiles.insert(newIndex, profile);
-            });
-          },
-          itemBuilder: (_, index) {
-            final profile = profiles[index];
-            return Container(
-              key: Key(profile.id),
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: CommonCard(
-                type: CommonCardType.filled,
-                child: ListTile(
-                  contentPadding: const EdgeInsets.only(right: 16, left: 16),
-                  title: EmojiText(profile.label ?? profile.id),
-                  trailing: ReorderableDragStartListener(
-                    index: index,
-                    child: const Icon(Icons.drag_handle),
-                  ),
+      body: ReorderableListView.builder(
+        shrinkWrap: true,
+        buildDefaultDragHandles: false,
+        padding: const EdgeInsets.only(left: 12, right: 12, top: 8, bottom: 16),
+        proxyDecorator: proxyDecorator,
+        // ignore: deprecated_member_use
+        onReorder: (oldIndex, newIndex) {
+          setState(() {
+            if (oldIndex < newIndex) {
+              newIndex -= 1;
+            }
+            final profile = profiles.removeAt(oldIndex);
+            profiles.insert(newIndex, profile);
+          });
+        },
+        itemBuilder: (_, index) {
+          final profile = profiles[index];
+          return Container(
+            key: Key(profile.id),
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: CommonCard(
+              type: CommonCardType.filled,
+              child: ListTile(
+                contentPadding: const EdgeInsets.only(right: 16, left: 16),
+                title: EmojiText(profile.label ?? profile.id),
+                trailing: ReorderableDragStartListener(
+                  index: index,
+                  child: const Icon(Icons.drag_handle),
                 ),
               ),
-            );
-          },
-          itemCount: profiles.length,
-        ),
+            ),
+          );
+        },
+        itemCount: profiles.length,
       ),
       title: appLocalizations.profilesSort,
     );
