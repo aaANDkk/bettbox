@@ -1,10 +1,12 @@
+import 'dart:ui';
+
 import 'package:bett_box/common/common.dart';
 import 'package:bett_box/providers/providers.dart';
 import 'package:bett_box/state.dart';
-import 'package:bett_box/views/profiles/add_profile.dart';
 import 'package:bett_box/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class StartFab extends ConsumerStatefulWidget {
   const StartFab({super.key});
@@ -40,24 +42,46 @@ class _StartFabState extends ConsumerState<StartFab> {
     }
   }
 
-  void _handleShowAddProfile() {
-    showExtend(
-      context,
-      builder: (_, type) {
-        return AdaptiveSheetScaffold(
-          type: type,
-          body: AddProfileView(context: context),
-          title: appLocalizations.add,
-        );
-      },
+  Future<void> _handleLongPress() async {
+    final isStart = ref.read(runTimeProvider) != null;
+    if (!isStart) return;
+
+    final result = await globalState.showCommonDialog<bool>(
+      child: CommonDialog(
+        title: appLocalizations.restartCoreTitle,
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop(false);
+            },
+            child: Text(appLocalizations.cancel),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop(true);
+            },
+            child: Text(appLocalizations.confirm),
+          ),
+        ],
+        child: Text(appLocalizations.restartCoreDesc),
+      ),
     );
+
+    if (result == true) {
+      await globalState.appController.restartCore();
+      globalState.showNotifier(appLocalizations.success);
+    }
+  }
+
+  void _handleNoProfile() {
+    globalState.showNotifier(appLocalizations.nullProfileDesc);
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(startButtonSelectorStateProvider);
-    final canPress = state.isInit && state.hasProfile && !_isDisabled;
-    final hasNoProfile = state.isInit && !state.hasProfile && !_isDisabled;
+    final isRestarting = ref.watch(isRestartingCoreProvider);
+    final showLoading = _isDisabled || isRestarting || !state.isInit;
 
     return ValueListenableBuilder<int>(
       valueListenable: dashboardRefreshManager.tick1s,
@@ -65,32 +89,55 @@ class _StartFabState extends ConsumerState<StartFab> {
         final runTime = ref.read(runTimeProvider);
         final isStart = runTime != null;
         final displayStart = _optimisticStart ?? isStart;
-        final showAddIcon = hasNoProfile;
-        final labelText = showAddIcon
-            ? appLocalizations.addProfile
-            : displayStart
+        final labelText = displayStart
             ? _formatRunTime(runTime)
             : appLocalizations.startRunning;
-        final icon = showAddIcon
-            ? Icons.add
-            : displayStart
-            ? Icons.pause
-            : Icons.play_arrow;
-        return FloatingActionButton.extended(
-          heroTag: null,
-          onPressed: canPress
-              ? _handleStart
-              : hasNoProfile
-                  ? _handleShowAddProfile
-                  : null,
-          icon: Icon(icon),
-          label: Text(
-            labelText,
-            maxLines: 1,
-            overflow: TextOverflow.clip,
-            style: const TextStyle(
-              fontFeatures: [FontFeature.tabularFigures()],
-            ),
+        final icon = displayStart ? Icons.pause : Icons.play_arrow;
+
+        return GestureDetector(
+          onLongPress: isStart && !showLoading ? _handleLongPress : null,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              FloatingActionButton.extended(
+                heroTag: null,
+                onPressed: showLoading
+                    ? null
+                    : state.hasProfile
+                        ? _handleStart
+                        : _handleNoProfile,
+                icon: Opacity(
+                  opacity: showLoading ? 0.0 : 1.0,
+                  child: Icon(icon),
+                ),
+                label: Opacity(
+                  opacity: showLoading ? 0.0 : 1.0,
+                  child: Text(
+                    labelText,
+                    maxLines: 1,
+                    overflow: TextOverflow.clip,
+                    style: const TextStyle(
+                      fontFeatures: [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                ),
+              ),
+              if (showLoading)
+                IgnorePointer(
+                  child: SizedBox(
+                    width: 30,
+                    height: 16,
+                    child: OverflowBox(
+                      maxWidth: 30,
+                      maxHeight: 16,
+                      child: SpinKitThreeBounce(
+                        color: context.colorScheme.onPrimaryContainer,
+                        size: 16,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
         );
       },
@@ -118,3 +165,4 @@ class _StartFabState extends ConsumerState<StartFab> {
     return '$hourStr:${inMinutes.toString().padLeft(2, '0')}:${inSeconds.toString().padLeft(2, '0')}';
   }
 }
+
