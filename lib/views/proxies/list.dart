@@ -70,8 +70,9 @@ class _HeaderItem extends _FlatItem {
 }
 
 class _SpacingItem extends _FlatItem {
+  final String groupName;
   final double height;
-  _SpacingItem(this.height);
+  _SpacingItem(this.groupName, this.height);
 
   @override
   double getHeight(double headerHeight, double itemHeight) => height;
@@ -80,7 +81,8 @@ class _SpacingItem extends _FlatItem {
 class _RowItem extends _FlatItem {
   final Group group;
   final List<Proxy> proxies;
-  _RowItem(this.group, this.proxies);
+  final int rowIndex;
+  _RowItem(this.group, this.proxies, this.rowIndex);
 
   @override
   double getHeight(double headerHeight, double itemHeight) => itemHeight + 8.0;
@@ -90,7 +92,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
   final ScrollController _scrollController = ScrollController();
   final Set<String> _animatingGroups = {};
   final Map<String, Timer> _enterTimers = {};
-  static const _enterWindow = Duration(milliseconds: 600);
+  static const _enterWindow = Duration(milliseconds: 350);
 
   void _startEnterAnimated(String groupName) {
     _enterTimers[groupName]?.cancel();
@@ -182,7 +184,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
     final flatItems = <_FlatItem>[];
     for (final group in widget.groups) {
       flatItems.add(_HeaderItem(group));
-      flatItems.add(_SpacingItem(8.0));
+      flatItems.add(_SpacingItem(group.name, 8.0));
 
       final isExpand = widget.currentUnfoldSet.contains(group.name);
       if (isExpand) {
@@ -197,7 +199,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
               ? i + widget.columns
               : sortedProxies.length;
           final chunk = sortedProxies.sublist(i, end);
-          flatItems.add(_RowItem(group, chunk));
+          flatItems.add(_RowItem(group, chunk, i ~/ widget.columns));
         }
       }
     }
@@ -250,7 +252,10 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
               onScrollToSelected: () => _scrollToSelected(item.group.name),
             );
           } else if (item is _SpacingItem) {
-            return SizedBox(height: item.height);
+            return SizedBox(
+              key: ValueKey('spacing_${item.groupName}'),
+              height: item.height,
+            );
           } else if (item is _RowItem) {
             final isEnterAnimated = _animatingGroups.contains(item.group.name);
             final cardWidgets = <Widget>[];
@@ -290,6 +295,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
             }
 
             return Padding(
+              key: ValueKey('row_${item.group.name}_${item.rowIndex}'),
               padding: const EdgeInsets.only(bottom: 8),
               child: SizedBox(
                 height: itemHeight,
