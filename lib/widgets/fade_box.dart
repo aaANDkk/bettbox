@@ -100,6 +100,14 @@ class _FadeScaleEnterBoxState extends State<FadeScaleEnterBox>
   }
 
   @override
+  void didUpdateWidget(covariant FadeScaleEnterBox oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.child.key != widget.child.key) {
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();

@@ -88,32 +88,34 @@ class _RowItem extends _FlatItem {
 
 class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
   final ScrollController _scrollController = ScrollController();
-  String? _enterGroupName;
-  Timer? _enterTimer;
+  final Set<String> _animatingGroups = {};
+  final Map<String, Timer> _enterTimers = {};
   static const _enterWindow = Duration(milliseconds: 600);
 
   void _startEnterAnimated(String groupName) {
-    _enterTimer?.cancel();
-    _enterGroupName = groupName;
-    _enterTimer = Timer(_enterWindow, () {
-      if (mounted) _stopEnterAnimated();
+    _enterTimers[groupName]?.cancel();
+    _animatingGroups.add(groupName);
+    _enterTimers[groupName] = Timer(_enterWindow, () {
+      if (mounted) {
+        _enterTimers.remove(groupName);
+        if (_animatingGroups.remove(groupName)) {
+          setState(() {});
+        }
+      }
     });
   }
 
-  void _stopEnterAnimated() {
-    _enterTimer?.cancel();
-    _enterTimer = null;
-    if (_enterGroupName != null) {
-      _enterGroupName = null;
-      if (mounted) setState(() {});
-    }
+  void _stopEnterAnimated(String groupName) {
+    _enterTimers[groupName]?.cancel();
+    _enterTimers.remove(groupName);
+    _animatingGroups.remove(groupName);
   }
 
   void _handleToggle(String groupName) {
     final tempUnfoldSet = Set<String>.from(widget.currentUnfoldSet);
     if (tempUnfoldSet.contains(groupName)) {
       tempUnfoldSet.remove(groupName);
-      _stopEnterAnimated();
+      _stopEnterAnimated(groupName);
     } else {
       tempUnfoldSet.add(groupName);
       _startEnterAnimated(groupName);
@@ -204,9 +206,11 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
 
   @override
   void dispose() {
-    _enterTimer?.cancel();
-    _enterTimer = null;
-    _enterGroupName = null;
+    for (final timer in _enterTimers.values) {
+      timer.cancel();
+    }
+    _enterTimers.clear();
+    _animatingGroups.clear();
     _scrollController.dispose();
     super.dispose();
   }
@@ -248,13 +252,14 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
           } else if (item is _SpacingItem) {
             return SizedBox(height: item.height);
           } else if (item is _RowItem) {
-            final isEnterAnimated = _enterGroupName == item.group.name;
+            final isEnterAnimated = _animatingGroups.contains(item.group.name);
             final cardWidgets = <Widget>[];
             for (var i = 0; i < widget.columns; i++) {
               if (i < item.proxies.length) {
                 final proxy = item.proxies[i];
+                final cardKey = ValueKey('${item.group.name}.${proxy.name}');
                 final card = ProxyCard(
-                  key: ValueKey('${item.group.name}.${proxy.name}'),
+                  key: cardKey,
                   proxy: proxy,
                   groupName: item.group.name,
                   type: widget.cardType,
@@ -264,7 +269,10 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
                 cardWidgets.add(
                   Expanded(
                     child: isEnterAnimated
-                        ? FadeScaleEnterBox(child: card)
+                        ? FadeScaleEnterBox(
+                            key: ValueKey('enter_${item.group.name}.${proxy.name}'),
+                            child: card,
+                          )
                         : card,
                   ),
                 );
