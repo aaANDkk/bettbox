@@ -15,8 +15,8 @@ import 'common.dart';
 
 const _enterStaggerLimit = 8;
 const _enterStaggerStep = Duration(milliseconds: 20);
-const _enterSlideBase = 32.0;
-const _enterSlideStep = 8.0;
+const _enterSlideBase = 16.0;
+const _enterSlideStep = 2.0;
 final _enterWindow = commonDuration + _enterStaggerStep * _enterStaggerLimit;
 
 class ProxiesListView extends ConsumerWidget {
@@ -64,27 +64,44 @@ class _ProxyGroupsList extends ConsumerStatefulWidget {
   ConsumerState<_ProxyGroupsList> createState() => _ProxyGroupsListState();
 }
 
-class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
+class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
+    with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
+  late final AnimationController _expandController;
   String? _enterGroupName;
-  Timer? _enterTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _expandController = AnimationController(
+      vsync: this,
+      duration: _enterWindow,
+    );
+    _expandController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        if (_enterGroupName != null && mounted) {
+          setState(() {
+            _enterGroupName = null;
+          });
+        }
+      }
+    });
+  }
 
   @override
   void dispose() {
-    _stopEnterAnimated();
+    _expandController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
   void _startEnterAnimated(String groupName) {
-    _enterTimer?.cancel();
     _enterGroupName = groupName;
-    _enterTimer = Timer(_enterWindow, _stopEnterAnimated);
+    _expandController.forward(from: 0.0);
   }
 
   void _stopEnterAnimated() {
-    _enterTimer?.cancel();
-    _enterTimer = null;
+    _expandController.stop();
     _enterGroupName = null;
   }
 
@@ -159,7 +176,8 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
     required ProxyCardType cardType,
   }) {
     final groupName = group.name;
-    final enterAnimated = _enterGroupName == groupName;
+    final isGroupAnimating =
+        _enterGroupName == groupName && _expandController.isAnimating;
     final cardWidgets = <Widget>[];
     for (var i = 0; i < columns; i++) {
       if (i < proxies.length) {
@@ -172,17 +190,28 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
           groupType: group.type,
           testUrl: group.testUrl,
         );
-        if (!enterAnimated) {
+        final itemIndex = rowIndex * columns + i;
+        if (!isGroupAnimating || itemIndex >= _enterStaggerLimit) {
           cardWidgets.add(Expanded(child: card));
         } else {
-          final stagger = min(
-            rowIndex * columns + i,
-            _enterStaggerLimit,
+          final stagger = itemIndex;
+          final start = (stagger * _enterStaggerStep.inMilliseconds) /
+              _enterWindow.inMilliseconds;
+          final end = (stagger * _enterStaggerStep.inMilliseconds +
+                  commonDuration.inMilliseconds) /
+              _enterWindow.inMilliseconds;
+          final itemAnimation = CurvedAnimation(
+            parent: _expandController,
+            curve: Interval(
+              start.clamp(0.0, 1.0),
+              end.clamp(0.0, 1.0),
+              curve: Curves.linear,
+            ),
           );
           cardWidgets.add(
             Expanded(
-              child: FadeSlideEnterBox(
-                delay: _enterStaggerStep * stagger,
+              child: FadeSlideEnterTransition(
+                animation: itemAnimation,
                 distance: _enterSlideBase + _enterSlideStep * stagger,
                 child: card,
               ),
