@@ -375,7 +375,7 @@ class ProfileItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(height: 5),
+        const SizedBox(height: 6),
         SizedBox(
           height: 14,
           child: hasUsageBar
@@ -404,17 +404,21 @@ class ProfileItem extends StatelessWidget {
                     ),
                   ),
                 )
-              : Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    appLocalizations.noUsageData,
-                    style: context.textTheme.labelSmall?.toLight,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+              : Center(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      appLocalizations.noUsageData,
+                      style: context.textTheme.labelSmall?.toLight?.copyWith(
+                        height: 1.0,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
         ),
-        const SizedBox(height: 5),
+        const SizedBox(height: 6),
         Text(
           bottomText,
           style: context.textTheme.labelMedium?.toLight,

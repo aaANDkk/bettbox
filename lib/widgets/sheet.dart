@@ -21,8 +21,8 @@ class SheetProps {
   const SheetProps({
     this.maxWidth,
     this.maxHeight,
-    this.useSafeArea = true,
-    this.isScrollControlled = false,
+    this.useSafeArea = false,
+    this.isScrollControlled = true,
     this.blur = false,
     this.barrierColor,
   });

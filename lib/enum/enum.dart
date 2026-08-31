@@ -118,7 +118,7 @@ enum TunStack { gvisor, system, mixed }
 
 enum AccessControlMode { acceptSelected, rejectSelected }
 
-enum AccessSortType { none, name, time }
+enum AccessSortType { none, installTime, updateTime }
 
 enum ProfileType { file, url }
 
@@ -209,6 +209,7 @@ enum ProxiesIconStyle { standard, none, icon }
 
 enum FontFamily {
   openMoji('OpenMoji'),
+  twEmoji('OpenMoji'),
   jetBrainsMono('JetBrainsMono'),
   icon('Icons');
 

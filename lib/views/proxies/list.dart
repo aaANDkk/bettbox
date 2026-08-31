@@ -13,9 +13,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'card.dart';
 import 'common.dart';
 
-const _staggerRowStepMs = 18;
-const _staggerColStepMs = 6;
-const _cardDuration = Duration(milliseconds: 240);
+const _staggerRowStepMs = 26;
+const _staggerColStepMs = 8;
+const _cardDuration = Duration(milliseconds: 320);
 
 class ProxiesListView extends ConsumerWidget {
   const ProxiesListView({super.key});
@@ -338,7 +338,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
             ),
           SliverToBoxAdapter(
             child: SizedBox(
-              height: 16 +
+              height: (globalState.isAndroidTV ? 48.0 : 16.0) +
                   (isMobileView
                       ? getFloatingBottomBarReserveHeight(context)
                       : 0),
@@ -385,7 +385,7 @@ class _GroupHeader extends ConsumerWidget {
     return CommonCard(
       radius: 20,
       type: CommonCardType.filled,
-      onPressed: globalState.isAndroidTV ? null : onToggle,
+      onPressed: onToggle,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(

@@ -22,13 +22,6 @@ class FlutterWindow : public Win32Window {
  private:
   flutter::DartProject project_;
   std::unique_ptr<flutter::FlutterViewController> flutter_controller_;
-
-  void SetupAppMethodChannel();
-  bool SetWindowIcon(bool use_dark_icon);
-  void ApplyPendingShortcutIcon(bool use_dark_icon);
-  bool UpdateShortcutsIcon(bool use_dark_icon);
-  void SaveIconPreference(bool use_dark_icon, bool defer_shortcut_update);
-  bool LoadIconPreference();
 };
 
 #endif  // RUNNER_FLUTTER_WINDOW_H_

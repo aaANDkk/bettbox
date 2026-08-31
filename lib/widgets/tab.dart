@@ -13,9 +13,9 @@ const EdgeInsetsGeometry _kHorizontalItemPadding = EdgeInsets.symmetric(
   horizontal: 3,
 );
 
-const Radius _kCornerRadius = Radius.circular(9);
+const Radius _kCornerRadius = Radius.circular(20);
 
-const Radius _kThumbRadius = Radius.circular(8);
+const Radius _kThumbRadius = Radius.circular(16);
 
 const EdgeInsets _kThumbInsets = EdgeInsets.symmetric(horizontal: 1);
 
@@ -379,8 +379,10 @@ class _CommonTabBarState<T extends Object> extends State<CommonTabBar<T>>
       child: Container(
         clipBehavior: Clip.antiAlias,
         padding: widget.padding.resolve(Directionality.of(context)),
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(_kCornerRadius),
+        decoration: ShapeDecoration(
+          shape: const RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
           color: widget.backgroundColor,
         ),
         child: AnimatedBuilder(

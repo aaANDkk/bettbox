@@ -7,12 +7,13 @@ on:
 
 env:
   IS_STABLE: ${{ !contains(github.ref, '-') }}
-  IS_PRERELEASE: ${{ contains(github.ref_name, 'pre') }}
-  SHOULD_RELEASE: ${{ !contains(github.ref, '-') || contains(github.ref_name, 'pre') }}
+  IS_PRERELEASE: ${{ contains(github.ref_name, 'pre') || contains(github.ref_name, 'test') }}
+  SHOULD_RELEASE: true
   GRADLE_OPTS: -Dorg.gradle.vfs.watch=false
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   SENTRY_BACKEND: none
   SIGNPATH_API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
+  IPINFO_TOKEN: ${{ secrets.IPINFO_TOKEN || vars.IPINFO_TOKEN }}
   
 jobs:
   build:
@@ -292,6 +293,9 @@ jobs:
           )
           if ($env:SENTRY_DSN) {
             $flutterArgs += "--dart-define=SENTRY_DSN=$env:SENTRY_DSN"
+          }
+          if ($env:IPINFO_TOKEN) {
+            $flutterArgs += "--dart-define=IPINFO_TOKEN=$env:IPINFO_TOKEN"
           }
           
           flutter @flutterArgs

@@ -41,6 +41,9 @@ class CommonDialog extends ConsumerWidget {
               Navigator.of(context).pop();
             },
       child: AlertDialog(
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         title: EmojiText(title),
         actions: actions,
         contentPadding: padding,
@@ -73,7 +76,7 @@ class CommonModal extends ConsumerWidget {
         child: Material(
           type: MaterialType.transparency,
           shape: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(20),
           ),
           clipBehavior: Clip.antiAlias,
           child: child,
