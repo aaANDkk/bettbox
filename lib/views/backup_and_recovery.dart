@@ -415,7 +415,6 @@ class _WebDAVFormDialogState extends ConsumerState<WebDAVFormDialog> {
               minLines: 1,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.link),
-                border: const OutlineInputBorder(),
                 labelText: appLocalizations.address,
                 helperText: appLocalizations.addressHelp,
               ),
@@ -430,7 +429,6 @@ class _WebDAVFormDialogState extends ConsumerState<WebDAVFormDialog> {
               controller: userController,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.account_circle),
-                border: const OutlineInputBorder(),
                 labelText: appLocalizations.account,
               ),
               validator: (String? value) {
@@ -448,7 +446,6 @@ class _WebDAVFormDialogState extends ConsumerState<WebDAVFormDialog> {
                   obscureText: obscure,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.password),
-                    border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
                       icon: Icon(
                         obscure ? Icons.visibility : Icons.visibility_off,

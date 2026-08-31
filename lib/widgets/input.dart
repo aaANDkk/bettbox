@@ -237,7 +237,6 @@ class _InputDialogState extends State<InputDialog> {
                 _handleUpdate();
               },
               decoration: InputDecoration(
-                border: const OutlineInputBorder(),
                 suffixText: suffixText,
                 hintText: widget.hintText,
                 labelText: widget.labelText,
@@ -586,7 +585,6 @@ class _AddDialogState extends State<AddDialog> {
                 minLines: 1,
                 controller: keyController,
                 decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
                   labelText: keyField!.label,
                 ),
                 validator: (String? value) {
@@ -608,7 +606,6 @@ class _AddDialogState extends State<AddDialog> {
               minLines: 1,
               controller: valueController,
               decoration: InputDecoration(
-                border: const OutlineInputBorder(),
                 labelText: valueField.label,
               ),
               validator: (String? value) {

@@ -758,7 +758,6 @@ class _SecretDialogState extends ConsumerState<_SecretDialog> {
           child: TextFormField(
             controller: _controller,
             decoration: InputDecoration(
-              border: const OutlineInputBorder(),
               labelText: appLocalizations.controlSecret,
               hintText: appLocalizations.controlSecretDesc,
             ),
@@ -927,7 +926,6 @@ class _PortDialogState extends ConsumerState<_PortDialog> {
                     _handleUpdate();
                   },
                   decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
                     labelText: appLocalizations.mixedPort,
                   ),
                   validator: (value) {
@@ -972,7 +970,6 @@ class _PortDialogState extends ConsumerState<_PortDialog> {
                       _handleUpdate();
                     },
                     decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
                       labelText: appLocalizations.port,
                     ),
                     validator: (value) {
@@ -1012,7 +1009,6 @@ class _PortDialogState extends ConsumerState<_PortDialog> {
                       _handleUpdate();
                     },
                     decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
                       labelText: appLocalizations.socksPort,
                     ),
                     validator: (value) {
@@ -1056,7 +1052,6 @@ class _PortDialogState extends ConsumerState<_PortDialog> {
                       _handleUpdate();
                     },
                     decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
                       labelText: appLocalizations.redirPort,
                     ),
                     validator: (value) {
@@ -1100,7 +1095,6 @@ class _PortDialogState extends ConsumerState<_PortDialog> {
                       _handleUpdate();
                     },
                     decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
                       labelText: appLocalizations.tproxyPort,
                     ),
                     validator: (value) {

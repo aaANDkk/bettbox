@@ -150,10 +150,9 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
     final headerHeight = _getHeaderHeight() + 8.0;
     final rowHeight = getItemHeight(widget.cardType) + 8.0;
 
-    var targetOffset = 16.0;
+    var targetOffset = 0.0;
     for (final group in widget.groups) {
       if (group.name == groupName) {
-        targetOffset += headerHeight;
         final sortedProxies = globalState.appController.getSortProxies(
           proxies: group.all,
           sortType: widget.sortType,
@@ -163,7 +162,9 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
             sortedProxies.indexWhere((p) => p.name == selectedName);
         if (proxyIndex >= 0) {
           final rowIndex = proxyIndex ~/ widget.columns;
-          targetOffset += rowIndex * rowHeight;
+          if (rowIndex > 1) {
+            targetOffset += (rowIndex - 1) * rowHeight;
+          }
         }
         break;
       }

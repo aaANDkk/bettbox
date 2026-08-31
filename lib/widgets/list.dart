@@ -641,11 +641,13 @@ class ContinuousListItem extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: context.colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.vertical(
-          top: isFirst ? const Radius.circular(20) : Radius.zero,
-          bottom: isLast ? const Radius.circular(20) : Radius.zero,
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.vertical(
+            top: isFirst ? const Radius.circular(20) : Radius.zero,
+            bottom: isLast ? const Radius.circular(20) : Radius.zero,
+          ),
         ),
       ),
       clipBehavior: Clip.antiAlias,

@@ -368,7 +368,7 @@ class _UpdateGeoUrlFormDialogState extends State<UpdateGeoUrlFormDialog> {
             maxLines: 5,
             minLines: 1,
             controller: urlController,
-            decoration: const InputDecoration(border: OutlineInputBorder()),
+            decoration: const InputDecoration(),
           ),
         ],
       ),

@@ -457,7 +457,6 @@ class _DashboardTitleDialogState extends State<_DashboardTitleDialog> {
           decoration: InputDecoration(
             hintText: 'Have fun with Bettbox',
             errorText: _errorText,
-            border: const OutlineInputBorder(),
           ),
           onChanged: _validate,
         ),

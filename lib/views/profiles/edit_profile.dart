@@ -291,7 +291,6 @@ class EditProfileViewState extends State<EditProfileView> {
           textInputAction: TextInputAction.next,
           controller: labelController,
           decoration: InputDecoration(
-            border: const OutlineInputBorder(),
             labelText: appLocalizations.name,
           ),
           validator: (String? value) {
@@ -312,7 +311,6 @@ class EditProfileViewState extends State<EditProfileView> {
             maxLines: 5,
             minLines: 1,
             decoration: InputDecoration(
-              border: const OutlineInputBorder(),
               labelText: appLocalizations.url,
             ),
             onEditingComplete: widget.isNew
@@ -337,7 +335,6 @@ class EditProfileViewState extends State<EditProfileView> {
             maxLines: 1,
             minLines: 1,
             decoration: InputDecoration(
-              border: const OutlineInputBorder(),
               labelText: appLocalizations.ageSecretKeyOptional,
               hintText: 'AGE-SECRET-KEY-...',
               suffixIcon: IconButton(
@@ -376,7 +373,6 @@ class EditProfileViewState extends State<EditProfileView> {
               textInputAction: TextInputAction.next,
               controller: autoUpdateDurationController,
               decoration: InputDecoration(
-                border: const OutlineInputBorder(),
                 labelText: appLocalizations.autoUpdateInterval,
               ),
               validator: (String? value) {
@@ -605,7 +601,6 @@ class _AgeKeyGeneratorDialogState extends State<_AgeKeyGeneratorDialog> {
           TextField(
             controller: _privateKeyController,
             decoration: InputDecoration(
-              border: const OutlineInputBorder(),
               floatingLabelBehavior: FloatingLabelBehavior.always,
               labelText: appLocalizations.agePrivateKeyLabel,
               suffixIcon: IconButton(
@@ -626,7 +621,6 @@ class _AgeKeyGeneratorDialogState extends State<_AgeKeyGeneratorDialog> {
             controller: _publicKeyController,
             readOnly: true,
             decoration: InputDecoration(
-              border: const OutlineInputBorder(),
               floatingLabelBehavior: FloatingLabelBehavior.always,
               labelText: appLocalizations.agePublicKeyLabel,
               helperText: _helperText,

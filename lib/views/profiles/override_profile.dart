@@ -677,7 +677,6 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
       child: DropdownMenuTheme(
         data: DropdownMenuThemeData(
           inputDecorationTheme: InputDecorationTheme(
-            border: OutlineInputBorder(),
             labelStyle: context.textTheme.bodyLarge?.copyWith(
               overflow: TextOverflow.ellipsis,
             ),
@@ -779,7 +778,6 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
                           maxLines: 1,
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
                             labelText: appLocalizations.content,
                           ),
                           validator: (_) {
