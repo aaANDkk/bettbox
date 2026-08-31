@@ -652,7 +652,7 @@ class _InputItem extends StatelessWidget {
 class SuperellipseInputBorder extends OutlineInputBorder {
   const SuperellipseInputBorder({
     super.borderSide = const BorderSide(),
-    super.borderRadius = const BorderRadius.all(Radius.circular(18)),
+    super.borderRadius = const BorderRadius.all(Radius.circular(20)),
     super.gapPadding = 4.0,
   });
 
@@ -670,6 +670,31 @@ class SuperellipseInputBorder extends OutlineInputBorder {
   }
 
   @override
+  SuperellipseInputBorder scale(double t) {
+    return SuperellipseInputBorder(
+      borderSide: borderSide.scale(t),
+      borderRadius: borderRadius * t,
+      gapPadding: gapPadding * t,
+    );
+  }
+
+  @override
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
+    return RoundedSuperellipseBorder(
+      borderRadius: borderRadius,
+      side: borderSide,
+    ).getInnerPath(rect, textDirection: textDirection);
+  }
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
+    return RoundedSuperellipseBorder(
+      borderRadius: borderRadius,
+      side: borderSide,
+    ).getOuterPath(rect, textDirection: textDirection);
+  }
+
+  @override
   void paint(
     Canvas canvas,
     Rect rect, {
@@ -678,7 +703,15 @@ class SuperellipseInputBorder extends OutlineInputBorder {
     double gapPercentage = 0.0,
     TextDirection? textDirection,
   }) {
-    final paint = borderSide.toPaint();
+    if (borderSide.style == BorderStyle.none) {
+      return;
+    }
+
+    final paint = Paint()
+      ..color = borderSide.color
+      ..strokeWidth = borderSide.width
+      ..style = PaintingStyle.stroke;
+
     final border = RoundedSuperellipseBorder(
       borderRadius: borderRadius,
       side: borderSide,
