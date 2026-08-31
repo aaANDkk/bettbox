@@ -182,6 +182,7 @@ abstract class AccessControl with _$AccessControl {
     @Default(AccessControlMode.rejectSelected) AccessControlMode mode,
     @Default([]) List<String> acceptList,
     @Default([]) List<String> rejectList,
+    @Default([]) List<String> manualList,
     @Default(AccessSortType.none) AccessSortType sort,
     @Default(false) bool isFilterSystemApp,
     @Default(false) bool isFilterNonInternetApp,
