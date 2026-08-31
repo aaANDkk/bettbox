@@ -13,9 +13,9 @@ const EdgeInsetsGeometry _kHorizontalItemPadding = EdgeInsets.symmetric(
   horizontal: 3,
 );
 
-const Radius _kCornerRadius = Radius.circular(20);
+const Radius _kCornerRadius = Radius.circular(9);
 
-const Radius _kThumbRadius = Radius.circular(16);
+const Radius _kThumbRadius = Radius.circular(8);
 
 const EdgeInsets _kThumbInsets = EdgeInsets.symmetric(horizontal: 1);
 
@@ -1112,22 +1112,17 @@ class _RenderSegmentedControl<T extends Object> extends RenderBox
   }
 
   void _paintThumb(PaintingContext context, Offset offset, Rect thumbRect) {
-    // const List<BoxShadow> thumbShadow = <BoxShadow>[
-    //   BoxShadow(color: Color(0x1F000000), offset: Offset(0, 3), blurRadius: 8),
-    //   BoxShadow(color: Color(0x0A000000), offset: Offset(0, 3), blurRadius: 1),
-    // ];
+    final rect = thumbRect.shift(offset);
+    final path = RoundedSuperellipseBorder(
+      borderRadius: BorderRadius.all(thumbRadius),
+    ).getOuterPath(rect);
 
-    final RRect thumbRRect = RRect.fromRectAndRadius(
-      thumbRect.shift(offset),
-      thumbRadius,
-    );
-
-    context.canvas.drawRRect(
-      thumbRRect.inflate(0.5),
+    context.canvas.drawPath(
+      path,
       Paint()..color = const Color(0x0A000000),
     );
 
-    context.canvas.drawRRect(thumbRRect, Paint()..color = thumbColor);
+    context.canvas.drawPath(path, Paint()..color = thumbColor);
   }
 
   @override
