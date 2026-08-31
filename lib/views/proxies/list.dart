@@ -147,7 +147,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
         .getSafeValue('');
     if (selectedName.isEmpty) return;
 
-    final headerHeight = _getHeaderHeight() + 8.0;
+    const headerHeight = 72.0;
     final rowHeight = getItemHeight(widget.cardType) + 8.0;
 
     var targetOffset = 0.0;
@@ -284,14 +284,17 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
-            child: _GroupHeader(
-              key: ValueKey('header_${group.name}'),
-              group: group,
-              isExpand: isExpand,
-              onToggle: () => _handleToggle(group.name),
-              cardType: cardType,
-              columns: columns,
-              onScrollToSelected: () => _scrollToSelected(group.name),
+            child: SizedBox(
+              height: 64.0,
+              child: _GroupHeader(
+                key: ValueKey('header_${group.name}'),
+                group: group,
+                isExpand: isExpand,
+                onToggle: () => _handleToggle(group.name),
+                cardType: cardType,
+                columns: columns,
+                onScrollToSelected: () => _scrollToSelected(group.name),
+              ),
             ),
           ),
         ),
@@ -388,7 +391,7 @@ class _GroupHeader extends ConsumerWidget {
       type: CommonCardType.filled,
       onPressed: onToggle,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Row(
           children: [
             _buildIcon(context, iconStyle, icon),

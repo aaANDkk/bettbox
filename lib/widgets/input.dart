@@ -648,3 +648,102 @@ class _InputItem extends StatelessWidget {
     );
   }
 }
+
+class SuperellipseInputBorder extends OutlineInputBorder {
+  const SuperellipseInputBorder({
+    super.borderSide = const BorderSide(),
+    super.borderRadius = const BorderRadius.all(Radius.circular(18)),
+    super.gapPadding = 4.0,
+  });
+
+  @override
+  SuperellipseInputBorder copyWith({
+    BorderSide? borderSide,
+    BorderRadius? borderRadius,
+    double? gapPadding,
+  }) {
+    return SuperellipseInputBorder(
+      borderSide: borderSide ?? this.borderSide,
+      borderRadius: borderRadius ?? this.borderRadius,
+      gapPadding: gapPadding ?? this.gapPadding,
+    );
+  }
+
+  @override
+  SuperellipseInputBorder scale(double t) {
+    return SuperellipseInputBorder(
+      borderSide: borderSide.scale(t),
+      borderRadius: borderRadius * t,
+      gapPadding: gapPadding * t,
+    );
+  }
+
+  @override
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
+    return RoundedSuperellipseBorder(
+      borderRadius: borderRadius,
+      side: borderSide,
+    ).getInnerPath(rect, textDirection: textDirection);
+  }
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
+    return RoundedSuperellipseBorder(
+      borderRadius: borderRadius,
+      side: borderSide,
+    ).getOuterPath(rect, textDirection: textDirection);
+  }
+
+  @override
+  void paint(
+    Canvas canvas,
+    Rect rect, {
+    double? gapStart,
+    double gapExtent = 0.0,
+    double gapPercentage = 0.0,
+    TextDirection? textDirection,
+  }) {
+    if (borderSide.style == BorderStyle.none || borderSide.width == 0.0) {
+      return;
+    }
+
+    final paint = Paint()
+      ..color = borderSide.color
+      ..strokeWidth = borderSide.width
+      ..style = PaintingStyle.stroke;
+
+    final border = RoundedSuperellipseBorder(
+      borderRadius: borderRadius,
+      side: borderSide,
+    );
+    final outerPath = border.getOuterPath(rect);
+
+    if (gapStart == null || gapExtent <= 0.0 || gapPercentage <= 0.0) {
+      canvas.drawPath(outerPath, paint);
+      return;
+    }
+
+    final double extent = gapExtent * gapPercentage.clamp(0.0, 1.0);
+    final double gapLeft;
+    final double gapRight;
+    if (textDirection == TextDirection.rtl) {
+      gapLeft = (gapStart - extent - gapPadding).clamp(rect.left, rect.right);
+      gapRight = (gapStart + gapPadding).clamp(rect.left, rect.right);
+    } else {
+      gapLeft = (gapStart - gapPadding).clamp(rect.left, rect.right);
+      gapRight = (gapStart + extent + gapPadding).clamp(rect.left, rect.right);
+    }
+
+    final gapRect = Rect.fromLTRB(
+      gapLeft,
+      rect.top - borderSide.width - 4.0,
+      gapRight,
+      rect.top + borderSide.width + 4.0,
+    );
+
+    canvas.save();
+    canvas.clipRect(gapRect, clipOp: ClipOp.difference);
+    canvas.drawPath(outerPath, paint);
+    canvas.restore();
+  }
+}
