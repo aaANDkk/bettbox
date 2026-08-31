@@ -681,7 +681,7 @@ class SuperellipseInputBorder extends OutlineInputBorder {
   }
 
   @override
-  InputBorder? lerpFrom(InputBorder? a, double t) {
+  ShapeBorder? lerpFrom(ShapeBorder? a, double t) {
     if (a is OutlineInputBorder) {
       return SuperellipseInputBorder(
         borderSide: BorderSide.lerp(a.borderSide, borderSide, t),
@@ -693,7 +693,7 @@ class SuperellipseInputBorder extends OutlineInputBorder {
   }
 
   @override
-  InputBorder? lerpTo(InputBorder? b, double t) {
+  ShapeBorder? lerpTo(ShapeBorder? b, double t) {
     if (b is OutlineInputBorder) {
       return SuperellipseInputBorder(
         borderSide: BorderSide.lerp(borderSide, b.borderSide, t),
