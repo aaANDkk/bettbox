@@ -254,7 +254,7 @@ class ApplicationState extends ConsumerState<Application>
                 ),
                 dialogTheme: DialogThemeData(
                   shape: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(28),
                   ),
                 ),
                 bottomSheetTheme: const BottomSheetThemeData(
@@ -337,7 +337,7 @@ class ApplicationState extends ConsumerState<Application>
                 ),
                 dialogTheme: DialogThemeData(
                   shape: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(28),
                   ),
                 ),
                 bottomSheetTheme: const BottomSheetThemeData(

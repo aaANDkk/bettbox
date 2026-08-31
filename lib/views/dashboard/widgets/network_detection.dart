@@ -142,34 +142,17 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
                   },
                 ),
               ),
-              // 2. 国家与大洲合并（Emoji 统一使用 twEmoji，精准间距）
+              // 2. 国家与大洲合并（EmojiText 精准基线对齐）
               if (countryContinent.isNotEmpty || flagEmoji.isNotEmpty)
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.flag_outlined),
                   title: Text(appLocalizations.countryOrRegion),
-                  subtitle: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (flagEmoji.isNotEmpty) ...[
-                        Text(
-                          flagEmoji,
-                          style: TextStyle(
-                            fontFamily: FontFamily.twEmoji.value,
-                            fontFamilyFallback: [
-                              FontFamily.twEmoji.value,
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                      ],
-                      Flexible(
-                        child: Text(
-                          countryContinent,
-                          style: context.textTheme.bodyMedium,
-                        ),
-                      ),
-                    ],
+                  subtitle: EmojiText(
+                    flagEmoji.isNotEmpty
+                        ? '$flagEmoji $countryContinent'
+                        : countryContinent,
+                    style: context.textTheme.bodyMedium,
                   ),
                 ),
               // 3. 省份 / 城市 (独立行，非空才展示)
