@@ -153,6 +153,19 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
     var targetOffset = 0.0;
     for (final group in widget.groups) {
       if (group.name == groupName) {
+        final sortedProxies = globalState.appController.getSortProxies(
+          proxies: group.all,
+          sortType: widget.sortType,
+          testUrl: group.testUrl,
+        );
+        final proxyIndex =
+            sortedProxies.indexWhere((p) => p.name == selectedName);
+        if (proxyIndex >= 0) {
+          final rowIndex = proxyIndex ~/ widget.columns;
+          if (rowIndex > 1) {
+            targetOffset += (rowIndex - 1) * rowHeight;
+          }
+        }
         break;
       }
       targetOffset += headerHeight;

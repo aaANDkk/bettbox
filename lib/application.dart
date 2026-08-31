@@ -279,11 +279,11 @@ class ApplicationState extends ConsumerState<Application>
                   space: 1,
                 ),
                 inputDecorationTheme: InputDecorationTheme(
-                  border: const SuperellipseInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(18)),
                   ),
-                  enabledBorder: SuperellipseInputBorder(
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(Radius.circular(18)),
                     borderSide: BorderSide(
                       color: _getAppColorScheme(
                         brightness: Brightness.light,
@@ -291,8 +291,8 @@ class ApplicationState extends ConsumerState<Application>
                       ).outlineVariant.withValues(alpha: 0.6),
                     ),
                   ),
-                  focusedBorder: SuperellipseInputBorder(
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(Radius.circular(18)),
                     borderSide: BorderSide(
                       color: _getAppColorScheme(
                         brightness: Brightness.light,
@@ -366,11 +366,11 @@ class ApplicationState extends ConsumerState<Application>
                   space: 1,
                 ),
                 inputDecorationTheme: InputDecorationTheme(
-                  border: const SuperellipseInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(18)),
                   ),
-                  enabledBorder: SuperellipseInputBorder(
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(Radius.circular(18)),
                     borderSide: BorderSide(
                       color:
                           _getAppColorScheme(
@@ -382,8 +382,8 @@ class ApplicationState extends ConsumerState<Application>
                               .withValues(alpha: 0.45),
                     ),
                   ),
-                  focusedBorder: SuperellipseInputBorder(
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(Radius.circular(18)),
                     borderSide: BorderSide(
                       color: _getAppColorScheme(
                         brightness: Brightness.dark,
