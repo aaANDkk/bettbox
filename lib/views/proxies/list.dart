@@ -162,9 +162,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
             sortedProxies.indexWhere((p) => p.name == selectedName);
         if (proxyIndex >= 0) {
           final rowIndex = proxyIndex ~/ widget.columns;
-          if (rowIndex > 1) {
-            targetOffset += (rowIndex - 1) * rowHeight;
-          }
+          targetOffset += rowIndex * rowHeight;
         }
         break;
       }
@@ -279,19 +277,25 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
       }
     }
 
+    final headerHeight = _getHeaderHeight() + 8.0;
+
     return SliverMainAxisGroup(
       slivers: [
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
-            child: _GroupHeader(
-              key: ValueKey('header_${group.name}'),
-              group: group,
-              isExpand: isExpand,
-              onToggle: () => _handleToggle(group.name),
-              cardType: cardType,
-              columns: columns,
-              onScrollToSelected: () => _scrollToSelected(group.name),
+        SliverPersistentHeader(
+          pinned: isExpand,
+          delegate: _GroupHeaderDelegate(
+            height: headerHeight,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
+              child: _GroupHeader(
+                key: ValueKey('header_${group.name}'),
+                group: group,
+                isExpand: isExpand,
+                onToggle: () => _handleToggle(group.name),
+                cardType: cardType,
+                columns: columns,
+                onScrollToSelected: () => _scrollToSelected(group.name),
+              ),
             ),
           ),
         ),
@@ -348,6 +352,42 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
         ],
       ),
     );
+  }
+}
+
+class _GroupHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  final double height;
+
+  const _GroupHeaderDelegate({
+    required this.child,
+    required this.height,
+  });
+
+  @override
+  double get minExtent => height;
+
+  @override
+  double get maxExtent => height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return SizedBox(
+      height: height,
+      child: ColoredBox(
+        color: context.colorScheme.surface,
+        child: child,
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _GroupHeaderDelegate oldDelegate) {
+    return oldDelegate.height != height || oldDelegate.child != child;
   }
 }
 
