@@ -681,6 +681,30 @@ class SuperellipseInputBorder extends OutlineInputBorder {
   }
 
   @override
+  InputBorder? lerpFrom(InputBorder? a, double t) {
+    if (a is OutlineInputBorder) {
+      return SuperellipseInputBorder(
+        borderSide: BorderSide.lerp(a.borderSide, borderSide, t),
+        borderRadius: BorderRadius.lerp(a.borderRadius, borderRadius, t)!,
+        gapPadding: a.gapPadding,
+      );
+    }
+    return super.lerpFrom(a, t);
+  }
+
+  @override
+  InputBorder? lerpTo(InputBorder? b, double t) {
+    if (b is OutlineInputBorder) {
+      return SuperellipseInputBorder(
+        borderSide: BorderSide.lerp(borderSide, b.borderSide, t),
+        borderRadius: BorderRadius.lerp(borderRadius, b.borderRadius, t)!,
+        gapPadding: b.gapPadding,
+      );
+    }
+    return super.lerpTo(b, t);
+  }
+
+  @override
   Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
     return RoundedSuperellipseBorder(
       borderRadius: borderRadius,
