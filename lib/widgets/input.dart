@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:bett_box/common/common.dart';
 import 'package:bett_box/models/common.dart';
 import 'package:bett_box/state.dart';
@@ -742,7 +744,7 @@ class SuperellipseInputBorder extends OutlineInputBorder {
     );
 
     canvas.save();
-    canvas.clipRect(gapRect, clipOp: ClipOp.difference);
+    canvas.clipRect(gapRect, clipOp: ui.ClipOp.difference);
     canvas.drawPath(outerPath, paint);
     canvas.restore();
   }
