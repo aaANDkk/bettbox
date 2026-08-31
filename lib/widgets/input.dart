@@ -648,3 +648,64 @@ class _InputItem extends StatelessWidget {
     );
   }
 }
+
+class SuperellipseInputBorder extends OutlineInputBorder {
+  const SuperellipseInputBorder({
+    super.borderSide = const BorderSide(),
+    super.borderRadius = const BorderRadius.all(Radius.circular(18)),
+    super.gapPadding = 4.0,
+  });
+
+  @override
+  SuperellipseInputBorder copyWith({
+    BorderSide? borderSide,
+    BorderRadius? borderRadius,
+    double? gapPadding,
+  }) {
+    return SuperellipseInputBorder(
+      borderSide: borderSide ?? this.borderSide,
+      borderRadius: borderRadius ?? this.borderRadius,
+      gapPadding: gapPadding ?? this.gapPadding,
+    );
+  }
+
+  @override
+  void paint(
+    Canvas canvas,
+    Rect rect, {
+    double? gapStart,
+    double gapExtent = 0.0,
+    double gapPercentage = 0.0,
+    TextDirection? textDirection,
+  }) {
+    final paint = borderSide.toPaint();
+    final border = RoundedSuperellipseBorder(
+      borderRadius: borderRadius,
+      side: borderSide,
+    );
+    final outerPath = border.getOuterPath(rect);
+
+    if (gapStart == null || gapExtent <= 0.0 || gapPercentage <= 0.0) {
+      canvas.drawPath(outerPath, paint);
+      return;
+    }
+
+    final double extent = gapExtent * gapPercentage.clamp(0.0, 1.0);
+    final double start = textDirection == TextDirection.rtl
+        ? (gapStart + gapPadding)
+        : (gapStart - gapPadding);
+    final double gapLeft = (start - gapPadding).clamp(rect.left, rect.right);
+    final double gapRight = (start + extent + gapPadding).clamp(rect.left, rect.right);
+
+    final gapRect = Rect.fromLTRB(
+      gapLeft,
+      rect.top - 4,
+      gapRight,
+      rect.top + borderSide.width + 4,
+    );
+    final gapPath = Path()..addRect(gapRect);
+    final resultPath = Path.combine(PathOperation.difference, outerPath, gapPath);
+
+    canvas.drawPath(resultPath, paint);
+  }
+}
