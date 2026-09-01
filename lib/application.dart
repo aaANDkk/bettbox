@@ -249,10 +249,8 @@ class ApplicationState extends ConsumerState<Application>
                   shape: RoundedSuperellipseBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  elevation: 4,
-                  hoverElevation: 6,
-                  highlightElevation: 8,
-                  shadowColor: Colors.black.withValues(alpha: 0.28),
+                  elevation: 3,
+                  hoverElevation: 5,
                 ),
                 dialogTheme: DialogThemeData(
                   shape: RoundedSuperellipseBorder(
@@ -334,10 +332,8 @@ class ApplicationState extends ConsumerState<Application>
                   shape: RoundedSuperellipseBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  elevation: 4,
-                  hoverElevation: 6,
-                  highlightElevation: 8,
-                  shadowColor: Colors.black.withValues(alpha: 0.45),
+                  elevation: 3,
+                  hoverElevation: 5,
                 ),
                 dialogTheme: DialogThemeData(
                   shape: RoundedSuperellipseBorder(
