@@ -782,7 +782,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "stackMode": MessageLookupByLibrary.simpleMessage("堆疊模式"),
     "standard": MessageLookupByLibrary.simpleMessage("標準"),
     "start": MessageLookupByLibrary.simpleMessage("啟動"),
-    "startRunning": MessageLookupByLibrary.simpleMessage("啟動運行"),
+    "startRunning": MessageLookupByLibrary.simpleMessage("啟動"),
     "noUsageData": MessageLookupByLibrary.simpleMessage("無用量統計"),
     "localFile": MessageLookupByLibrary.simpleMessage("本地檔案"),
     "expired": MessageLookupByLibrary.simpleMessage("已到期"),

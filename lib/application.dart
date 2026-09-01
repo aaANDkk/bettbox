@@ -249,18 +249,20 @@ class ApplicationState extends ConsumerState<Application>
                   shape: RoundedSuperellipseBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  elevation: 3,
-                  hoverElevation: 5,
+                  elevation: 4,
+                  hoverElevation: 6,
+                  highlightElevation: 8,
+                  shadowColor: Colors.black.withValues(alpha: 0.28),
                 ),
                 dialogTheme: DialogThemeData(
                   shape: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(32),
+                    borderRadius: BorderRadius.circular(35),
                   ),
                 ),
                 bottomSheetTheme: const BottomSheetThemeData(
                   shape: RoundedSuperellipseBorder(
                     borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(32),
+                      top: Radius.circular(35),
                     ),
                   ),
                   clipBehavior: Clip.antiAlias,
@@ -332,18 +334,20 @@ class ApplicationState extends ConsumerState<Application>
                   shape: RoundedSuperellipseBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  elevation: 3,
-                  hoverElevation: 5,
+                  elevation: 4,
+                  hoverElevation: 6,
+                  highlightElevation: 8,
+                  shadowColor: Colors.black.withValues(alpha: 0.45),
                 ),
                 dialogTheme: DialogThemeData(
                   shape: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(32),
+                    borderRadius: BorderRadius.circular(35),
                   ),
                 ),
                 bottomSheetTheme: const BottomSheetThemeData(
                   shape: RoundedSuperellipseBorder(
                     borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(32),
+                      top: Radius.circular(35),
                     ),
                   ),
                   clipBehavior: Clip.antiAlias,

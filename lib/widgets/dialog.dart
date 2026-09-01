@@ -42,7 +42,7 @@ class CommonDialog extends ConsumerWidget {
             },
       child: AlertDialog(
         shape: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(35),
         ),
         title: EmojiText(title),
         actions: actions,
@@ -81,7 +81,7 @@ class CommonModal extends ConsumerWidget {
         child: Material(
           type: MaterialType.transparency,
           shape: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(32),
+            borderRadius: BorderRadius.circular(35),
           ),
           clipBehavior: Clip.antiAlias,
           child: child,
