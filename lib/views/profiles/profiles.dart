@@ -117,17 +117,46 @@ class _ProfilesViewState extends ConsumerState<ProfilesView> {
 
   Widget _buildFAB() {
     final isMobileView = ref.watch(isMobileViewProvider);
+    final isDark = Theme.of(context).colorScheme.brightness == Brightness.dark;
     return Padding(
       padding: EdgeInsets.only(
         bottom: isMobileView
             ? getFloatingBottomBarFABReserveHeight(context)
             : 0,
       ),
-      child: FloatingActionButton.extended(
-        heroTag: null,
-        onPressed: _handleShowAddExtendPage,
-        icon: const Icon(Icons.add),
-        label: Text(appLocalizations.addProfile),
+      child: DecoratedBox(
+        decoration: ShapeDecoration(
+          shape: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          shadows: [
+            BoxShadow(
+              color: Colors.black.withValues(
+                alpha: isDark ? 0.35 : 0.14,
+              ),
+              blurRadius: 14,
+              offset: const Offset(0, 4),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(
+                alpha: isDark ? 0.20 : 0.06,
+              ),
+              blurRadius: 4,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+        child: FloatingActionButton.extended(
+          elevation: 0,
+          hoverElevation: 0,
+          highlightElevation: 0,
+          focusElevation: 0,
+          clipBehavior: Clip.none,
+          heroTag: null,
+          onPressed: _handleShowAddExtendPage,
+          icon: const Icon(Icons.add),
+          label: Text(appLocalizations.addProfile),
+        ),
       ),
     );
   }
