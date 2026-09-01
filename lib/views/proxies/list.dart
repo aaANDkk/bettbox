@@ -444,56 +444,56 @@ class _GroupHeader extends ConsumerWidget {
                 ],
               ),
             ),
-            ClipRect(
-              child: AnimatedSize(
+            if (isExpand)
+              TweenAnimationBuilder<double>(
+                key: ValueKey('actions_scale_${group.name}'),
+                tween: Tween<double>(begin: 0.0, end: 1.0),
                 duration: const Duration(milliseconds: 200),
                 curve: Curves.fastOutSlowIn,
-                alignment: Alignment.centerRight,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.fastOutSlowIn,
-                  opacity: isExpand ? 1.0 : 0.0,
-                  child: isExpand
-                      ? Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              key: ValueKey('locate_${group.name}'),
-                              visualDensity: VisualDensity.compact,
-                              icon: const Icon(Icons.adjust),
-                              onPressed: onScrollToSelected,
-                              tooltip: appLocalizations.locate,
-                            ),
-                            AnimatedBuilder(
-                              key: ValueKey('delay_test_${group.name}'),
-                              animation: delayTestCoordinator,
-                              builder: (_, _) {
-                                final isTestingThisGroup = delayTestCoordinator
-                                    .isTestingGroup(group.name);
-                                return IconButton(
-                                  visualDensity: VisualDensity.compact,
-                                  icon: isTestingThisGroup
-                                      ? SizedBox.square(
-                                          dimension: 18,
-                                          child: SpinKitFadingCircle(
-                                            color: context.colorScheme.primary,
-                                            size: 18,
-                                          ),
-                                        )
-                                      : const Icon(Icons.network_ping),
-                                  onPressed: delayTestCoordinator.isTesting
-                                      ? null
-                                      : () => _delayTest(context),
-                                  tooltip: appLocalizations.startTest,
-                                );
-                              },
-                            ),
-                          ],
-                        )
-                      : const SizedBox.shrink(),
+                builder: (_, scale, child) {
+                  return Transform.scale(
+                    scale: scale,
+                    alignment: Alignment.center,
+                    child: child,
+                  );
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      key: ValueKey('locate_${group.name}'),
+                      visualDensity: VisualDensity.compact,
+                      icon: const Icon(Icons.adjust),
+                      onPressed: onScrollToSelected,
+                      tooltip: appLocalizations.locate,
+                    ),
+                    AnimatedBuilder(
+                      key: ValueKey('delay_test_${group.name}'),
+                      animation: delayTestCoordinator,
+                      builder: (_, _) {
+                        final isTestingThisGroup = delayTestCoordinator
+                            .isTestingGroup(group.name);
+                        return IconButton(
+                          visualDensity: VisualDensity.compact,
+                          icon: isTestingThisGroup
+                              ? SizedBox.square(
+                                  dimension: 18,
+                                  child: SpinKitFadingCircle(
+                                    color: context.colorScheme.primary,
+                                    size: 18,
+                                  ),
+                                )
+                              : const Icon(Icons.network_ping),
+                          onPressed: delayTestCoordinator.isTesting
+                              ? null
+                              : () => _delayTest(context),
+                          tooltip: appLocalizations.startTest,
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
-            ),
             IconButton.filledTonal(
               key: ValueKey('expand_${group.name}'),
               visualDensity: VisualDensity.compact,
