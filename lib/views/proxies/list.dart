@@ -9,6 +9,7 @@ import 'package:bett_box/state.dart';
 import 'package:bett_box/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'card.dart';
 import 'common.dart';
@@ -460,9 +461,12 @@ class _GroupHeader extends ConsumerWidget {
                   return IconButton(
                     visualDensity: VisualDensity.compact,
                     icon: isTestingThisGroup
-                        ? const SizedBox.square(
+                        ? SizedBox.square(
                             dimension: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            child: SpinKitFadingCircle(
+                              color: context.colorScheme.primary,
+                              size: 18,
+                            ),
                           )
                         : const Icon(Icons.network_ping),
                     onPressed: delayTestCoordinator.isTesting
