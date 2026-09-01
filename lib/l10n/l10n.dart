@@ -2690,6 +2690,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Last edited`
+  String get lastEdit {
+    return Intl.message(
+      'Last edited',
+      name: 'lastEdit',
+      desc: '',
+      args: [],
+    );
+  }
+
 String get startRunning {
     return Intl.message(
       'Start',

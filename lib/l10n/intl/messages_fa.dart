@@ -1121,6 +1121,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noUsageData": MessageLookupByLibrary.simpleMessage("بدون آمار مصرف"),
     "localFile": MessageLookupByLibrary.simpleMessage("فایل محلی"),
     "expired": MessageLookupByLibrary.simpleMessage("منقضی شده"),
+    "lastEdit": MessageLookupByLibrary.simpleMessage("آخرین ویرایش"),
     "startTest": MessageLookupByLibrary.simpleMessage("تست تاخیر"),
     "startVpn": MessageLookupByLibrary.simpleMessage("در حال شروع..."),
     "status": MessageLookupByLibrary.simpleMessage("وضعیت"),

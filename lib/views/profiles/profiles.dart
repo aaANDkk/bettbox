@@ -394,9 +394,12 @@ class ProfileItem extends StatelessWidget {
     if (hasUsageBar) {
       bottomText = '${_getTrafficText(subscriptionInfo!)} · $updateTimeText';
     } else if (profile.type == ProfileType.url) {
-      bottomText = '0.00 B · $updateTimeText';
+      final trafficText = subscriptionInfo != null
+          ? _getTrafficText(subscriptionInfo)
+          : 'Unlimited';
+      bottomText = '$trafficText · $updateTimeText';
     } else {
-      bottomText = updateTimeText;
+      bottomText = '${appLocalizations.lastEdit} · $updateTimeText';
     }
 
     return Column(
@@ -463,7 +466,7 @@ class ProfileItem extends StatelessWidget {
     final total = subscriptionInfo.total;
 
     if (use == 0 && total == 0) {
-      return '0.00 B';
+      return 'Unlimited';
     }
 
     if (total == 0) {

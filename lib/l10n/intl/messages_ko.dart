@@ -880,6 +880,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noUsageData": MessageLookupByLibrary.simpleMessage("사용량 통계 없음"),
     "localFile": MessageLookupByLibrary.simpleMessage("로컬 파일"),
     "expired": MessageLookupByLibrary.simpleMessage("만료됨"),
+    "lastEdit": MessageLookupByLibrary.simpleMessage("마지막 수정"),
     "startTest": MessageLookupByLibrary.simpleMessage("지연 시간 테스트"),
     "startVpn": MessageLookupByLibrary.simpleMessage("시작 중..."),
     "status": MessageLookupByLibrary.simpleMessage("상태"),

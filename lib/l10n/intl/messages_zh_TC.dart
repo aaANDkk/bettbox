@@ -786,6 +786,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noUsageData": MessageLookupByLibrary.simpleMessage("無用量統計"),
     "localFile": MessageLookupByLibrary.simpleMessage("本地檔案"),
     "expired": MessageLookupByLibrary.simpleMessage("已到期"),
+    "lastEdit": MessageLookupByLibrary.simpleMessage("上次編輯"),
     "startTest": MessageLookupByLibrary.simpleMessage("延遲測試"),
     "startVpn": MessageLookupByLibrary.simpleMessage("正在啟動"),
     "status": MessageLookupByLibrary.simpleMessage("狀態"),

@@ -334,6 +334,7 @@
   "noUsageData": "無用量統計",
   "localFile": "本地檔案",
   "expired": "已到期",
+  "lastEdit": "上次編輯",
   "stop": "停止",
   "powerSwitch": "啟動開關",
   "runTime": "啟動時間",
