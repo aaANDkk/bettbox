@@ -41,6 +41,7 @@ class CommonDialog extends ConsumerWidget {
               Navigator.of(context).pop();
             },
       child: AlertDialog(
+        clipBehavior: Clip.antiAlias,
         shape: RoundedSuperellipseBorder(
           borderRadius: BorderRadius.circular(35),
         ),
