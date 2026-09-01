@@ -101,6 +101,7 @@ class _StartFabState extends ConsumerState<StartFab> {
             theme.colorScheme.onPrimaryContainer;
     return base.copyWith(
       color: foregroundColor,
+      height: 1.15,
       fontFeatures: const [FontFeature.tabularFigures()],
     );
   }
@@ -173,9 +174,11 @@ class _StartFabState extends ConsumerState<StartFab> {
         return GestureDetector(
           onLongPress: isStart && !showLoading ? _handleLongPress : null,
           child: Stack(
+            clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
               FloatingActionButton.extended(
+                clipBehavior: Clip.none,
                 heroTag: null,
                 onPressed: showLoading
                     ? null
