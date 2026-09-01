@@ -171,37 +171,66 @@ class _StartFabState extends ConsumerState<StartFab> {
               )
             : startRunningWidth;
 
+        final isDark =
+            Theme.of(context).colorScheme.brightness == Brightness.dark;
         return GestureDetector(
           onLongPress: isStart && !showLoading ? _handleLongPress : null,
           child: Stack(
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-              FloatingActionButton.extended(
-                clipBehavior: Clip.none,
-                heroTag: null,
-                onPressed: showLoading
-                    ? null
-                    : state.hasProfile
-                        ? _handleStart
-                        : _handleNoProfile,
-                icon: Opacity(
-                  opacity: showLoading ? 0.0 : 1.0,
-                  child: Icon(icon),
+              DecoratedBox(
+                decoration: ShapeDecoration(
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  shadows: [
+                    BoxShadow(
+                      color: Colors.black.withValues(
+                        alpha: isDark ? 0.35 : 0.14,
+                      ),
+                      blurRadius: 14,
+                      offset: const Offset(0, 4),
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withValues(
+                        alpha: isDark ? 0.20 : 0.06,
+                      ),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
                 ),
-                label: Opacity(
-                  opacity: showLoading ? 0.0 : 1.0,
-                  child: AnimatedContainer(
-                    duration: _widthAnimationDuration,
-                    curve: Curves.easeOut,
-                    width: targetWidth,
-                    alignment: Alignment.center,
-                    child: Text(
-                      labelText,
-                      maxLines: 1,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.visible,
-                      style: _labelStyle(context),
+                child: FloatingActionButton.extended(
+                  elevation: 0,
+                  hoverElevation: 0,
+                  highlightElevation: 0,
+                  focusElevation: 0,
+                  clipBehavior: Clip.none,
+                  heroTag: null,
+                  onPressed: showLoading
+                      ? null
+                      : state.hasProfile
+                          ? _handleStart
+                          : _handleNoProfile,
+                  icon: Opacity(
+                    opacity: showLoading ? 0.0 : 1.0,
+                    child: Icon(icon),
+                  ),
+                  label: Opacity(
+                    opacity: showLoading ? 0.0 : 1.0,
+                    child: AnimatedContainer(
+                      duration: _widthAnimationDuration,
+                      curve: Curves.easeOut,
+                      width: targetWidth,
+                      alignment: Alignment.center,
+                      child: Text(
+                        labelText,
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.visible,
+                        style: _labelStyle(context),
+                      ),
                     ),
                   ),
                 ),
