@@ -444,39 +444,56 @@ class _GroupHeader extends ConsumerWidget {
                 ],
               ),
             ),
-            if (isExpand) ...[
-              IconButton(
-                key: ValueKey('locate_${group.name}'),
-                visualDensity: VisualDensity.compact,
-                icon: const Icon(Icons.adjust),
-                onPressed: onScrollToSelected,
-                tooltip: appLocalizations.locate,
-              ),
-              AnimatedBuilder(
-                key: ValueKey('delay_test_${group.name}'),
-                animation: delayTestCoordinator,
-                builder: (_, _) {
-                  final isTestingThisGroup = delayTestCoordinator
-                      .isTestingGroup(group.name);
-                  return IconButton(
-                    visualDensity: VisualDensity.compact,
-                    icon: isTestingThisGroup
-                        ? SizedBox.square(
-                            dimension: 18,
-                            child: SpinKitFadingCircle(
-                              color: context.colorScheme.primary,
-                              size: 18,
+            ClipRect(
+              child: AnimatedSize(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOutCubic,
+                alignment: Alignment.centerRight,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 180),
+                  curve: Curves.easeInOut,
+                  opacity: isExpand ? 1.0 : 0.0,
+                  child: isExpand
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              key: ValueKey('locate_${group.name}'),
+                              visualDensity: VisualDensity.compact,
+                              icon: const Icon(Icons.adjust),
+                              onPressed: onScrollToSelected,
+                              tooltip: appLocalizations.locate,
                             ),
-                          )
-                        : const Icon(Icons.network_ping),
-                    onPressed: delayTestCoordinator.isTesting
-                        ? null
-                        : () => _delayTest(context),
-                    tooltip: appLocalizations.startTest,
-                  );
-                },
+                            AnimatedBuilder(
+                              key: ValueKey('delay_test_${group.name}'),
+                              animation: delayTestCoordinator,
+                              builder: (_, _) {
+                                final isTestingThisGroup = delayTestCoordinator
+                                    .isTestingGroup(group.name);
+                                return IconButton(
+                                  visualDensity: VisualDensity.compact,
+                                  icon: isTestingThisGroup
+                                      ? SizedBox.square(
+                                          dimension: 18,
+                                          child: SpinKitFadingCircle(
+                                            color: context.colorScheme.primary,
+                                            size: 18,
+                                          ),
+                                        )
+                                      : const Icon(Icons.network_ping),
+                                  onPressed: delayTestCoordinator.isTesting
+                                      ? null
+                                      : () => _delayTest(context),
+                                  tooltip: appLocalizations.startTest,
+                                );
+                              },
+                            ),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
+                ),
               ),
-            ],
+            ),
             IconButton.filledTonal(
               key: ValueKey('expand_${group.name}'),
               visualDensity: VisualDensity.compact,

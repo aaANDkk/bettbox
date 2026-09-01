@@ -1,25 +1,47 @@
+import 'dart:math' as math;
+
 import 'package:bett_box/common/common.dart';
 import 'package:bett_box/models/common.dart';
 import 'package:flutter/material.dart';
 
-class CommonPopupRoute<T> extends PopupRoute<T> {
-  final WidgetBuilder builder;
-  ValueNotifier<Offset> offsetNotifier;
+typedef PopupAnchorResolver = Rect? Function();
 
+typedef PopupOpen = void Function({Offset offset});
+
+const _screenMargin = 16.0;
+
+const _anchorOverlap = 8.0;
+
+class CommonPopupRoute<T> extends PopupRoute<T> {
   CommonPopupRoute({
-    required this.barrierLabel,
     required this.builder,
-    required this.offsetNotifier,
+    required this.anchorOf,
+    required this.barrierLabel,
   });
 
+  final WidgetBuilder builder;
+  final PopupAnchorResolver anchorOf;
+
   @override
-  String? barrierLabel;
+  final String? barrierLabel;
 
   @override
   Color? get barrierColor => null;
 
   @override
   bool get barrierDismissible => true;
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 250);
+
+  @override
+  Duration get reverseTransitionDuration => const Duration(milliseconds: 150);
+
+  void _handleDismiss() {
+    if (isCurrent) {
+      navigator?.pop();
+    }
+  }
 
   @override
   Widget buildPage(
@@ -37,48 +59,143 @@ class CommonPopupRoute<T> extends PopupRoute<T> {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    final align = Alignment.topRight;
-    final animationValue = CurvedAnimation(
-      parent: animation,
-      curve: Curves.easeIn,
-    ).value;
-    return SafeArea(
-      child: ValueListenableBuilder(
-        valueListenable: offsetNotifier,
-        builder: (_, value, child) {
-          return Align(
-            alignment: align,
-            child: CustomSingleChildLayout(
-              delegate: OverflowAwareLayoutDelegate(
-                offset: value.translate(48, -8),
-              ),
-              child: child,
-            ),
-          );
-        },
-        child: AnimatedBuilder(
-          animation: animation,
-          builder: (_, Widget? child) {
-            return Opacity(
-              opacity: 0.1 + 0.9 * animationValue,
-              child: Transform.scale(
-                alignment: align,
-                scale: 0.7 + 0.3 * animationValue,
-                child: Transform.translate(
-                  offset: Offset(0, -10) * (1 - animationValue),
-                  child: child!,
-                ),
-              ),
-            );
-          },
-          child: builder(context),
+    const alignment = Alignment.topRight;
+    final fade = animation.drive(CurveTween(curve: Curves.easeOut));
+    final scale = animation.drive(CurveTween(curve: Curves.easeOutBack));
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            excludeFromSemantics: true,
+            onTap: _handleDismiss,
+          ),
         ),
+        _PopupAnchorTracker(
+          anchorOf: anchorOf,
+          builder: (anchor, safeInsets, child) => CustomSingleChildLayout(
+            delegate: _PopupLayoutDelegate(
+              anchor: anchor,
+              safeInsets: safeInsets,
+            ),
+            child: child,
+          ),
+          child: FadeTransition(
+            opacity: fade,
+            child: ScaleTransition(
+              alignment: alignment,
+              scale: scale,
+              child: SlideTransition(
+                position: scale.drive(
+                  Tween(begin: const Offset(0, -0.02), end: Offset.zero),
+                ),
+                child: child,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PopupAnchorTracker extends StatefulWidget {
+  const _PopupAnchorTracker({
+    required this.anchorOf,
+    required this.builder,
+    required this.child,
+  });
+
+  final PopupAnchorResolver anchorOf;
+  final Widget Function(Rect anchor, EdgeInsets safeInsets, Widget child)
+  builder;
+  final Widget child;
+
+  @override
+  State<_PopupAnchorTracker> createState() => _PopupAnchorTrackerState();
+}
+
+class _PopupAnchorTrackerState extends State<_PopupAnchorTracker> {
+  Rect? _anchor;
+  bool _syncScheduled = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _scheduleSync();
+  }
+
+  void _scheduleSync() {
+    if (_syncScheduled) {
+      return;
+    }
+    _syncScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _syncScheduled = false;
+      if (!mounted) {
+        return;
+      }
+      final anchor = widget.anchorOf();
+      if (anchor == null || anchor == _anchor) {
+        return;
+      }
+      setState(() {
+        _anchor = anchor;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final padding = MediaQuery.of(context).padding;
+    final anchor = _anchor ??= widget.anchorOf() ?? Rect.zero;
+    return widget.builder(anchor, padding, widget.child);
+  }
+}
+
+class _PopupLayoutDelegate extends SingleChildLayoutDelegate {
+  const _PopupLayoutDelegate({required this.anchor, required this.safeInsets});
+
+  final Rect anchor;
+  final EdgeInsets safeInsets;
+
+  EdgeInsets get _insets => safeInsets + const EdgeInsets.all(_screenMargin);
+
+  @override
+  Size getSize(BoxConstraints constraints) => constraints.biggest;
+
+  @override
+  BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
+    final insets = _insets;
+    return BoxConstraints.loose(
+      Size(
+        math.max(0.0, constraints.maxWidth - insets.horizontal),
+        math.max(0.0, constraints.maxHeight - insets.vertical),
       ),
     );
   }
 
   @override
-  Duration get transitionDuration => const Duration(milliseconds: 150);
+  Offset getPositionForChild(Size size, Size childSize) {
+    final insets = _insets;
+    final maxX = size.width - insets.right - childSize.width;
+    final maxY = size.height - insets.bottom - childSize.height;
+    return Offset(
+      (anchor.right - childSize.width).clamp(
+        insets.left,
+        math.max(insets.left, maxX),
+      ),
+      (anchor.top - _anchorOverlap).clamp(
+        insets.top,
+        math.max(insets.top, maxY),
+      ),
+    );
+  }
+
+  @override
+  bool shouldRelayout(_PopupLayoutDelegate oldDelegate) {
+    return oldDelegate.anchor != anchor || oldDelegate.safeInsets != safeInsets;
+  }
 }
 
 class PopupController extends ValueNotifier<bool> {
@@ -93,101 +210,55 @@ class PopupController extends ValueNotifier<bool> {
   }
 }
 
-typedef PopupOpen = Function({Offset offset});
-
 class CommonPopupBox extends StatefulWidget {
   final Widget Function(PopupOpen open) targetBuilder;
-  final Widget popup;
+  final Widget? popup;
+  final WidgetBuilder? popupBuilder;
 
   const CommonPopupBox({
     super.key,
     required this.targetBuilder,
-    required this.popup,
-  });
+    this.popup,
+    this.popupBuilder,
+  }) : assert(popup != null || popupBuilder != null);
 
   @override
   State<CommonPopupBox> createState() => _CommonPopupBoxState();
 }
 
 class _CommonPopupBoxState extends State<CommonPopupBox> {
-  bool _isOpen = false;
-  final _targetOffsetValueNotifier = ValueNotifier<Offset>(Offset.zero);
-  Offset _offset = Offset.zero;
-
-  void _open({Offset offset = Offset.zero}) {
-    _offset = offset;
-    _updateOffset();
-    _isOpen = true;
-    Navigator.of(context)
-        .push(
-          CommonPopupRoute(
-            barrierLabel: utils.id,
-            builder: (BuildContext context) {
-              return widget.popup;
-            },
-            offsetNotifier: _targetOffsetValueNotifier,
-          ),
-        )
-        .then((_) {
-          _isOpen = false;
-        });
+  Rect? _anchorOf(Offset offset) {
+    if (!mounted) {
+      return null;
+    }
+    final renderBox = context.findRenderObject() as RenderBox?;
+    if (renderBox == null || !renderBox.attached || !renderBox.hasSize) {
+      return null;
+    }
+    final navigatorBox =
+        Navigator.maybeOf(context)?.context.findRenderObject() as RenderBox?;
+    final origin = renderBox.localToGlobal(Offset.zero, ancestor: navigatorBox);
+    return (origin & renderBox.size).shift(offset);
   }
 
-  void _updateOffset() {
-    final renderBox = context.findRenderObject() as RenderBox?;
-    if (renderBox == null) {
-      return;
-    }
-    final viewPadding = MediaQuery.of(context).viewPadding;
-    _targetOffsetValueNotifier.value = renderBox
-        .localToGlobal(
-          Offset.zero.translate(viewPadding.right, viewPadding.top),
-        )
-        .translate(_offset.dx, _offset.dy);
+  void _open({Offset offset = Offset.zero}) {
+    Navigator.of(context).push(
+      CommonPopupRoute<void>(
+        barrierLabel: utils.id,
+        anchorOf: () => _anchorOf(offset),
+        builder: (context) {
+          if (widget.popupBuilder != null) {
+            return widget.popupBuilder!(context);
+          }
+          return widget.popup!;
+        },
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (_, _) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (_isOpen) {
-            _updateOffset();
-          }
-        });
-        return widget.targetBuilder(_open);
-      },
-    );
-  }
-}
-
-class OverflowAwareLayoutDelegate extends SingleChildLayoutDelegate {
-  final Offset offset;
-
-  OverflowAwareLayoutDelegate({required this.offset});
-
-  @override
-  Size getSize(BoxConstraints constraints) {
-    return Size(constraints.maxWidth, constraints.maxHeight);
-  }
-
-  @override
-  Offset getPositionForChild(Size size, Size childSize) {
-    final safeOffset = Offset(16, 16);
-    double x = (offset.dx - childSize.width).clamp(
-      0,
-      size.width - safeOffset.dx - childSize.width,
-    );
-    double y = (offset.dy).clamp(
-      0,
-      size.height - safeOffset.dy - childSize.height,
-    );
-    return Offset(x, y);
-  }
-
-  @override
-  bool shouldRelayout(covariant OverflowAwareLayoutDelegate oldDelegate) {
-    return oldDelegate.offset != offset;
+    return widget.targetBuilder(_open);
   }
 }
 
