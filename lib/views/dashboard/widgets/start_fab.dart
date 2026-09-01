@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:bett_box/common/common.dart';
@@ -91,8 +92,10 @@ class _StartFabState extends ConsumerState<StartFab> {
   }
 
   TextStyle _labelStyle(BuildContext context) {
-    return const TextStyle(
-      fontFeatures: [FontFeature.tabularFigures()],
+    final base = Theme.of(context).textTheme.labelLarge ??
+        DefaultTextStyle.of(context).style;
+    return base.copyWith(
+      fontFeatures: const [FontFeature.tabularFigures()],
     );
   }
 
@@ -101,16 +104,37 @@ class _StartFabState extends ConsumerState<StartFab> {
     required bool hasThreeDigitHours,
   }) {
     if (hasThreeDigitHours) {
-      return _threeDigitTextWidth ??= _computeWidth(context, '999:99:99');
+      return _threeDigitTextWidth ??=
+          _computeRunTimeWidth(context, isThreeDigit: true);
     }
-    return _twoDigitTextWidth ??= _computeWidth(context, '99:99:99');
+    return _twoDigitTextWidth ??=
+        _computeRunTimeWidth(context, isThreeDigit: false);
+  }
+
+  double _computeRunTimeWidth(
+    BuildContext context, {
+    required bool isThreeDigit,
+  }) {
+    final style = _labelStyle(context);
+    final prefix = isThreeDigit ? '9' : '';
+    final width0 = globalState.measure
+        .computeTextSize(Text('${prefix}00:00:00', style: style))
+        .width;
+    final width8 = globalState.measure
+        .computeTextSize(Text('${prefix}88:88:88', style: style))
+        .width;
+    final width9 = globalState.measure
+        .computeTextSize(Text('${prefix}99:99:99', style: style))
+        .width;
+    final maxTextWidth = [width0, width8, width9].reduce(max);
+    return maxTextWidth + 12.0;
   }
 
   double _computeWidth(BuildContext context, String text) {
     return globalState.measure
             .computeTextSize(Text(text, style: _labelStyle(context)))
             .width +
-        4.0;
+        12.0;
   }
 
   @override
@@ -167,7 +191,7 @@ class _StartFabState extends ConsumerState<StartFab> {
                       labelText,
                       maxLines: 1,
                       textAlign: TextAlign.center,
-                      overflow: TextOverflow.clip,
+                      overflow: TextOverflow.visible,
                       style: _labelStyle(context),
                     ),
                   ),
