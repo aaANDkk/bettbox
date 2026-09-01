@@ -92,9 +92,15 @@ class _StartFabState extends ConsumerState<StartFab> {
   }
 
   TextStyle _labelStyle(BuildContext context) {
-    final base = Theme.of(context).textTheme.labelLarge ??
+    final theme = Theme.of(context);
+    final base = theme.floatingActionButtonTheme.extendedTextStyle ??
+        theme.textTheme.labelLarge ??
         DefaultTextStyle.of(context).style;
+    final foregroundColor =
+        theme.floatingActionButtonTheme.foregroundColor ??
+            theme.colorScheme.onPrimaryContainer;
     return base.copyWith(
+      color: foregroundColor,
       fontFeatures: const [FontFeature.tabularFigures()],
     );
   }
@@ -206,7 +212,10 @@ class _StartFabState extends ConsumerState<StartFab> {
                       maxWidth: 30,
                       maxHeight: 16,
                       child: SpinKitThreeBounce(
-                        color: context.colorScheme.onPrimaryContainer,
+                        color: Theme.of(context)
+                                .floatingActionButtonTheme
+                                .foregroundColor ??
+                            context.colorScheme.onPrimaryContainer,
                         size: 16,
                       ),
                     ),
