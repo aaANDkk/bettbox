@@ -56,7 +56,7 @@ class CommonDialog extends ConsumerWidget {
           width: size.width - 40,
           child: !overrideScroll
               ? SingleChildScrollView(
-                  clipBehavior: Clip.none,
+                  clipBehavior: Clip.hardEdge,
                   child: child,
                 )
               : child,

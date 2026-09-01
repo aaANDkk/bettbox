@@ -62,20 +62,12 @@ class OptionsDialog<T> extends StatelessWidget {
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: value == option
-                            ? SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: EmojiText(
-                                  textBuilder(option),
-                                  style: context.textTheme.bodyMedium,
-                                ),
-                              )
-                            : EmojiText(
-                                textBuilder(option),
-                                style: context.textTheme.bodyMedium,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
+                        child: EmojiText(
+                          textBuilder(option),
+                          style: context.textTheme.bodyMedium,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       ),
                     ],
                   ),

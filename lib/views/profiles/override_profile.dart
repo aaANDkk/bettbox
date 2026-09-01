@@ -674,16 +674,10 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
           child: Text(appLocalizations.confirm),
         ),
       ],
-      child: DropdownMenuTheme(
-        data: DropdownMenuThemeData(
-          inputDecorationTheme: InputDecorationTheme(
-            labelStyle: context.textTheme.bodyLarge?.copyWith(
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        child: Form(
-          key: _formKey,
+      child: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
           child: LayoutBuilder(
             builder: (_, constraints) {
               return Column(
@@ -849,7 +843,7 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
                               );
                             }
                             return DropdownMenu<String>(
-                              width: 200,
+                              expandedInsets: EdgeInsets.zero,
                               enableFilter: false,
                               enableSearch: false,
                               controller: _subRuleController,
@@ -914,9 +908,9 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
                               );
                             }
                             return DropdownMenu<String>(
+                              expandedInsets: EdgeInsets.zero,
                               controller: _ruleTargetController,
                               label: Text(appLocalizations.ruleTarget),
-                              width: 200,
                               menuHeight: 250,
                               enableFilter: false,
                               enableSearch: false,
