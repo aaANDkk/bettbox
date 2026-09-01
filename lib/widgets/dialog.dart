@@ -42,7 +42,7 @@ class CommonDialog extends ConsumerWidget {
             },
       child: AlertDialog(
         shape: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(32),
         ),
         title: EmojiText(title),
         actions: actions,
@@ -54,7 +54,12 @@ class CommonDialog extends ConsumerWidget {
             maxWidth: 300,
           ),
           width: size.width - 40,
-          child: !overrideScroll ? SingleChildScrollView(child: child) : child,
+          child: !overrideScroll
+              ? SingleChildScrollView(
+                  clipBehavior: Clip.none,
+                  child: child,
+                )
+              : child,
         ),
       ),
     );
@@ -76,7 +81,7 @@ class CommonModal extends ConsumerWidget {
         child: Material(
           type: MaterialType.transparency,
           shape: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(32),
           ),
           clipBehavior: Clip.antiAlias,
           child: child,

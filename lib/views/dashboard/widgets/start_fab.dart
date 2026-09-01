@@ -77,6 +77,42 @@ class _StartFabState extends ConsumerState<StartFab> {
     globalState.showNotifier(appLocalizations.nullProfileDesc);
   }
 
+  static const _threeDigitHourThreshold = 100 * 60 * 60 * 1000;
+  static const _widthAnimationDuration = Duration(milliseconds: 200);
+
+  double? _twoDigitTextWidth;
+  double? _threeDigitTextWidth;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _twoDigitTextWidth = null;
+    _threeDigitTextWidth = null;
+  }
+
+  TextStyle _labelStyle(BuildContext context) {
+    return const TextStyle(
+      fontFeatures: [FontFeature.tabularFigures()],
+    );
+  }
+
+  double _getRunTimeTextWidth(
+    BuildContext context, {
+    required bool hasThreeDigitHours,
+  }) {
+    if (hasThreeDigitHours) {
+      return _threeDigitTextWidth ??= _computeWidth(context, '999:99:99');
+    }
+    return _twoDigitTextWidth ??= _computeWidth(context, '99:99:99');
+  }
+
+  double _computeWidth(BuildContext context, String text) {
+    return globalState.measure
+            .computeTextSize(Text(text, style: _labelStyle(context)))
+            .width +
+        4.0;
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(startButtonSelectorStateProvider);
@@ -93,6 +129,16 @@ class _StartFabState extends ConsumerState<StartFab> {
             ? _formatRunTime(runTime)
             : appLocalizations.startRunning;
         final icon = displayStart ? Icons.pause : Icons.play_arrow;
+        final startRunningWidth =
+            _computeWidth(context, appLocalizations.startRunning);
+        final hasThreeDigitHours =
+            (runTime ?? 0) >= _threeDigitHourThreshold;
+        final targetWidth = displayStart
+            ? _getRunTimeTextWidth(
+                context,
+                hasThreeDigitHours: hasThreeDigitHours,
+              )
+            : startRunningWidth;
 
         return GestureDetector(
           onLongPress: isStart && !showLoading ? _handleLongPress : null,
@@ -112,12 +158,17 @@ class _StartFabState extends ConsumerState<StartFab> {
                 ),
                 label: Opacity(
                   opacity: showLoading ? 0.0 : 1.0,
-                  child: Text(
-                    labelText,
-                    maxLines: 1,
-                    overflow: TextOverflow.clip,
-                    style: const TextStyle(
-                      fontFeatures: [FontFeature.tabularFigures()],
+                  child: AnimatedContainer(
+                    duration: _widthAnimationDuration,
+                    curve: Curves.easeOut,
+                    width: targetWidth,
+                    alignment: Alignment.center,
+                    child: Text(
+                      labelText,
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.clip,
+                      style: _labelStyle(context),
                     ),
                   ),
                 ),

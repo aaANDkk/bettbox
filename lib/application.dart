@@ -254,13 +254,13 @@ class ApplicationState extends ConsumerState<Application>
                 ),
                 dialogTheme: DialogThemeData(
                   shape: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(28),
+                    borderRadius: BorderRadius.circular(32),
                   ),
                 ),
                 bottomSheetTheme: const BottomSheetThemeData(
                   shape: RoundedSuperellipseBorder(
                     borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(28),
+                      top: Radius.circular(32),
                     ),
                   ),
                   clipBehavior: Clip.antiAlias,
@@ -337,13 +337,13 @@ class ApplicationState extends ConsumerState<Application>
                 ),
                 dialogTheme: DialogThemeData(
                   shape: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(28),
+                    borderRadius: BorderRadius.circular(32),
                   ),
                 ),
                 bottomSheetTheme: const BottomSheetThemeData(
                   shape: RoundedSuperellipseBorder(
                     borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(28),
+                      top: Radius.circular(32),
                     ),
                   ),
                   clipBehavior: Clip.antiAlias,

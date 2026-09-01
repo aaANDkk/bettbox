@@ -909,11 +909,12 @@ class _PortDialogState extends ConsumerState<_PortDialog> {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         key: _formKey,
         child: Padding(
-          padding: EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.fromLTRB(4, 8, 4, 16),
           child: AnimatedSize(
             duration: midDuration,
             curve: Curves.easeOutQuad,
             alignment: Alignment.topCenter,
+            clipBehavior: Clip.none,
             child: Column(
               spacing: 24,
               children: [

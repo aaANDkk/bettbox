@@ -62,34 +62,11 @@ class _ProxyGroupsList extends ConsumerStatefulWidget {
   ConsumerState<_ProxyGroupsList> createState() => _ProxyGroupsListState();
 }
 
-class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
-    with SingleTickerProviderStateMixin {
+class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
   final ScrollController _scrollController = ScrollController();
-  late final AnimationController _expandController;
-  String? _enterGroupName;
-  Duration _totalWindow = const Duration(milliseconds: 500);
-
-  @override
-  void initState() {
-    super.initState();
-    _expandController = AnimationController(
-      vsync: this,
-      duration: _totalWindow,
-    );
-    _expandController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        if (_enterGroupName != null && mounted) {
-          setState(() {
-            _enterGroupName = null;
-          });
-        }
-      }
-    });
-  }
 
   @override
   void dispose() {
-    _expandController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -100,33 +77,12 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
     return (screenHeight / rowHeight).ceil() + 2;
   }
 
-  Duration _calculateTotalWindow(int maxVisibleRows) {
-    final maxDelayMs =
-        maxVisibleRows * _staggerRowStepMs + widget.columns * _staggerColStepMs;
-    return _cardDuration + Duration(milliseconds: maxDelayMs);
-  }
-
-  void _startEnterAnimated(String groupName) {
-    final maxVisibleRows = _calculateMaxVisibleRows();
-    _totalWindow = _calculateTotalWindow(maxVisibleRows);
-    _enterGroupName = groupName;
-    _expandController.duration = _totalWindow;
-    _expandController.forward(from: 0.0);
-  }
-
-  void _stopEnterAnimated() {
-    _expandController.stop();
-    _enterGroupName = null;
-  }
-
   void _handleToggle(String groupName) {
     final tempUnfoldSet = Set<String>.from(widget.currentUnfoldSet);
     if (tempUnfoldSet.contains(groupName)) {
       tempUnfoldSet.remove(groupName);
-      _stopEnterAnimated();
     } else {
       tempUnfoldSet.add(groupName);
-      _startEnterAnimated(groupName);
     }
     globalState.appController.updateCurrentUnfoldSet(tempUnfoldSet);
   }
@@ -183,76 +139,6 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
     );
   }
 
-  Widget _buildProxyRow({
-    required Group group,
-    required List<Proxy> proxies,
-    required int rowIndex,
-    required int columns,
-    required ProxyCardType cardType,
-    required int maxVisibleRows,
-  }) {
-    final groupName = group.name;
-    final isGroupAnimating =
-        _enterGroupName == groupName && _expandController.isAnimating;
-    final totalWindowMs = _totalWindow.inMilliseconds;
-    final cardWidgets = <Widget>[];
-    for (var i = 0; i < columns; i++) {
-      if (i < proxies.length) {
-        final proxy = proxies[i];
-        final card = ProxyCard(
-          key: ValueKey('$groupName.${proxy.name}'),
-          proxy: proxy,
-          groupName: groupName,
-          type: cardType,
-          groupType: group.type,
-          testUrl: group.testUrl,
-        );
-        if (!isGroupAnimating || rowIndex >= maxVisibleRows) {
-          cardWidgets.add(Expanded(child: card));
-        } else {
-          final delayMs = rowIndex * _staggerRowStepMs + i * _staggerColStepMs;
-          final start = delayMs / totalWindowMs;
-          final end = (delayMs + _cardDuration.inMilliseconds) / totalWindowMs;
-          final itemAnimation = CurvedAnimation(
-            parent: _expandController,
-            curve: Interval(
-              start.clamp(0.0, 1.0),
-              end.clamp(0.0, 1.0),
-              curve: Curves.linear,
-            ),
-          );
-          cardWidgets.add(
-            Expanded(
-              child: FadeSlideEnterTransition(
-                animation: itemAnimation,
-                distance: 18.0,
-                child: card,
-              ),
-            ),
-          );
-        }
-      } else {
-        cardWidgets.add(const Expanded(child: SizedBox()));
-      }
-    }
-
-    final rowChildren = <Widget>[];
-    for (var i = 0; i < cardWidgets.length; i++) {
-      rowChildren.add(cardWidgets[i]);
-      if (i < cardWidgets.length - 1) {
-        rowChildren.add(const SizedBox(width: 8));
-      }
-    }
-
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
-      child: SizedBox(
-        height: getItemHeight(cardType),
-        child: Row(children: rowChildren),
-      ),
-    );
-  }
-
   Widget _buildGroup(
     BuildContext context, {
     required Group group,
@@ -299,19 +185,13 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
           ),
         ),
         if (isExpand)
-          SliverFixedExtentList(
-            itemExtent: getItemHeight(cardType) + 8.0,
-            delegate: SliverChildBuilderDelegate(
-              (_, index) => _buildProxyRow(
-                group: group,
-                proxies: rows[index],
-                rowIndex: index,
-                columns: columns,
-                cardType: cardType,
-                maxVisibleRows: maxVisibleRows,
-              ),
-              childCount: rows.length,
-            ),
+          _GroupProxyListSliver(
+            key: ValueKey('expanded_group_${group.name}'),
+            group: group,
+            rows: rows,
+            columns: columns,
+            cardType: cardType,
+            maxVisibleRows: maxVisibleRows,
           ),
       ],
     );
@@ -349,6 +229,136 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList>
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _GroupProxyListSliver extends StatefulWidget {
+  final Group group;
+  final List<List<Proxy>> rows;
+  final int columns;
+  final ProxyCardType cardType;
+  final int maxVisibleRows;
+  final bool enterAnimated;
+
+  const _GroupProxyListSliver({
+    super.key,
+    required this.group,
+    required this.rows,
+    required this.columns,
+    required this.cardType,
+    required this.maxVisibleRows,
+    this.enterAnimated = true,
+  });
+
+  @override
+  State<_GroupProxyListSliver> createState() => _GroupProxyListSliverState();
+}
+
+class _GroupProxyListSliverState extends State<_GroupProxyListSliver>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  bool _isAnimationCompleted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final maxDelayMs =
+        widget.maxVisibleRows * _staggerRowStepMs +
+        widget.columns * _staggerColStepMs;
+    final totalWindow = _cardDuration + Duration(milliseconds: maxDelayMs);
+    _controller = AnimationController(vsync: this, duration: totalWindow);
+    if (widget.enterAnimated) {
+      _controller.addStatusListener((status) {
+        if (status == AnimationStatus.completed && mounted) {
+          setState(() {
+            _isAnimationCompleted = true;
+          });
+        }
+      });
+      _controller.forward();
+    } else {
+      _isAnimationCompleted = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Widget _buildProxyRow(BuildContext context, int rowIndex) {
+    final proxies = widget.rows[rowIndex];
+    final groupName = widget.group.name;
+    final totalWindowMs = _controller.duration!.inMilliseconds;
+    final cardWidgets = <Widget>[];
+
+    for (var i = 0; i < widget.columns; i++) {
+      if (i < proxies.length) {
+        final proxy = proxies[i];
+        final card = ProxyCard(
+          key: ValueKey('$groupName.${proxy.name}'),
+          proxy: proxy,
+          groupName: groupName,
+          type: widget.cardType,
+          groupType: widget.group.type,
+          testUrl: widget.group.testUrl,
+        );
+        if (_isAnimationCompleted || rowIndex >= widget.maxVisibleRows) {
+          cardWidgets.add(Expanded(child: card));
+        } else {
+          final delayMs = rowIndex * _staggerRowStepMs + i * _staggerColStepMs;
+          final start = delayMs / totalWindowMs;
+          final end = (delayMs + _cardDuration.inMilliseconds) / totalWindowMs;
+          final itemAnimation = CurvedAnimation(
+            parent: _controller,
+            curve: Interval(
+              start.clamp(0.0, 1.0),
+              end.clamp(0.0, 1.0),
+              curve: Curves.linear,
+            ),
+          );
+          cardWidgets.add(
+            Expanded(
+              child: FadeSlideEnterTransition(
+                animation: itemAnimation,
+                distance: 18.0,
+                child: card,
+              ),
+            ),
+          );
+        }
+      } else {
+        cardWidgets.add(const Expanded(child: SizedBox()));
+      }
+    }
+
+    final rowChildren = <Widget>[];
+    for (var i = 0; i < cardWidgets.length; i++) {
+      rowChildren.add(cardWidgets[i]);
+      if (i < cardWidgets.length - 1) {
+        rowChildren.add(const SizedBox(width: 8));
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
+      child: SizedBox(
+        height: getItemHeight(widget.cardType),
+        child: Row(children: rowChildren),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverFixedExtentList(
+      itemExtent: getItemHeight(widget.cardType) + 8.0,
+      delegate: SliverChildBuilderDelegate(
+        (context, index) => _buildProxyRow(context, index),
+        childCount: widget.rows.length,
       ),
     );
   }

@@ -139,7 +139,7 @@ class AdaptiveSheetScaffold extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             shape: RoundedSuperellipseBorder(
               borderRadius: BorderRadius.vertical(
-                top: Radius.circular(28.0),
+                top: Radius.circular(32.0),
               ),
             ),
             child: SafeArea(
