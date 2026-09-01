@@ -445,12 +445,14 @@ class _GroupHeader extends ConsumerWidget {
             ),
             if (isExpand) ...[
               IconButton(
+                key: ValueKey('locate_${group.name}'),
                 visualDensity: VisualDensity.compact,
                 icon: const Icon(Icons.adjust),
                 onPressed: onScrollToSelected,
                 tooltip: appLocalizations.locate,
               ),
               AnimatedBuilder(
+                key: ValueKey('delay_test_${group.name}'),
                 animation: delayTestCoordinator,
                 builder: (_, _) {
                   final isTestingThisGroup = delayTestCoordinator
@@ -472,6 +474,7 @@ class _GroupHeader extends ConsumerWidget {
               ),
             ],
             IconButton.filledTonal(
+              key: ValueKey('expand_${group.name}'),
               visualDensity: VisualDensity.compact,
               icon: CommonExpandIcon(expand: isExpand),
               onPressed: onToggle,
