@@ -12,6 +12,7 @@ import 'package:bett_box/views/profiles/scripts.dart';
 import 'package:bett_box/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'add_profile.dart';
 
@@ -579,9 +580,12 @@ class ProfileItem extends StatelessWidget {
       width: 36,
       child: FadeThroughBox(
         child: profile.isUpdating
-            ? const Padding(
-                padding: EdgeInsets.all(6),
-                child: CircularProgressIndicator(strokeWidth: 2.5),
+            ? Padding(
+                padding: const EdgeInsets.all(6),
+                child: SpinKitFadingCircle(
+                  color: context.colorScheme.primary,
+                  size: 24,
+                ),
               )
             : CommonPopupBox(
                 popup: CommonPopupMenu(items: _buildMenuItems(context)),

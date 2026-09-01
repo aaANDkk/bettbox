@@ -6,6 +6,7 @@ import 'package:bett_box/state.dart';
 import 'package:bett_box/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class OverrideProfileView extends StatefulWidget {
   final String profileId;
@@ -91,10 +92,22 @@ class _OverrideProfileViewState extends State<OverrideProfileView> {
           ),
         );
         if (!isInit) {
-          return Center(child: CircularProgressIndicator());
+          return Center(
+            child: SpinKitFadingCircle(
+              color: context.colorScheme.primary,
+              size: 36,
+            ),
+          );
         }
         return FadeBox(
-          child: !isInit ? Center(child: CircularProgressIndicator()) : child!,
+          child: !isInit
+              ? Center(
+                  child: SpinKitFadingCircle(
+                    color: context.colorScheme.primary,
+                    size: 36,
+                  ),
+                )
+              : child!,
         );
       },
       child: LayoutBuilder(

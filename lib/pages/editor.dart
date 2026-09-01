@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:re_highlight/languages/javascript.dart';
 import 'package:re_highlight/languages/yaml.dart';
 import 'package:re_highlight/re_highlight.dart' show Mode;
@@ -441,8 +442,9 @@ class _EditorPageState extends ConsumerState<EditorPage> {
                     child: Container(
                       color: context.colorScheme.surface.withAlpha(200),
                       child: Center(
-                        child: CircularProgressIndicator(
+                        child: SpinKitFadingCircle(
                           color: context.colorScheme.primary,
+                          size: 36,
                         ),
                       ),
                     ),

@@ -12,6 +12,7 @@ import 'package:bett_box/state.dart';
 import 'package:bett_box/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 typedef UpdatingMap = Map<String, bool>;
 
@@ -334,9 +335,12 @@ class ProviderItem extends StatelessWidget {
                     ? SizedBox(
                         height: 30,
                         width: 30,
-                        child: const Padding(
-                          padding: EdgeInsets.all(2),
-                          child: CircularProgressIndicator(),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: SpinKitFadingCircle(
+                            color: context.colorScheme.primary,
+                            size: 22,
+                          ),
                         ),
                       )
                     : CommonChip(

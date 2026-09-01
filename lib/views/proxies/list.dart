@@ -447,11 +447,11 @@ class _GroupHeader extends ConsumerWidget {
             ClipRect(
               child: AnimatedSize(
                 duration: const Duration(milliseconds: 200),
-                curve: Curves.easeOutCubic,
+                curve: Curves.fastOutSlowIn,
                 alignment: Alignment.centerRight,
                 child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 180),
-                  curve: Curves.easeInOut,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.fastOutSlowIn,
                   opacity: isExpand ? 1.0 : 0.0,
                   child: isExpand
                       ? Row(
