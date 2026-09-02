@@ -132,7 +132,11 @@ _AccessControl _$AccessControlFromJson(Map<String, dynamic> json) =>
               .toList() ??
           const [],
       sort:
-          $enumDecodeNullable(_$AccessSortTypeEnumMap, json['sort']) ??
+          $enumDecodeNullable(
+            _$AccessSortTypeEnumMap,
+            json['sort'],
+            unknownValue: AccessSortType.none,
+          ) ??
           AccessSortType.none,
       isFilterSystemApp: json['isFilterSystemApp'] as bool? ?? false,
       isFilterNonInternetApp: json['isFilterNonInternetApp'] as bool? ?? false,

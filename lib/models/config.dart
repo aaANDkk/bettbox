@@ -181,7 +181,9 @@ abstract class AccessControl with _$AccessControl {
     @Default([]) List<String> acceptList,
     @Default([]) List<String> rejectList,
     @Default([]) List<String> manualList,
-    @Default(AccessSortType.none) AccessSortType sort,
+    @JsonKey(unknownEnumValue: AccessSortType.none)
+    @Default(AccessSortType.none)
+    AccessSortType sort,
     @Default(false) bool isFilterSystemApp,
     @Default(false) bool isFilterNonInternetApp,
   }) = _AccessControl;
@@ -401,7 +403,26 @@ abstract class Config with _$Config {
       }
     } catch (_) {}
 
-    // 兼容 FlClash：currentProfileId 可能是 int 类型，需要转换为 String
+    // Migrate legacy AccessControl sort values: 'name' -> 'none', 'time' -> 'updateTime'
+    try {
+      void migrateSort(dynamic accessControl) {
+        if (accessControl is Map) {
+          final sort = accessControl['sort'];
+          if (sort == 'name') {
+            accessControl['sort'] = 'none';
+          } else if (sort == 'time') {
+            accessControl['sort'] = 'updateTime';
+          }
+        }
+      }
+
+      migrateSort(json['accessControl']);
+      if (json['vpnProps'] is Map) {
+        migrateSort((json['vpnProps'] as Map)['accessControl']);
+      }
+    } catch (_) {}
+
+    // Migrate legacy int profile IDs to string
     try {
       final currentProfileId = json['currentProfileId'];
       if (currentProfileId != null && currentProfileId is int) {
@@ -409,7 +430,6 @@ abstract class Config with _$Config {
       }
     } catch (_) {}
 
-    // 兼容 FlClash：profiles 中的 id 可能是 int 类型，需要转换为 String
     try {
       final profiles = json['profiles'];
       if (profiles != null && profiles is List) {

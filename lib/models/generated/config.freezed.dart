@@ -362,7 +362,7 @@ as bool,
 /// @nodoc
 mixin _$AccessControl {
 
- bool get enable; AccessControlMode get mode; List<String> get acceptList; List<String> get rejectList; List<String> get manualList; AccessSortType get sort; bool get isFilterSystemApp; bool get isFilterNonInternetApp;
+ bool get enable; AccessControlMode get mode; List<String> get acceptList; List<String> get rejectList; List<String> get manualList;@JsonKey(unknownEnumValue: AccessSortType.none) AccessSortType get sort; bool get isFilterSystemApp; bool get isFilterNonInternetApp;
 /// Create a copy of AccessControl
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -395,7 +395,7 @@ abstract mixin class $AccessControlCopyWith<$Res>  {
   factory $AccessControlCopyWith(AccessControl value, $Res Function(AccessControl) _then) = _$AccessControlCopyWithImpl;
 @useResult
 $Res call({
- bool enable, AccessControlMode mode, List<String> acceptList, List<String> rejectList, List<String> manualList, AccessSortType sort, bool isFilterSystemApp, bool isFilterNonInternetApp
+ bool enable, AccessControlMode mode, List<String> acceptList, List<String> rejectList, List<String> manualList,@JsonKey(unknownEnumValue: AccessSortType.none) AccessSortType sort, bool isFilterSystemApp, bool isFilterNonInternetApp
 });
 
 
@@ -507,7 +507,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enable,  AccessControlMode mode,  List<String> acceptList,  List<String> rejectList,  List<String> manualList,  AccessSortType sort,  bool isFilterSystemApp,  bool isFilterNonInternetApp)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enable,  AccessControlMode mode,  List<String> acceptList,  List<String> rejectList,  List<String> manualList, @JsonKey(unknownEnumValue: AccessSortType.none)  AccessSortType sort,  bool isFilterSystemApp,  bool isFilterNonInternetApp)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AccessControl() when $default != null:
 return $default(_that.enable,_that.mode,_that.acceptList,_that.rejectList,_that.manualList,_that.sort,_that.isFilterSystemApp,_that.isFilterNonInternetApp);case _:
@@ -528,7 +528,7 @@ return $default(_that.enable,_that.mode,_that.acceptList,_that.rejectList,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enable,  AccessControlMode mode,  List<String> acceptList,  List<String> rejectList,  List<String> manualList,  AccessSortType sort,  bool isFilterSystemApp,  bool isFilterNonInternetApp)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enable,  AccessControlMode mode,  List<String> acceptList,  List<String> rejectList,  List<String> manualList, @JsonKey(unknownEnumValue: AccessSortType.none)  AccessSortType sort,  bool isFilterSystemApp,  bool isFilterNonInternetApp)  $default,) {final _that = this;
 switch (_that) {
 case _AccessControl():
 return $default(_that.enable,_that.mode,_that.acceptList,_that.rejectList,_that.manualList,_that.sort,_that.isFilterSystemApp,_that.isFilterNonInternetApp);case _:
@@ -548,7 +548,7 @@ return $default(_that.enable,_that.mode,_that.acceptList,_that.rejectList,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enable,  AccessControlMode mode,  List<String> acceptList,  List<String> rejectList,  List<String> manualList,  AccessSortType sort,  bool isFilterSystemApp,  bool isFilterNonInternetApp)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enable,  AccessControlMode mode,  List<String> acceptList,  List<String> rejectList,  List<String> manualList, @JsonKey(unknownEnumValue: AccessSortType.none)  AccessSortType sort,  bool isFilterSystemApp,  bool isFilterNonInternetApp)?  $default,) {final _that = this;
 switch (_that) {
 case _AccessControl() when $default != null:
 return $default(_that.enable,_that.mode,_that.acceptList,_that.rejectList,_that.manualList,_that.sort,_that.isFilterSystemApp,_that.isFilterNonInternetApp);case _:
@@ -563,7 +563,7 @@ return $default(_that.enable,_that.mode,_that.acceptList,_that.rejectList,_that.
 @JsonSerializable()
 
 class _AccessControl implements AccessControl {
-  const _AccessControl({this.enable = false, this.mode = AccessControlMode.rejectSelected, final  List<String> acceptList = const [], final  List<String> rejectList = const [], final  List<String> manualList = const [], this.sort = AccessSortType.none, this.isFilterSystemApp = false, this.isFilterNonInternetApp = false}): _acceptList = acceptList,_rejectList = rejectList,_manualList = manualList;
+  const _AccessControl({this.enable = false, this.mode = AccessControlMode.rejectSelected, final  List<String> acceptList = const [], final  List<String> rejectList = const [], final  List<String> manualList = const [], @JsonKey(unknownEnumValue: AccessSortType.none) this.sort = AccessSortType.none, this.isFilterSystemApp = false, this.isFilterNonInternetApp = false}): _acceptList = acceptList,_rejectList = rejectList,_manualList = manualList;
   factory _AccessControl.fromJson(Map<String, dynamic> json) => _$AccessControlFromJson(json);
 
 @override@JsonKey() final  bool enable;
@@ -589,7 +589,7 @@ class _AccessControl implements AccessControl {
   return EqualUnmodifiableListView(_manualList);
 }
 
-@override@JsonKey() final  AccessSortType sort;
+@override@JsonKey(unknownEnumValue: AccessSortType.none) final  AccessSortType sort;
 @override@JsonKey() final  bool isFilterSystemApp;
 @override@JsonKey() final  bool isFilterNonInternetApp;
 
@@ -626,7 +626,7 @@ abstract mixin class _$AccessControlCopyWith<$Res> implements $AccessControlCopy
   factory _$AccessControlCopyWith(_AccessControl value, $Res Function(_AccessControl) _then) = __$AccessControlCopyWithImpl;
 @override @useResult
 $Res call({
- bool enable, AccessControlMode mode, List<String> acceptList, List<String> rejectList, List<String> manualList, AccessSortType sort, bool isFilterSystemApp, bool isFilterNonInternetApp
+ bool enable, AccessControlMode mode, List<String> acceptList, List<String> rejectList, List<String> manualList,@JsonKey(unknownEnumValue: AccessSortType.none) AccessSortType sort, bool isFilterSystemApp, bool isFilterNonInternetApp
 });
 
 

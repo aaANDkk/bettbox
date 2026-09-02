@@ -124,13 +124,18 @@ class BettboxVpnService : VpnService(), BaseServiceInterface {
 
         setMtu(options.mtu.coerceIn(1280..65535).takeIf { it > 0 } ?: 1480)
 
-        options.accessControl.takeIf { it.enable }?.let { ac ->
-            when (ac.mode) {
-                AccessControlMode.acceptSelected -> (ac.acceptList + packageName).forEach {
-                    runCatching { addAllowedApplication(it) }
+        val accessControl = options.accessControl
+        if (accessControl.enable) {
+            when (accessControl.mode) {
+                AccessControlMode.acceptSelected -> {
+                    (accessControl.acceptList + packageName).filter { it.isNotBlank() }.distinct().forEach { appPkg ->
+                        runCatching { addAllowedApplication(appPkg) }
+                            .onFailure { Log.e(TAG, "Failed to allow package $appPkg: ${it.message}", it) }
+                    }
                 }
-                AccessControlMode.rejectSelected -> (ac.rejectList - packageName).forEach {
-                    runCatching { addDisallowedApplication(it) }
+                AccessControlMode.rejectSelected -> (accessControl.rejectList - packageName).filter { it.isNotBlank() }.distinct().forEach { appPkg ->
+                    runCatching { addDisallowedApplication(appPkg) }
+                        .onFailure { Log.e(TAG, "Failed to disallow package $appPkg: ${it.message}", it) }
                 }
             }
         }

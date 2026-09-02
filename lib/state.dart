@@ -1152,7 +1152,6 @@ class DetectionState {
 
   void manualRefresh() {
     _rawIpInfo = null;
-    _currentCheckRequestId = null;
     _isIpMasked = false;
     state.value = state.value.copyWith(
       isLoading: true,
@@ -1164,10 +1163,7 @@ class DetectionState {
 
   void _onIpProgress(int requestId, IpInfo info) {
     if (requestId != _requestId) return;
-    _rawIpInfo = (_currentCheckRequestId == requestId && _rawIpInfo != null)
-        ? _rawIpInfo!.merge(info)
-        : info;
-    _currentCheckRequestId = requestId;
+    _rawIpInfo = info;
     state.value = state.value.copyWith(
       isLoading: false,
       ipInfo: _maskIpInfo(_rawIpInfo),
@@ -1177,7 +1173,6 @@ class DetectionState {
 
   Future<void> switchToDomesticIp() async {
     _rawIpInfo = null;
-    _currentCheckRequestId = null;
     _isIpMasked = false;
 
     _cancelPreviousRequest();
@@ -1258,10 +1253,7 @@ class DetectionState {
     }
 
     if (res.data != null) {
-      _rawIpInfo = (_currentCheckRequestId == _requestId && _rawIpInfo != null)
-          ? _rawIpInfo!.merge(res.data!)
-          : res.data!;
-      _currentCheckRequestId = _requestId;
+      _rawIpInfo ??= res.data;
     }
     state.value = state.value.copyWith(
       isLoading: false,
@@ -1299,7 +1291,6 @@ class DetectionState {
         showLoading || state.value.ipInfo == null || isStateChanged;
     if (shouldShowLoading) {
       _rawIpInfo = null;
-      _currentCheckRequestId = null;
       state.value = state.value.copyWith(
         isLoading: true,
         errorMessage: null,
