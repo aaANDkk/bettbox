@@ -555,9 +555,6 @@ class _GroupHeader extends ConsumerWidget {
               iconSize: 24,
               icon: CommonExpandIcon(expand: isExpand),
               onPressed: onToggle,
-              tooltip: isExpand
-                  ? appLocalizations.showLess
-                  : appLocalizations.showMore,
             ),
           ],
         ),
