@@ -65,9 +65,12 @@ class _ProxyGroupsList extends ConsumerStatefulWidget {
 
 class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
   final ScrollController _scrollController = ScrollController();
+  String? _enterGroupName;
+  Timer? _enterTimer;
 
   @override
   void dispose() {
+    _enterTimer?.cancel();
     _scrollController.dispose();
     super.dispose();
   }
@@ -78,12 +81,28 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
     return (screenHeight / rowHeight).ceil() + 2;
   }
 
+  void _startEnterAnimated(String groupName) {
+    _enterTimer?.cancel();
+    _enterGroupName = groupName;
+    const enterWindow = Duration(milliseconds: 600);
+    _enterTimer = Timer(enterWindow, () {
+      if (mounted) {
+        setState(() {
+          _enterGroupName = null;
+        });
+      }
+    });
+  }
+
   void _handleToggle(String groupName) {
     final tempUnfoldSet = Set<String>.from(widget.currentUnfoldSet);
     if (tempUnfoldSet.contains(groupName)) {
       tempUnfoldSet.remove(groupName);
+      _enterTimer?.cancel();
+      _enterGroupName = null;
     } else {
       tempUnfoldSet.add(groupName);
+      _startEnterAnimated(groupName);
     }
     globalState.appController.updateCurrentUnfoldSet(tempUnfoldSet);
   }
@@ -144,6 +163,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
     BuildContext context, {
     required Group group,
     required bool isExpand,
+    required bool enterAnimated,
     required int columns,
     required ProxyCardType cardType,
     required int maxVisibleRows,
@@ -177,6 +197,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
                 key: ValueKey('header_${group.name}'),
                 group: group,
                 isExpand: isExpand,
+                enterAnimated: enterAnimated,
                 onToggle: () => _handleToggle(group.name),
                 cardType: cardType,
                 columns: columns,
@@ -193,6 +214,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
             columns: columns,
             cardType: cardType,
             maxVisibleRows: maxVisibleRows,
+            enterAnimated: enterAnimated,
           ),
       ],
     );
@@ -217,6 +239,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
               context,
               group: group,
               isExpand: widget.currentUnfoldSet.contains(group.name),
+              enterAnimated: _enterGroupName == group.name,
               columns: widget.columns,
               cardType: widget.cardType,
               maxVisibleRows: maxVisibleRows,
@@ -368,6 +391,7 @@ class _GroupProxyListSliverState extends State<_GroupProxyListSliver>
 class _GroupHeader extends ConsumerWidget {
   final Group group;
   final bool isExpand;
+  final bool enterAnimated;
   final VoidCallback onToggle;
   final ProxyCardType cardType;
   final int columns;
@@ -377,11 +401,49 @@ class _GroupHeader extends ConsumerWidget {
     super.key,
     required this.group,
     required this.isExpand,
+    this.enterAnimated = false,
     required this.onToggle,
     required this.cardType,
     required this.columns,
     this.onScrollToSelected,
   });
+
+  static final _circleButtonStyle = IconButton.styleFrom(
+    shape: const CircleBorder(),
+    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    padding: const EdgeInsets.all(2),
+    fixedSize: const Size(32, 32),
+    minimumSize: const Size(32, 32),
+  );
+
+  static final _circleFilledTonalStyle = IconButton.styleFrom(
+    shape: const CircleBorder(),
+    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    padding: const EdgeInsets.all(2),
+    fixedSize: const Size(32, 32),
+    minimumSize: const Size(32, 32),
+  );
+
+  Widget _buildActionScale({
+    required Widget child,
+    required String key,
+  }) {
+    if (!enterAnimated) return child;
+    return TweenAnimationBuilder<double>(
+      key: ValueKey(key),
+      tween: Tween<double>(begin: 0.0, end: 1.0),
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.fastOutSlowIn,
+      builder: (_, scale, c) {
+        return Transform.scale(
+          scale: scale,
+          alignment: Alignment.center,
+          child: c,
+        );
+      },
+      child: child,
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -444,69 +506,58 @@ class _GroupHeader extends ConsumerWidget {
                 ],
               ),
             ),
-            if (isExpand)
-              TweenAnimationBuilder<double>(
-                key: ValueKey('actions_scale_${group.name}'),
-                tween: Tween<double>(begin: 0.0, end: 1.0),
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.fastOutSlowIn,
-                builder: (_, scale, child) {
-                  return Transform.scale(
-                    scale: scale,
-                    alignment: Alignment.center,
-                    child: child,
-                  );
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      key: ValueKey('locate_${group.name}'),
-                      visualDensity: VisualDensity.compact,
-                      icon: const Icon(Icons.adjust),
-                      onPressed: onScrollToSelected,
-                      tooltip: appLocalizations.locate,
-                    ),
-                    AnimatedBuilder(
-                      key: ValueKey('delay_test_${group.name}'),
-                      animation: delayTestCoordinator,
-                      builder: (_, _) {
-                        final isTestingThisGroup = delayTestCoordinator
-                            .isTestingGroup(group.name);
-                        return IconButton(
-                          visualDensity: VisualDensity.compact,
-                          icon: isTestingThisGroup
-                              ? SizedBox.square(
-                                  dimension: 18,
-                                  child: SpinKitFadingCircle(
-                                    color: context.colorScheme.primary,
-                                    size: 18,
-                                  ),
-                                )
-                              : const Icon(Icons.network_ping),
-                          onPressed: delayTestCoordinator.isTesting
-                              ? null
-                              : () => _delayTest(context),
-                          tooltip: appLocalizations.startTest,
-                        );
-                      },
-                    ),
-                  ],
+            if (isExpand) ...[
+              _buildActionScale(
+                key: 'locate_${group.name}',
+                child: IconButton(
+                  key: ValueKey('locate_${group.name}'),
+                  style: _circleButtonStyle,
+                  iconSize: 19,
+                  icon: const Icon(Icons.adjust),
+                  onPressed: onScrollToSelected,
+                  tooltip: appLocalizations.locate,
                 ),
               ),
+              const SizedBox(width: 2),
+              _buildActionScale(
+                key: 'delay_${group.name}',
+                child: AnimatedBuilder(
+                  key: ValueKey('delay_test_${group.name}'),
+                  animation: delayTestCoordinator,
+                  builder: (_, _) {
+                    final isTestingThisGroup = delayTestCoordinator
+                        .isTestingGroup(group.name);
+                    return IconButton(
+                      style: _circleButtonStyle,
+                      iconSize: 20,
+                      icon: isTestingThisGroup
+                          ? SizedBox.square(
+                              dimension: 18,
+                              child: SpinKitFadingCircle(
+                                color: context.colorScheme.primary,
+                                size: 18,
+                              ),
+                            )
+                          : const Icon(Icons.network_ping),
+                      onPressed: delayTestCoordinator.isTesting
+                          ? null
+                          : () => _delayTest(context),
+                      tooltip: appLocalizations.startTest,
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(width: 6),
+            ],
             IconButton.filledTonal(
               key: ValueKey('expand_${group.name}'),
-              visualDensity: VisualDensity.compact,
+              style: _circleFilledTonalStyle,
+              iconSize: 24,
               icon: CommonExpandIcon(expand: isExpand),
               onPressed: onToggle,
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.resolveWith((states) {
-                  if (states.contains(WidgetState.focused)) {
-                    return context.colorScheme.primary.withValues(alpha: 0.2);
-                  }
-                  return null;
-                }),
-              ),
+              tooltip: isExpand
+                  ? appLocalizations.showLess
+                  : appLocalizations.showMore,
             ),
           ],
         ),

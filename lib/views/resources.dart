@@ -218,6 +218,7 @@ class _GeoDataListItemState extends State<GeoDataListItem> {
                 runSpacing: 6,
                 spacing: 12,
                 runAlignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   CommonChip(
                     avatar: const Icon(Icons.edit),
@@ -226,36 +227,27 @@ class _GeoDataListItemState extends State<GeoDataListItem> {
                       _updateUrl(url, ref);
                     },
                   ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        child: ValueListenableBuilder(
-                          valueListenable: isUpdating,
-                          builder: (_, isUpdating, _) {
-                            return isUpdating
-                                ? SizedBox(
-                                    height: 30,
-                                    width: 30,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4),
-                                      child: SpinKitFadingCircle(
-                                        color: context.colorScheme.primary,
-                                        size: 22,
-                                      ),
-                                    ),
-                                  )
-                                : CommonChip(
-                                    avatar: const Icon(Icons.sync),
-                                    label: appLocalizations.sync,
-                                    onPressed: () {
-                                      _handleUpdateGeoDataItem();
-                                    },
-                                  );
-                          },
-                        ),
-                      ),
-                    ],
+                  ValueListenableBuilder<bool>(
+                    valueListenable: isUpdating,
+                    builder: (_, isUpdatingValue, _) {
+                      return CommonChip(
+                        avatar: isUpdatingValue
+                            ? SizedBox.square(
+                                dimension: 16,
+                                child: SpinKitFadingCircle(
+                                  color: context.colorScheme.primary,
+                                  size: 16,
+                                ),
+                              )
+                            : const Icon(Icons.sync),
+                        label: appLocalizations.sync,
+                        onPressed: isUpdatingValue
+                            ? null
+                            : () {
+                                _handleUpdateGeoDataItem();
+                              },
+                      );
+                    },
                   ),
                 ],
               ),

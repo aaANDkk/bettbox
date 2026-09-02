@@ -657,6 +657,52 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
     }
   }
 
+  Future<void> _handleSelectTarget() async {
+    final selected = await globalState.showCommonDialog<String>(
+      child: RuleTargetSelectionDialog(
+        snippet: widget.snippet,
+        selected: _ruleTargetController.text,
+      ),
+    );
+    if (selected != null) {
+      setState(() {
+        _ruleTargetController.text = selected;
+      });
+    }
+  }
+
+  Future<void> _handleSelectRuleProvider() async {
+    final selected = await globalState.showCommonDialog<String>(
+      child: OptionsDialog<String>(
+        title: appLocalizations.ruleProviders,
+        options: _ruleProviderItems.map((e) => e.value).toList(),
+        textBuilder: (item) => item,
+        value: _ruleProviderController.text,
+      ),
+    );
+    if (selected != null) {
+      setState(() {
+        _ruleProviderController.text = selected;
+      });
+    }
+  }
+
+  Future<void> _handleSelectSubRule() async {
+    final selected = await globalState.showCommonDialog<String>(
+      child: OptionsDialog<String>(
+        title: appLocalizations.subRule,
+        options: _subRuleItems.map((e) => e.value).toList(),
+        textBuilder: (item) => item,
+        value: _subRuleController.text,
+      ),
+    );
+    if (selected != null) {
+      setState(() {
+        _subRuleController.text = selected;
+      });
+    }
+  }
+
   void _handleSubmit() {
     final res = _formKey.currentState?.validate();
     if (res == false) {
@@ -714,7 +760,14 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
                   ),
                   SizedBox(height: 24),
                   _ruleAction == RuleAction.RULE_SET
-                      ? FormField(
+                      ? TextFormField(
+                          controller: _ruleProviderController,
+                          readOnly: true,
+                          onTap: _handleSelectRuleProvider,
+                          decoration: InputDecoration(
+                            labelText: appLocalizations.ruleProviders,
+                            suffixIcon: const Icon(Icons.arrow_drop_down),
+                          ),
                           validator: (_) {
                             if (_ruleProviderController.text.isEmpty) {
                               return appLocalizations.emptyTip(
@@ -722,61 +775,6 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
                               );
                             }
                             return null;
-                          },
-                          builder: (field) {
-                            if (globalState.isAndroidTV) {
-                              return OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 16,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                                onPressed: () async {
-                                  final selected =
-                                      await globalState.showCommonDialog<String>(
-                                        child: OptionsDialog<String>(
-                                          title:
-                                              appLocalizations.ruleProviders,
-                                          options: _ruleProviderItems
-                                              .map((e) => e.value)
-                                              .toList(),
-                                          textBuilder: (item) => item,
-                                          value: _ruleProviderController.text,
-                                        ),
-                                      );
-                                  if (selected != null) {
-                                    setState(() {
-                                      _ruleProviderController.text = selected;
-                                    });
-                                  }
-                                },
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      _ruleProviderController.text.isEmpty
-                                          ? appLocalizations.ruleProviders
-                                          : _ruleProviderController.text,
-                                      style: context.textTheme.bodyLarge,
-                                    ),
-                                    const Icon(Icons.arrow_drop_down),
-                                  ],
-                                ),
-                              );
-                            }
-                            return DropdownMenu<String>(
-                              expandedInsets: EdgeInsets.zero,
-                              controller: _ruleProviderController,
-                              label: Text(appLocalizations.ruleProviders),
-                              menuHeight: 250,
-                              errorText: field.errorText,
-                              dropdownMenuEntries: _ruleProviderItems,
-                            );
                           },
                         )
                       : TextFormField(
@@ -801,7 +799,14 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
                         ),
                   SizedBox(height: 24),
                   _ruleAction == RuleAction.SUB_RULE
-                      ? FormField(
+                      ? TextFormField(
+                          controller: _subRuleController,
+                          readOnly: true,
+                          onTap: _handleSelectSubRule,
+                          decoration: InputDecoration(
+                            labelText: appLocalizations.subRule,
+                            suffixIcon: const Icon(Icons.arrow_drop_down),
+                          ),
                           validator: (_) {
                             if (_subRuleController.text.isEmpty) {
                               return appLocalizations.emptyTip(
@@ -810,63 +815,15 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
                             }
                             return null;
                           },
-                          builder: (filed) {
-                            if (globalState.isAndroidTV) {
-                              return OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 16,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                                onPressed: () async {
-                                  final selected =
-                                      await globalState.showCommonDialog<String>(
-                                        child: OptionsDialog<String>(
-                                          title: appLocalizations.subRule,
-                                          options: _subRuleItems
-                                              .map((e) => e.value)
-                                              .toList(),
-                                          textBuilder: (item) => item,
-                                          value: _subRuleController.text,
-                                        ),
-                                      );
-                                  if (selected != null) {
-                                    setState(() {
-                                      _subRuleController.text = selected;
-                                    });
-                                  }
-                                },
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      _subRuleController.text.isEmpty
-                                          ? appLocalizations.subRule
-                                          : _subRuleController.text,
-                                      style: context.textTheme.bodyLarge,
-                                    ),
-                                    const Icon(Icons.arrow_drop_down),
-                                  ],
-                                ),
-                              );
-                            }
-                            return DropdownMenu<String>(
-                              expandedInsets: EdgeInsets.zero,
-                              enableFilter: false,
-                              enableSearch: false,
-                              controller: _subRuleController,
-                              label: Text(appLocalizations.subRule),
-                              menuHeight: 250,
-                              dropdownMenuEntries: _subRuleItems,
-                            );
-                          },
                         )
-                      : FormField<String>(
+                      : TextFormField(
+                          controller: _ruleTargetController,
+                          readOnly: true,
+                          onTap: _handleSelectTarget,
+                          decoration: InputDecoration(
+                            labelText: appLocalizations.ruleTarget,
+                            suffixIcon: const Icon(Icons.arrow_drop_down),
+                          ),
                           validator: (_) {
                             if (_ruleTargetController.text.isEmpty) {
                               return appLocalizations.emptyTip(
@@ -874,62 +831,6 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
                               );
                             }
                             return null;
-                          },
-                          builder: (filed) {
-                            if (globalState.isAndroidTV) {
-                              return OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 16,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                                onPressed: () async {
-                                  final selected =
-                                      await globalState.showCommonDialog<String>(
-                                        child: OptionsDialog<String>(
-                                          title: appLocalizations.ruleTarget,
-                                          options: _targetItems
-                                              .map((e) => e.value)
-                                              .toList(),
-                                          textBuilder: (item) => item,
-                                          value: _ruleTargetController.text,
-                                        ),
-                                      );
-                                  if (selected != null) {
-                                    setState(() {
-                                      _ruleTargetController.text = selected;
-                                    });
-                                  }
-                                },
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      _ruleTargetController.text.isEmpty
-                                          ? appLocalizations.ruleTarget
-                                          : _ruleTargetController.text,
-                                      style: context.textTheme.bodyLarge,
-                                    ),
-                                    const Icon(Icons.arrow_drop_down),
-                                  ],
-                                ),
-                              );
-                            }
-                            return DropdownMenu<String>(
-                              expandedInsets: EdgeInsets.zero,
-                              controller: _ruleTargetController,
-                              label: Text(appLocalizations.ruleTarget),
-                              menuHeight: 250,
-                              enableFilter: false,
-                              enableSearch: false,
-                              dropdownMenuEntries: _targetItems,
-                              errorText: filed.errorText,
-                            );
                           },
                         ),
                   if (_ruleAction.hasParams) ...[
@@ -982,6 +883,179 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
                 ],
               );
             },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class RuleTargetSelectionDialog extends StatefulWidget {
+  final ClashConfigSnippet snippet;
+  final String selected;
+
+  const RuleTargetSelectionDialog({
+    super.key,
+    required this.snippet,
+    required this.selected,
+  });
+
+  @override
+  State<RuleTargetSelectionDialog> createState() =>
+      _RuleTargetSelectionDialogState();
+}
+
+class _RuleTargetSelectionDialogState extends State<RuleTargetSelectionDialog> {
+  final _searchController = TextEditingController();
+  String _keyword = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final baseTargets = [RuleTarget.DIRECT.name, RuleTarget.REJECT.name];
+    final groups = widget.snippet.proxyGroups;
+
+    final filteredBaseTargets = baseTargets
+        .where((t) => t.toLowerCase().contains(_keyword.toLowerCase()))
+        .toList();
+    final filteredGroups = groups
+        .where((g) => g.name.toLowerCase().contains(_keyword.toLowerCase()))
+        .toList();
+
+    return CommonDialog(
+      title: appLocalizations.ruleTarget,
+      overrideScroll: true,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (groups.length > 5)
+            Padding(
+              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: appLocalizations.search,
+                  prefixIcon: const Icon(Icons.search, size: 20),
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                ),
+                onChanged: (val) {
+                  setState(() {
+                    _keyword = val.trim();
+                  });
+                },
+              ),
+            ),
+          Flexible(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (filteredBaseTargets.isNotEmpty) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4),
+                      child: Text(
+                        appLocalizations.rule,
+                        style: context.textTheme.labelMedium?.toLight,
+                      ),
+                    ),
+                    for (final item in filteredBaseTargets)
+                      _buildItem(
+                        context,
+                        name: item,
+                        isSelected: widget.selected == item,
+                      ),
+                  ],
+                  if (filteredGroups.isNotEmpty) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12, top: 8, bottom: 4),
+                      child: Text(
+                        appLocalizations.proxies,
+                        style: context.textTheme.labelMedium?.toLight,
+                      ),
+                    ),
+                    for (final group in filteredGroups)
+                      _buildItem(
+                        context,
+                        name: group.name,
+                        subtitle: group.type.name,
+                        isSelected: widget.selected == group.name,
+                      ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildItem(
+    BuildContext context, {
+    required String name,
+    String? subtitle,
+    required bool isSelected,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () {
+          Navigator.of(context).pop(name);
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            children: [
+              Icon(
+                isSelected
+                    ? Icons.check_circle_rounded
+                    : Icons.circle_outlined,
+                size: 20,
+                color: isSelected
+                    ? context.colorScheme.primary
+                    : context.colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.6,
+                      ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    EmojiText(
+                      name,
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.normal,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: context.textTheme.labelSmall?.toLight,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

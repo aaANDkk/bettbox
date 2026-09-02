@@ -319,6 +319,7 @@ class ProviderItem extends StatelessWidget {
             runSpacing: 6,
             spacing: 12,
             runAlignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               CommonChip(
                 avatar: const Icon(Icons.upload),
@@ -331,23 +332,20 @@ class ProviderItem extends StatelessWidget {
                 onPressed: () => _handleViewProviderContent(context),
               ),
               if (provider.vehicleType == 'HTTP')
-                provider.isUpdating
-                    ? SizedBox(
-                        height: 30,
-                        width: 30,
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
+                CommonChip(
+                  avatar: provider.isUpdating
+                      ? SizedBox.square(
+                          dimension: 16,
                           child: SpinKitFadingCircle(
                             color: context.colorScheme.primary,
-                            size: 22,
+                            size: 16,
                           ),
-                        ),
-                      )
-                    : CommonChip(
-                        avatar: const Icon(Icons.sync),
-                        label: appLocalizations.sync,
-                        onPressed: _handleUpdateProvider,
-                      ),
+                        )
+                      : const Icon(Icons.sync),
+                  label: appLocalizations.sync,
+                  onPressed:
+                      provider.isUpdating ? null : _handleUpdateProvider,
+                ),
             ],
           ),
           const SizedBox(height: 4),
