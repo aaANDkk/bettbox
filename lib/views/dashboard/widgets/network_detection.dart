@@ -68,6 +68,56 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
     final rawIpInfo = detectionState.rawIpInfo;
     if (rawIpInfo == null) return;
 
+    globalState.showCommonDialog(
+      child: _MoreIpInfoDialog(initialInfo: rawIpInfo),
+    );
+  }
+}
+
+class _MoreIpInfoDialog extends StatefulWidget {
+  final IpInfo initialInfo;
+
+  const _MoreIpInfoDialog({required this.initialInfo});
+
+  @override
+  State<_MoreIpInfoDialog> createState() => _MoreIpInfoDialogState();
+}
+
+class _MoreIpInfoDialogState extends State<_MoreIpInfoDialog> {
+  late IpInfo _ipInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    _ipInfo = widget.initialInfo;
+    _fetchDetailIfNeeded();
+  }
+
+  Future<void> _fetchDetailIfNeeded() async {
+    if (_ipInfo.asn == null || _ipInfo.isp == null || _ipInfo.asName == null) {
+      final res = await request.queryIpDetail(_ipInfo.ip);
+      if (mounted && res.isSuccess && res.data != null) {
+        setState(() {
+          _ipInfo = _ipInfo.merge(res.data!);
+        });
+      }
+    }
+  }
+
+  String _countryCodeToEmoji(String countryCode) {
+    final String code = countryCode.toUpperCase();
+    if (code.length != 2) {
+      return countryCode;
+    }
+    final int firstLetter = code.codeUnitAt(0) - 0x41 + 0x1F1E6;
+    final int secondLetter = code.codeUnitAt(1) - 0x41 + 0x1F1E6;
+    return String.fromCharCode(firstLetter) + String.fromCharCode(secondLetter);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final rawIpInfo = _ipInfo;
+
     final flagEmoji = rawIpInfo.countryCode.isNotEmpty
         ? _countryCodeToEmoji(rawIpInfo.countryCode)
         : '';
@@ -106,89 +156,87 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
         rawIpInfo.asn,
     ].join(' · ');
 
-    globalState.showCommonDialog(
-      child: CommonDialog(
-        title: appLocalizations.moreIpInfo,
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).pop();
-            },
-            child: Text(appLocalizations.confirm),
-          ),
-        ],
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 1. IP 地址（附带查看详细 IP 数据外链与 Tooltip 提示）
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.location_on_outlined),
-                title: Text(appLocalizations.ipAddress),
-                subtitle: SelectableText(
-                  rawIpInfo.ip,
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.open_in_new, size: 18),
-                  tooltip: appLocalizations.viewDetailedIpData,
-                  onPressed: () {
-                    Navigator.of(context, rootNavigator: true).pop();
-                    globalState.openUrl('https://ipinfo.io/what-is-my-ip');
-                  },
+    return CommonDialog(
+      title: appLocalizations.moreIpInfo,
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop();
+          },
+          child: Text(appLocalizations.confirm),
+        ),
+      ],
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 1. IP 地址（附带查看详细 IP 数据外链与 Tooltip 提示）
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.location_on_outlined),
+              title: Text(appLocalizations.ipAddress),
+              subtitle: SelectableText(
+                rawIpInfo.ip,
+                style: context.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              // 2. 国家与大洲合并（EmojiText 精准基线对齐）
-              if (countryContinent.isNotEmpty || flagEmoji.isNotEmpty)
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.flag_outlined),
-                  title: Text(appLocalizations.countryOrRegion),
-                  subtitle: EmojiText(
-                    flagEmoji.isNotEmpty
-                        ? '$flagEmoji $countryContinent'
-                        : countryContinent,
-                    style: context.textTheme.bodyMedium,
-                  ),
+              trailing: IconButton(
+                icon: const Icon(Icons.open_in_new, size: 18),
+                tooltip: appLocalizations.viewDetailedIpData,
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                  globalState.openUrl('https://ipinfo.io/what-is-my-ip');
+                },
+              ),
+            ),
+            // 2. 国家与大洲合并（EmojiText 精准基线对齐）
+            if (countryContinent.isNotEmpty || flagEmoji.isNotEmpty)
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.flag_outlined),
+                title: Text(appLocalizations.countryOrRegion),
+                subtitle: EmojiText(
+                  flagEmoji.isNotEmpty
+                      ? '$flagEmoji $countryContinent'
+                      : countryContinent,
+                  style: context.textTheme.bodyMedium,
                 ),
-              // 3. 省份 / 城市 (独立行，非空才展示)
-              if (provinceCity.isNotEmpty)
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.location_city_outlined),
-                  title: Text(appLocalizations.provinceAndCity),
-                  subtitle: Text(provinceCity),
-                ),
-              // 4. 归属 / ASN (非空才展示)
-              if (operatorText.isNotEmpty)
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.business_outlined),
-                  title: Text(appLocalizations.operatorOrAsn),
-                  subtitle: Text(operatorText),
-                ),
-              // 5. 运营商 (非空才展示)
-              if (ispText.isNotEmpty)
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.router_outlined),
-                  title: Text(appLocalizations.isp),
-                  subtitle: Text(ispText),
-                ),
-              // 6. 组织 / 域名 (非空才展示)
-              if (rawIpInfo.asDomain != null && rawIpInfo.asDomain!.isNotEmpty)
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.link_outlined),
-                  title: Text(appLocalizations.domain),
-                  subtitle: Text(rawIpInfo.asDomain!),
-                ),
-            ],
-          ),
+              ),
+            // 3. 省份 / 城市 (独立行，非空才展示)
+            if (provinceCity.isNotEmpty)
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.location_city_outlined),
+                title: Text(appLocalizations.provinceAndCity),
+                subtitle: Text(provinceCity),
+              ),
+            // 4. 归属 / ASN (非空才展示)
+            if (operatorText.isNotEmpty)
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.business_outlined),
+                title: Text(appLocalizations.operatorOrAsn),
+                subtitle: Text(operatorText),
+              ),
+            // 5. 运营商 (非空才展示)
+            if (ispText.isNotEmpty)
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.router_outlined),
+                title: Text(appLocalizations.isp),
+                subtitle: Text(ispText),
+              ),
+            // 6. 组织 / 域名 (非空才展示)
+            if (rawIpInfo.asDomain != null && rawIpInfo.asDomain!.isNotEmpty)
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.link_outlined),
+                title: Text(appLocalizations.domain),
+                subtitle: Text(rawIpInfo.asDomain!),
+              ),
+          ],
         ),
       ),
     );
