@@ -1223,9 +1223,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tunVirtualAddress": MessageLookupByLibrary.simpleMessage(
       "Адрес виртуального сетевого адаптера TUN",
     ),
-    "tunVirtualAddress": MessageLookupByLibrary.simpleMessage(
-      "Адрес виртуального сетевого адаптера TUN",
-    ),
     "tunnel": MessageLookupByLibrary.simpleMessage("Туннель"),
     "tunnelAddress": MessageLookupByLibrary.simpleMessage(
       "Адрес прослушивания",
