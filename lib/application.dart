@@ -319,6 +319,10 @@ class ApplicationState extends ConsumerState<Application>
                     color: Colors.black87,
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
+                  textStyle: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
                 ),
               ),
               darkTheme: ThemeData(
@@ -411,8 +415,12 @@ class ApplicationState extends ConsumerState<Application>
                 ),
                 tooltipTheme: const TooltipThemeData(
                   decoration: BoxDecoration(
-                    color: Colors.black87,
+                    color: Color(0xFF2C2C2C),
                     borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  textStyle: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
                   ),
                 ),
               ),
