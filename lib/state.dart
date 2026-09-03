@@ -416,7 +416,8 @@ class GlobalState {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return await showGeneralDialog<T>(
       context: context,
-      barrierColor: isDark ? const Color(0xCC000000) : const Color(0x99000000),
+      barrierColor:
+          isDark ? const Color(0x66000000) : const Color(0x33000000),
       barrierDismissible: dismissible,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       transitionDuration: const Duration(milliseconds: 250),
@@ -427,12 +428,28 @@ class GlobalState {
           curve: Curves.easeOutCubic,
         );
         return RepaintBoundary(
-          child: FadeTransition(
-            opacity: curved,
-            child: ScaleTransition(
-              scale: curved.drive(Tween<double>(begin: 0.94, end: 1.0)),
-              child: child,
-            ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              IgnorePointer(
+                child: FadeTransition(
+                  opacity: curved,
+                  child: SizedBox.expand(
+                    child: BackdropFilter(
+                      filter: commonFilter,
+                      child: const SizedBox.expand(),
+                    ),
+                  ),
+                ),
+              ),
+              FadeTransition(
+                opacity: curved,
+                child: ScaleTransition(
+                  scale: curved.drive(Tween<double>(begin: 0.94, end: 1.0)),
+                  child: child,
+                ),
+              ),
+            ],
           ),
         );
       },

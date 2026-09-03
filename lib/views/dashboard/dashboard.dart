@@ -229,7 +229,9 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
       title:
           ref.watch(customDashboardTitleProvider) ?? appLocalizations.dashboard,
       actions: _buildActions(),
-      floatingActionButton: Padding(
+      floatingActionButton: AnimatedPadding(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutCubic,
         padding: EdgeInsets.only(
           bottom: isMobileView
               ? getFloatingBottomBarFABReserveHeight(context)

@@ -517,6 +517,13 @@ class ProfileItem extends StatelessWidget {
           _handleShowEditExtendPage(context);
         },
       ),
+      PopupMenuItemData(
+        icon: Icons.visibility_outlined,
+        label: appLocalizations.preview,
+        onPressed: () {
+          _handlePreviewRuntimeConfig(context);
+        },
+      ),
       if (profile.type == ProfileType.url) ...[
         PopupMenuItemData(
           icon: Icons.sync_alt_sharp,
@@ -655,7 +662,7 @@ class ProfileItem extends StatelessWidget {
     return CommonCard(
       isSelected: profile.id == groupValue,
       onPressed: isTV ? null : () => onChanged(profile.id),
-      onLongPress: isTV ? null : () => _handlePreviewRuntimeConfig(context),
+      onLongPress: null,
       child: isTV ? _buildTVLayout(context) : _buildNormalLayout(context),
     );
   }
