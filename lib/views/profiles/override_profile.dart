@@ -773,21 +773,39 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
                     constraints: BoxConstraints(maxWidth: constraints.maxWidth),
                     child: _ruleAction == RuleAction.SUB_RULE
                         ? FilledButton(
+                            style: FilledButton.styleFrom(
+                              backgroundColor:
+                                  context.colorScheme.primaryContainer,
+                              foregroundColor:
+                                  context.colorScheme.onPrimaryContainer,
+                            ),
                             onPressed: _handleSelectSubRule,
                             child: EmojiText(
                               _subRuleController.text.isEmpty
                                   ? appLocalizations.subRule
                                   : _subRuleController.text,
+                              style: TextStyle(
+                                color: context.colorScheme.onPrimaryContainer,
+                              ),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                             ),
                           )
                         : FilledButton(
+                            style: FilledButton.styleFrom(
+                              backgroundColor:
+                                  context.colorScheme.primaryContainer,
+                              foregroundColor:
+                                  context.colorScheme.onPrimaryContainer,
+                            ),
                             onPressed: _handleSelectTarget,
                             child: EmojiText(
                               _ruleTargetController.text.isEmpty
                                   ? appLocalizations.ruleTarget
                                   : _ruleTargetController.text,
+                              style: TextStyle(
+                                color: context.colorScheme.onPrimaryContainer,
+                              ),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                             ),
