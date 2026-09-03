@@ -2659,8 +2659,7 @@ class AppLocalizations {
     );
   }
 
-  /// `Start Running`
-    /// `No usage data`
+  /// `No usage data`
   String get noUsageData {
     return Intl.message(
       'No usage data',
@@ -2700,7 +2699,8 @@ class AppLocalizations {
     );
   }
 
-String get startRunning {
+  /// `Start`
+  String get startRunning {
     return Intl.message(
       'Start',
       name: 'startRunning',

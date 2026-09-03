@@ -1096,7 +1096,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "localFile": MessageLookupByLibrary.simpleMessage("Local File"),
     "expired": MessageLookupByLibrary.simpleMessage("Expired"),
     "lastEdit": MessageLookupByLibrary.simpleMessage("Last edited"),
-    "startTest": MessageLookupByLibrary.simpleMessage("Delay Test"),
+    "startTest": MessageLookupByLibrary.simpleMessage("Latency Test"),
     "startVpn": MessageLookupByLibrary.simpleMessage("Starting..."),
     "status": MessageLookupByLibrary.simpleMessage("Status"),
     "statusDesc": MessageLookupByLibrary.simpleMessage(

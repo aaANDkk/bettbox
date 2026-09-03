@@ -393,7 +393,7 @@ class ProfileItem extends StatelessWidget {
 
     String bottomText;
     if (hasUsageBar) {
-      bottomText = '${_getTrafficText(subscriptionInfo!)} · $updateTimeText';
+      bottomText = '${_getTrafficText(subscriptionInfo)} · $updateTimeText';
     } else if (profile.type == ProfileType.url) {
       final trafficText = subscriptionInfo != null
           ? _getTrafficText(subscriptionInfo)
@@ -421,7 +421,7 @@ class ProfileItem extends StatelessWidget {
                       color:
                           context.colorScheme.primary.withValues(alpha: 0.15),
                       child: FractionallySizedBox(
-                        widthFactor: (subscriptionInfo!.total > 0
+                        widthFactor: (subscriptionInfo.total > 0
                                 ? (subscriptionInfo.upload +
                                         subscriptionInfo.download) /
                                     subscriptionInfo.total
@@ -442,7 +442,7 @@ class ProfileItem extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       appLocalizations.noUsageData,
-                      style: context.textTheme.labelSmall?.toLight?.copyWith(
+                      style: context.textTheme.labelSmall?.toLight.copyWith(
                         height: 1.0,
                       ),
                       maxLines: 1,
@@ -479,7 +479,6 @@ class ProfileItem extends StatelessWidget {
     final totalShow = TrafficValue(value: total).show;
     return '$useShow / $totalShow';
   }
-
   Future<void> _handleExportFile(BuildContext context) async {
     final res = await globalState.appController.safeRun<bool>(
       () async {

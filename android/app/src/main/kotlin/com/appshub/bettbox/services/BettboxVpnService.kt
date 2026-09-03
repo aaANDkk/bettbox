@@ -172,6 +172,8 @@ class BettboxVpnService : VpnService(), BaseServiceInterface {
             }
         } else if (intent?.action == "RESTORE_NOTIFICATION") {
             isSpeedNotificationEnabled = false
+            pendingSpeedProfile = null
+            pendingSpeedInfo = null
             if (hasStartedForeground) {
                 CoroutineScope(Dispatchers.Main).launch {
                     startForeground()
@@ -235,7 +237,6 @@ class BettboxVpnService : VpnService(), BaseServiceInterface {
             .setContentTitle(title)
             .setContentText(content)
             .setStyle(null)
-            .setTicker("$title: $content")
             .build()
 
         val isFirstTime = !hasStartedForeground
@@ -245,7 +246,7 @@ class BettboxVpnService : VpnService(), BaseServiceInterface {
 
         val pendingProfile = pendingSpeedProfile
         val pendingSpeed = pendingSpeedInfo
-        if (isFirstTime && isSpeedNotificationEnabled && pendingProfile != null && pendingSpeed != null) {
+        if (GlobalState.isSpeedNotificationEnabled && pendingProfile != null && pendingSpeed != null) {
             updateNotificationSpeed(pendingProfile, pendingSpeed)
             return
         }
@@ -278,13 +279,18 @@ class BettboxVpnService : VpnService(), BaseServiceInterface {
             .setContentTitle(profileName)
             .setContentText(speedInfo)
             .setStyle(null)
-            .setTicker("$profileName: $speedInfo")
             .build()
 
-        if (hasStartedForeground) {
+        if (!hasStartedForeground) {
+            hasStartedForeground = true
             runCatching {
                 this.startForeground(notification, useSpecialType = !GlobalState.isSmartStopped)
             }.onFailure { Log.e(TAG, "updateNotificationSpeed startForeground error: ${it.message}") }
+        } else {
+            runCatching {
+                getSystemService(android.app.NotificationManager::class.java)
+                    ?.notify(GlobalState.NOTIFICATION_ID, notification)
+            }.onFailure { Log.e(TAG, "updateNotificationSpeed notify error: ${it.message}") }
         }
     }
 
