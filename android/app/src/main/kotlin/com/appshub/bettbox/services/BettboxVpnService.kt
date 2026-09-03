@@ -220,10 +220,12 @@ class BettboxVpnService : VpnService(), BaseServiceInterface {
 
     @SuppressLint("ForegroundServiceType")
     override suspend fun startForeground() {
-        ensureNotificationChannel()
+        val isSuspended = GlobalState.isSmartStopped
+        val isHighPriority = GlobalState.isNotificationHighPriority
+        ensureNotificationChannel(isSuspended, isHighPriority)
         val title: String
         val content: String
-        if (GlobalState.isSmartStopped) {
+        if (isSuspended) {
             title = getString(R.string.core_suspended)
             content = getString(R.string.smart_auto_stop_service_running)
         } else {
@@ -232,7 +234,7 @@ class BettboxVpnService : VpnService(), BaseServiceInterface {
         }
 
         lastNotificationText = null
-        val builder = notificationBuilder()
+        val builder = createBettboxNotificationBuilder(isSuspended, isHighPriority)
         val notification = builder
             .setContentTitle(title)
             .setContentText(content)
@@ -246,12 +248,12 @@ class BettboxVpnService : VpnService(), BaseServiceInterface {
 
         val pendingProfile = pendingSpeedProfile
         val pendingSpeed = pendingSpeedInfo
-        if (GlobalState.isSpeedNotificationEnabled && pendingProfile != null && pendingSpeed != null) {
+        if (!isSuspended && GlobalState.isSpeedNotificationEnabled && pendingProfile != null && pendingSpeed != null) {
             updateNotificationSpeed(pendingProfile, pendingSpeed)
             return
         }
 
-        this.startForeground(notification, useSpecialType = !GlobalState.isSmartStopped)
+        this.startForeground(notification, useSpecialType = !isSuspended)
     }
 
     @SuppressLint("ForegroundServiceType")

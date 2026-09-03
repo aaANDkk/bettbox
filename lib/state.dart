@@ -317,6 +317,9 @@ class GlobalState {
 
     if (system.isAndroid) {
       await service?.setQuickResponse(config.vpnProps.quickResponse);
+      await service?.setHighPriorityNotification(
+        config.vpnProps.highPriorityNotification,
+      );
     }
     await startUpdateTasks(tasks);
   }

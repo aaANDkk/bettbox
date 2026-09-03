@@ -125,6 +125,11 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                 }
                 result.success(true)
             }
+            "setHighPriorityNotification" -> {
+                val enabled = call.argument<Boolean>("enabled") ?: false
+                VpnPlugin.setHighPriorityNotification(enabled)
+                result.success(true)
+            }
             else -> result.notImplemented()
         }
     }

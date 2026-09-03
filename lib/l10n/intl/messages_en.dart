@@ -309,7 +309,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "creationTime": MessageLookupByLibrary.simpleMessage("Creation Time"),
     "custom": MessageLookupByLibrary.simpleMessage("Custom"),
     "customDashboardTitle": MessageLookupByLibrary.simpleMessage(
-      "Custom Home Title",
+      "Custom Dashboard Title",
     ),
     "customScriptOptions": MessageLookupByLibrary.simpleMessage(
       "Custom Rule Switch",
@@ -443,6 +443,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Use with caution",
     ),
     "expirationTime": MessageLookupByLibrary.simpleMessage("Expiration Time"),
+    "expired": MessageLookupByLibrary.simpleMessage("Expired"),
     "export": MessageLookupByLibrary.simpleMessage("Export"),
     "exportFile": MessageLookupByLibrary.simpleMessage("Export File"),
     "exportLogs": MessageLookupByLibrary.simpleMessage("Export Logs"),
@@ -621,6 +622,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "key": MessageLookupByLibrary.simpleMessage("Key"),
     "language": MessageLookupByLibrary.simpleMessage("Language"),
+    "lastEdit": MessageLookupByLibrary.simpleMessage("Last edited"),
     "layout": MessageLookupByLibrary.simpleMessage("Layout"),
     "leftClickBehavior": MessageLookupByLibrary.simpleMessage("Left Click"),
     "light": MessageLookupByLibrary.simpleMessage("Light"),
@@ -631,6 +633,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "localBackupDesc": MessageLookupByLibrary.simpleMessage(
       "Backup data locally",
     ),
+    "localFile": MessageLookupByLibrary.simpleMessage("Local File"),
     "localRecoveryDesc": MessageLookupByLibrary.simpleMessage(
       "Restore data from file",
     ),
@@ -731,6 +734,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "noResolve": MessageLookupByLibrary.simpleMessage("No Resolve"),
     "noStatusAvailable": MessageLookupByLibrary.simpleMessage("No Status"),
+    "noUsageData": MessageLookupByLibrary.simpleMessage("No usage data"),
     "nodeExclusion": MessageLookupByLibrary.simpleMessage("Node Exclusion"),
     "nodeExclusionDesc": MessageLookupByLibrary.simpleMessage(
       "Exclude all matched nodes",
@@ -742,6 +746,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "notRecommended": MessageLookupByLibrary.simpleMessage("Not Recommended"),
     "notSelectedTip": MessageLookupByLibrary.simpleMessage(
       "Current proxy group cannot be selected.",
+    ),
+    "notificationHighPriority": MessageLookupByLibrary.simpleMessage(
+      "High Priority",
+    ),
+    "notificationHighPriorityDesc": MessageLookupByLibrary.simpleMessage(
+      "Adjust current notification bar to foreground high priority",
+    ),
+    "notificationHighPriorityTip": MessageLookupByLibrary.simpleMessage(
+      "High-priority notifications can alleviate background core keep-alive issues on some customized systems. If your VPN service is currently running normally, it is recommended to keep this option disabled. Are you sure you want to enable it?",
     ),
     "ntp": MessageLookupByLibrary.simpleMessage("NTP"),
     "ntpDesc": MessageLookupByLibrary.simpleMessage("Use NTP time service"),
@@ -1091,11 +1104,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "stackMode": MessageLookupByLibrary.simpleMessage("Stack Mode"),
     "standard": MessageLookupByLibrary.simpleMessage("Standard"),
     "start": MessageLookupByLibrary.simpleMessage("Start"),
-    "noUsageData": MessageLookupByLibrary.simpleMessage("No usage data"),
-    "localFile": MessageLookupByLibrary.simpleMessage("Local File"),
-    "expired": MessageLookupByLibrary.simpleMessage("Expired"),
-    "lastEdit": MessageLookupByLibrary.simpleMessage("Last edited"),
-    "startTest": MessageLookupByLibrary.simpleMessage("Latency Test"),
+    "startTest": MessageLookupByLibrary.simpleMessage("Delay Test"),
     "startVpn": MessageLookupByLibrary.simpleMessage("Starting..."),
     "status": MessageLookupByLibrary.simpleMessage("Status"),
     "statusDesc": MessageLookupByLibrary.simpleMessage(

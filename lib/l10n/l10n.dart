@@ -74,10 +74,10 @@ class AppLocalizations {
     return Intl.message('Home', name: 'dashboard', desc: '', args: []);
   }
 
-  /// `Custom Home Title`
+  /// `Custom Dashboard Title`
   String get customDashboardTitle {
     return Intl.message(
-      'Custom Home Title',
+      'Custom Dashboard Title',
       name: 'customDashboardTitle',
       desc: '',
       args: [],
@@ -464,6 +464,36 @@ class AppLocalizations {
     return Intl.message(
       'Disable QUIC to resolve specific network issues',
       name: 'disableQuicDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `High Priority`
+  String get notificationHighPriority {
+    return Intl.message(
+      'High Priority',
+      name: 'notificationHighPriority',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Adjust current notification bar to foreground high priority`
+  String get notificationHighPriorityDesc {
+    return Intl.message(
+      'Adjust current notification bar to foreground high priority',
+      name: 'notificationHighPriorityDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `High-priority notifications can alleviate background core keep-alive issues on some customized systems. If your VPN service is currently running normally, it is recommended to keep this option disabled. Are you sure you want to enable it?`
+  String get notificationHighPriorityTip {
+    return Intl.message(
+      'High-priority notifications can alleviate background core keep-alive issues on some customized systems. If your VPN service is currently running normally, it is recommended to keep this option disabled. Are you sure you want to enable it?',
+      name: 'notificationHighPriorityTip',
       desc: '',
       args: [],
     );
@@ -2659,6 +2689,11 @@ class AppLocalizations {
     );
   }
 
+  /// `Start`
+  String get start {
+    return Intl.message('Start', name: 'start', desc: '', args: []);
+  }
+
   /// `No usage data`
   String get noUsageData {
     return Intl.message(
@@ -2671,37 +2706,17 @@ class AppLocalizations {
 
   /// `Local File`
   String get localFile {
-    return Intl.message(
-      'Local File',
-      name: 'localFile',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Local File', name: 'localFile', desc: '', args: []);
   }
 
   /// `Expired`
   String get expired {
-    return Intl.message(
-      'Expired',
-      name: 'expired',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Expired', name: 'expired', desc: '', args: []);
   }
 
   /// `Last edited`
   String get lastEdit {
-    return Intl.message(
-      'Last edited',
-      name: 'lastEdit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Start`
-  String get start {
-    return Intl.message('Start', name: 'start', desc: '', args: []);
+    return Intl.message('Last edited', name: 'lastEdit', desc: '', args: []);
   }
 
   /// `Stop`
