@@ -1072,7 +1072,12 @@ class AppController {
   Future handleClear() async {
     await preferences.clearPreferences();
     commonPrint.log('clear preferences');
-    globalState.config = Config(themeProps: defaultThemeProps);
+    globalState.config = Config(
+      themeProps: defaultThemeProps,
+      networkProps: defaultNetworkProps.copyWith(
+        systemProxy: system.isDesktop,
+      ),
+    );
   }
 
   Future<void> autoCheckUpdate() async {

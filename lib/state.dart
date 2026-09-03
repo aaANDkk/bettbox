@@ -133,6 +133,9 @@ class GlobalState {
           patchClashConfig: system.isAndroid
               ? const ClashConfig(findProcessMode: FindProcessMode.always)
               : defaultClashConfig,
+          networkProps: defaultNetworkProps.copyWith(
+            systemProxy: system.isDesktop,
+          ),
           appSetting: defaultAppSettingProps.copyWith(
             showStartSwitch: _isAndroidTV ?? false,
           ),
