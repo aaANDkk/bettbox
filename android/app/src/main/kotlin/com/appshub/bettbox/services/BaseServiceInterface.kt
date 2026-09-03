@@ -80,7 +80,7 @@ suspend fun Service.createBettboxNotificationBuilder(): NotificationCompat.Build
             setOngoing(true)
             setShowWhen(true)
             setOnlyAlertOnce(true)
-            setPriority(NotificationCompat.PRIORITY_HIGH)
+            setPriority(NotificationCompat.PRIORITY_LOW)
         }
     }
 

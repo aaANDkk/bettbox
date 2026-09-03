@@ -83,7 +83,6 @@ class BettboxService : Service(), BaseServiceInterface {
             .setContentTitle(title)
             .setContentText(content)
             .setStyle(null)
-            .setTicker("$title: $content")
             .build()
 
         if (!hasStartedForeground) {
