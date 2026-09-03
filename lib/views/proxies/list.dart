@@ -123,6 +123,11 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
         .getSafeValue('');
     if (selectedName.isEmpty) return;
 
+    if (_enterGroupName != null) {
+      _enterTimer?.cancel();
+      _enterGroupName = null;
+    }
+
     const headerHeight = 72.0;
     final rowHeight = getItemHeight(widget.cardType) + 8.0;
 
@@ -152,10 +157,20 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
       }
     }
 
+    final currentOffset = _scrollController.offset;
+    final clampedTarget = targetOffset.clamp(
+      0.0,
+      _scrollController.position.maxScrollExtent,
+    );
+    final distance = (clampedTarget - currentOffset).abs();
+    if (distance < 1.0) return;
+
+    final durationMs = (260 + (distance * 0.12)).clamp(280, 480).toInt();
+
     _scrollController.animateTo(
-      targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
-      duration: const Duration(milliseconds: 350),
-      curve: Curves.easeOutCubic,
+      clampedTarget,
+      duration: Duration(milliseconds: durationMs),
+      curve: Curves.easeInOutCubic,
     );
   }
 
@@ -230,6 +245,7 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
       child: CustomScrollView(
         key: const PageStorageKey<String>('proxies_list'),
         controller: _scrollController,
+        cacheExtent: 1000.0,
         slivers: [
           const SliverToBoxAdapter(
             child: SizedBox(height: 16),
