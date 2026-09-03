@@ -314,14 +314,15 @@ class ApplicationState extends ConsumerState<Application>
                     ).outlineVariant.withValues(alpha: 0.6),
                   ),
                 ),
-                tooltipTheme: const TooltipThemeData(
-                  decoration: BoxDecoration(
+                tooltipTheme: TooltipThemeData(
+                  decoration: const BoxDecoration(
                     color: Colors.black87,
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   textStyle: TextStyle(
                     color: Colors.white,
                     fontSize: 12,
+                    fontFamily: fontFamily,
                   ),
                 ),
               ),
@@ -413,14 +414,15 @@ class ApplicationState extends ConsumerState<Application>
                             .withValues(alpha: 0.45),
                   ),
                 ),
-                tooltipTheme: const TooltipThemeData(
-                  decoration: BoxDecoration(
+                tooltipTheme: TooltipThemeData(
+                  decoration: const BoxDecoration(
                     color: Color(0xFF2C2C2C),
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   textStyle: TextStyle(
                     color: Colors.white,
                     fontSize: 12,
+                    fontFamily: fontFamily,
                   ),
                 ),
               ),
