@@ -154,8 +154,8 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
 
     _scrollController.animateTo(
       targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeIn,
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeOutCubic,
     );
   }
 

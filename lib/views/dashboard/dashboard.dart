@@ -226,12 +226,11 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
           .toList();
     });
     return CommonScaffold(
+      resizeToAvoidBottomInset: false,
       title:
           ref.watch(customDashboardTitleProvider) ?? appLocalizations.dashboard,
       actions: _buildActions(),
-      floatingActionButton: AnimatedPadding(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOutCubic,
+      floatingActionButton: Padding(
         padding: EdgeInsets.only(
           bottom: isMobileView
               ? getFloatingBottomBarFABReserveHeight(context)
