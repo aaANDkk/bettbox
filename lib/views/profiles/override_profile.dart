@@ -708,6 +708,13 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
     if (res == false) {
       return;
     }
+    if (_ruleAction != RuleAction.SUB_RULE &&
+        _ruleTargetController.text.isEmpty) {
+      return;
+    }
+    if (_ruleAction == RuleAction.SUB_RULE && _subRuleController.text.isEmpty) {
+      return;
+    }
     final parsedRule = ParsedRule(
       ruleAction: _ruleAction,
       content: _contentController.text,
@@ -742,23 +749,51 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  FilledButton.tonal(
-                    onPressed: () async {
-                      _ruleAction =
-                          await globalState.showCommonDialog<RuleAction>(
-                            child: OptionsDialog<RuleAction>(
-                              title: appLocalizations.ruleName,
-                              options: RuleAction.values,
-                              textBuilder: (item) => item.value,
-                              value: _ruleAction,
-                            ),
-                          ) ??
-                          _ruleAction;
-                      setState(() {});
-                    },
-                    child: Text(_ruleAction.name),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: constraints.maxWidth),
+                    child: FilledButton.tonal(
+                      onPressed: () async {
+                        _ruleAction =
+                            await globalState.showCommonDialog<RuleAction>(
+                              child: OptionsDialog<RuleAction>(
+                                title: appLocalizations.ruleName,
+                                options: RuleAction.values,
+                                textBuilder: (item) => item.value,
+                                value: _ruleAction,
+                              ),
+                            ) ??
+                            _ruleAction;
+                        setState(() {});
+                      },
+                      child: Text(_ruleAction.name),
+                    ),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 12),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: constraints.maxWidth),
+                    child: _ruleAction == RuleAction.SUB_RULE
+                        ? FilledButton(
+                            onPressed: _handleSelectSubRule,
+                            child: EmojiText(
+                              _subRuleController.text.isEmpty
+                                  ? appLocalizations.subRule
+                                  : _subRuleController.text,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          )
+                        : FilledButton(
+                            onPressed: _handleSelectTarget,
+                            child: EmojiText(
+                              _ruleTargetController.text.isEmpty
+                                  ? appLocalizations.ruleTarget
+                                  : _ruleTargetController.text,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                  ),
+                  const SizedBox(height: 16),
                   _ruleAction == RuleAction.RULE_SET
                       ? TextFormField(
                           controller: _ruleProviderController,
@@ -797,44 +832,8 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
                             return null;
                           },
                         ),
-                  SizedBox(height: 24),
-                  _ruleAction == RuleAction.SUB_RULE
-                      ? TextFormField(
-                          controller: _subRuleController,
-                          readOnly: true,
-                          onTap: _handleSelectSubRule,
-                          decoration: InputDecoration(
-                            labelText: appLocalizations.subRule,
-                            suffixIcon: const Icon(Icons.arrow_drop_down),
-                          ),
-                          validator: (_) {
-                            if (_subRuleController.text.isEmpty) {
-                              return appLocalizations.emptyTip(
-                                appLocalizations.subRule,
-                              );
-                            }
-                            return null;
-                          },
-                        )
-                      : TextFormField(
-                          controller: _ruleTargetController,
-                          readOnly: true,
-                          onTap: _handleSelectTarget,
-                          decoration: InputDecoration(
-                            labelText: appLocalizations.ruleTarget,
-                            suffixIcon: const Icon(Icons.arrow_drop_down),
-                          ),
-                          validator: (_) {
-                            if (_ruleTargetController.text.isEmpty) {
-                              return appLocalizations.emptyTip(
-                                appLocalizations.ruleTarget,
-                              );
-                            }
-                            return null;
-                          },
-                        ),
                   if (_ruleAction.hasParams) ...[
-                    SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     Wrap(
                       spacing: 8,
                       children: [
@@ -842,7 +841,7 @@ class _AddRuleDialogState extends State<AddRuleDialog> {
                           radius: 8,
                           isSelected: _src,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 8,
                               vertical: 8,
                             ),
