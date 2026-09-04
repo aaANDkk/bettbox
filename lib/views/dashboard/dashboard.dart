@@ -112,7 +112,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
       Material(
         type: MaterialType.transparency,
         shape: const CircleBorder(),
-        clipBehavior: Clip.hardEdge,
+        clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: _handleUpdateIsEdit,
           onLongPress: () {
