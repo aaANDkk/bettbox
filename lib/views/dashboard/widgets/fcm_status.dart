@@ -103,6 +103,7 @@ class _FcmStatusState extends State<FcmStatus> {
       child: SizedBox(
         height: getWidgetHeight(1),
         child: CommonCard(
+          onPressed: system.isAndroid ? () => app.openFcmDiagnostics() : null,
           onLongPress: system.isAndroid ? () => app.openFcmDiagnostics() : null,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

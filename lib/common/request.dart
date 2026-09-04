@@ -423,7 +423,15 @@ class Request {
     }
   }
 
+  final Map<String, IpInfo> _memoryIpCache = {};
+
+  IpInfo? getMemoryCachedIp(String ip) {
+    final isZh = Intl.getCurrentLocale().toLowerCase().startsWith('zh');
+    return _memoryIpCache['${ip}_${isZh ? 'zh' : 'en'}'];
+  }
+
   Future<void> _saveCachedIp(String cacheKey, IpInfo ipInfo) async {
+    _memoryIpCache[cacheKey] = ipInfo;
     try {
       final prefs = await preferences.sharedPreferencesCompleter.future;
       final cacheStr = prefs?.getString(_ipCacheKey);
@@ -464,9 +472,16 @@ class Request {
     final isZh = Intl.getCurrentLocale().toLowerCase().startsWith('zh');
     final cacheKey = '${ip}_${isZh ? 'zh' : 'en'}';
 
-    // 1. 检查本地缓存并执行过期清理（有效时长7天）
+    // 0. 优先命中高频内存缓存（0 耗时）
+    final memoryCached = _memoryIpCache[cacheKey];
+    if (memoryCached != null) {
+      return Result.success(memoryCached);
+    }
+
+    // 1. 检查本地持久化缓存并执行过期清理（有效时长7天）
     final cached = await _getValidCachedIp(cacheKey);
     if (cached != null) {
+      _memoryIpCache[cacheKey] = cached;
       return Result.success(cached);
     }
 

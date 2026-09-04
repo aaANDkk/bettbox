@@ -6,7 +6,11 @@ import 'package:bett_box/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-void showIpDetailDialog(BuildContext context, String rawIp) {
+void showIpDetailDialog(
+  BuildContext context,
+  String rawIp, {
+  IpInfo? initialInfo,
+}) {
   var cleanIp = rawIp.trim();
   if (cleanIp.startsWith('[') && cleanIp.contains(']')) {
     cleanIp = cleanIp.substring(1, cleanIp.indexOf(']'));
@@ -19,22 +23,31 @@ void showIpDetailDialog(BuildContext context, String rawIp) {
 
   if (cleanIp.isEmpty) return;
 
+  final seedInfo = initialInfo ?? request.getMemoryCachedIp(cleanIp);
+
   globalState.showCommonDialog(
-    child: _IpDetailDialog(ip: cleanIp),
+    child: _IpDetailDialog(
+      ip: cleanIp,
+      initialInfo: seedInfo,
+    ),
   );
 }
 
 class _IpDetailDialog extends StatefulWidget {
   final String ip;
+  final IpInfo? initialInfo;
 
-  const _IpDetailDialog({required this.ip});
+  const _IpDetailDialog({
+    required this.ip,
+    this.initialInfo,
+  });
 
   @override
   State<_IpDetailDialog> createState() => _IpDetailDialogState();
 }
 
 class _IpDetailDialogState extends State<_IpDetailDialog> {
-  bool _isLoading = true;
+  late bool _isLoading;
   String? _errorMessage;
   IpCategory? _category;
   IpInfo? _ipInfo;
@@ -42,6 +55,8 @@ class _IpDetailDialogState extends State<_IpDetailDialog> {
   @override
   void initState() {
     super.initState();
+    _ipInfo = widget.initialInfo;
+    _isLoading = _ipInfo == null;
     _fetchIpDetail();
   }
 
@@ -67,7 +82,7 @@ class _IpDetailDialogState extends State<_IpDetailDialog> {
           _category = IpCategory.lan;
           _isLoading = false;
         });
-      } else {
+      } else if (_ipInfo == null) {
         setState(() {
           _errorMessage = appLocalizations.networkErrorRetryLater;
           _isLoading = false;
@@ -75,7 +90,7 @@ class _IpDetailDialogState extends State<_IpDetailDialog> {
       }
     } else {
       setState(() {
-        _ipInfo = res.data;
+        _ipInfo = res.data ?? _ipInfo;
         _isLoading = false;
       });
     }
@@ -297,7 +312,11 @@ class _IpDetailDialogState extends State<_IpDetailDialog> {
           child: Text(appLocalizations.confirm),
         ),
       ],
-      child: content,
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutCubic,
+        child: content,
+      ),
     );
   }
 }
