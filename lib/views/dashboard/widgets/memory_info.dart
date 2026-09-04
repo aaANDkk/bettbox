@@ -79,6 +79,23 @@ class _MemoryInfoState extends State<MemoryInfo> {
     }
   }
 
+  Future<void> _showMemoryInfoDialog(BuildContext context) async {
+    await globalState.showCommonDialog<void>(
+      child: CommonDialog(
+        title: appLocalizations.memoryInfo,
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop();
+            },
+            child: Text(appLocalizations.confirm),
+          ),
+        ],
+        child: Text(appLocalizations.memoryInfoDesc),
+      ),
+    );
+  }
+
   Future<void> _handleForceGC(BuildContext context) async {
     final result = await globalState.showCommonDialog<bool>(
       child: CommonDialog(
