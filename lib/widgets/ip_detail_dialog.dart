@@ -298,7 +298,7 @@ class _IpDetailDialogState extends State<_IpDetailDialog> {
 
     final Widget loadingWidget = Container(
       key: const ValueKey('loading'),
-      height: 120,
+      height: 100,
       alignment: Alignment.center,
       child: SpinKitThreeBounce(
         color: context.colorScheme.primary,
@@ -322,16 +322,24 @@ class _IpDetailDialogState extends State<_IpDetailDialog> {
           child: Text(appLocalizations.confirm),
         ),
       ],
-      child: AnimatedCrossFade(
-        firstChild: loadingWidget,
-        secondChild: detailsWidget,
-        crossFadeState: _isLoading
-            ? CrossFadeState.showFirst
-            : CrossFadeState.showSecond,
+      child: AnimatedSize(
         duration: const Duration(milliseconds: 260),
-        sizeCurve: Curves.easeOutCubic,
-        firstCurve: Curves.easeOut,
-        secondCurve: Curves.easeIn,
+        curve: Curves.easeOutCubic,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          switchInCurve: Curves.easeIn,
+          switchOutCurve: Curves.easeOut,
+          layoutBuilder: (Widget? currentChild, List<Widget> previousChildren) {
+            return Stack(
+              alignment: Alignment.topCenter,
+              children: <Widget>[
+                ...previousChildren,
+                if (currentChild != null) currentChild,
+              ],
+            );
+          },
+          child: _isLoading ? loadingWidget : detailsWidget,
+        ),
       ),
     );
   }
