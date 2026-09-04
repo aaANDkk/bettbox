@@ -420,13 +420,23 @@ class GlobalState {
           isDark ? const Color(0x66000000) : const Color(0x33000000),
       barrierDismissible: dismissible,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      transitionDuration: const Duration(milliseconds: 250),
+      transitionDuration: const Duration(milliseconds: 260),
       pageBuilder: (context, animation, secondaryAnimation) => child,
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         final curved = CurvedAnimation(
           parent: animation,
           curve: Curves.easeOutCubic,
+          reverseCurve: Curves.easeInCubic,
         );
+        final opacityAnimation = CurvedAnimation(
+          parent: animation,
+          curve: const Interval(0.0, 0.45, curve: Curves.easeOut),
+          reverseCurve: const Interval(0.55, 1.0, curve: Curves.easeIn),
+        );
+        final scaleAnimation = Tween<double>(
+          begin: 0.80,
+          end: 1.0,
+        ).animate(curved);
         return RepaintBoundary(
           child: Stack(
             alignment: Alignment.center,
@@ -443,9 +453,9 @@ class GlobalState {
                 ),
               ),
               FadeTransition(
-                opacity: curved,
+                opacity: opacityAnimation,
                 child: ScaleTransition(
-                  scale: curved.drive(Tween<double>(begin: 0.94, end: 1.0)),
+                  scale: scaleAnimation,
                   child: child,
                 ),
               ),
