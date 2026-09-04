@@ -323,19 +323,17 @@ class _IpDetailDialogState extends State<_IpDetailDialog> {
         ),
       ],
       child: AnimatedSize(
+        alignment: Alignment.topCenter,
         duration: const Duration(milliseconds: 260),
         curve: Curves.easeOutCubic,
         child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          switchInCurve: Curves.easeIn,
-          switchOutCurve: Curves.easeOut,
-          layoutBuilder: (Widget? currentChild, List<Widget> previousChildren) {
-            return Stack(
-              alignment: Alignment.topCenter,
-              children: <Widget>[
-                ...previousChildren,
-                if (currentChild != null) currentChild,
-              ],
+          duration: const Duration(milliseconds: 220),
+          reverseDuration: Duration.zero,
+          switchInCurve: Curves.easeOutCubic,
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
             );
           },
           child: _isLoading ? loadingWidget : detailsWidget,
