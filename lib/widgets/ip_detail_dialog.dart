@@ -23,23 +23,18 @@ void showIpDetailDialog(
 
   if (cleanIp.isEmpty) return;
 
-  final seedInfo = initialInfo ?? request.getMemoryCachedIp(cleanIp);
-
   globalState.showCommonDialog(
     child: _IpDetailDialog(
       ip: cleanIp,
-      initialInfo: seedInfo,
     ),
   );
 }
 
 class _IpDetailDialog extends StatefulWidget {
   final String ip;
-  final IpInfo? initialInfo;
 
   const _IpDetailDialog({
     required this.ip,
-    this.initialInfo,
   });
 
   @override
@@ -47,7 +42,7 @@ class _IpDetailDialog extends StatefulWidget {
 }
 
 class _IpDetailDialogState extends State<_IpDetailDialog> {
-  late bool _isLoading;
+  bool _isLoading = true;
   String? _errorMessage;
   IpCategory? _category;
   IpInfo? _ipInfo;
@@ -55,14 +50,17 @@ class _IpDetailDialogState extends State<_IpDetailDialog> {
   @override
   void initState() {
     super.initState();
-    _ipInfo = widget.initialInfo;
-    _isLoading = _ipInfo == null;
     _fetchIpDetail();
   }
 
   Future<void> _fetchIpDetail() async {
+    final stopwatch = Stopwatch()..start();
     final cat = utils.classifyIp(widget.ip);
     if (cat != IpCategory.public) {
+      final elapsed = stopwatch.elapsedMilliseconds;
+      if (elapsed < 200) {
+        await Future.delayed(Duration(milliseconds: 200 - elapsed));
+      }
       if (mounted) {
         setState(() {
           _category = cat;
@@ -73,6 +71,10 @@ class _IpDetailDialogState extends State<_IpDetailDialog> {
     }
 
     final res = await request.queryIpDetail(widget.ip);
+    final elapsed = stopwatch.elapsedMilliseconds;
+    if (elapsed < 200) {
+      await Future.delayed(Duration(milliseconds: 200 - elapsed));
+    }
     if (!mounted) return;
 
     if (res.isError) {
@@ -82,7 +84,7 @@ class _IpDetailDialogState extends State<_IpDetailDialog> {
           _category = IpCategory.lan;
           _isLoading = false;
         });
-      } else if (_ipInfo == null) {
+      } else {
         setState(() {
           _errorMessage = appLocalizations.networkErrorRetryLater;
           _isLoading = false;
@@ -90,7 +92,7 @@ class _IpDetailDialogState extends State<_IpDetailDialog> {
       }
     } else {
       setState(() {
-        _ipInfo = res.data ?? _ipInfo;
+        _ipInfo = res.data;
         _isLoading = false;
       });
     }
@@ -304,6 +306,7 @@ class _IpDetailDialogState extends State<_IpDetailDialog> {
 
     return CommonDialog(
       title: appLocalizations.moreIpInfo,
+      overrideScroll: true,
       actions: [
         TextButton(
           onPressed: () {
@@ -313,9 +316,11 @@ class _IpDetailDialogState extends State<_IpDetailDialog> {
         ),
       ],
       child: AnimatedSize(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 260),
         curve: Curves.easeOutCubic,
-        child: content,
+        child: SingleChildScrollView(
+          child: content,
+        ),
       ),
     );
   }

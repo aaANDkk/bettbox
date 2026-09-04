@@ -67,7 +67,7 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
   void _showMoreIpInfoDialog() {
     final rawIpInfo = detectionState.rawIpInfo;
     if (rawIpInfo == null) return;
-    showIpDetailDialog(context, rawIpInfo.ip, initialInfo: rawIpInfo);
+    showIpDetailDialog(context, rawIpInfo.ip);
   }
 
   @override
