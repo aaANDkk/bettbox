@@ -414,6 +414,7 @@ jobs:
           path: ./dist
           compression-level: 9
           overwrite: true
+          retention-days: ${{ (!contains(github.ref, '-') && startsWith(github.ref, 'refs/tags/')) && 90 || 1 }}
 
   upload:
     permissions: write-all
