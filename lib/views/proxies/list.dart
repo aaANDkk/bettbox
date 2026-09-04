@@ -142,11 +142,11 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
     final distance = (clampedTarget - currentOffset).abs();
     if (distance < 1.0) return;
 
-    final durationMs = (260 + (distance * 0.12)).clamp(280, 480).toInt();
+    final durationMs = (240 + (distance * 0.1)).clamp(280, 400).toInt();
     _scrollController.animateTo(
       clampedTarget,
       duration: Duration(milliseconds: durationMs),
-      curve: Curves.easeInOutCubic,
+      curve: Curves.easeOutCubic,
     );
   }
 
@@ -232,30 +232,19 @@ class _ProxyGroupsListState extends ConsumerState<_ProxyGroupsList> {
     final containerHeight = _containerHeight > 0
         ? _containerHeight
         : MediaQuery.sizeOf(context).height;
-    final pixels = _scrollController.position.pixels;
 
     final totalSpan = (nodeBottom + 8.0) - (groupOffset - 16.0);
+    double targetOffset;
     if (totalSpan <= containerHeight) {
-      _scrollToMakeVisibleWithPadding(
-        containerHeight: containerHeight,
-        pixels: pixels,
-        start: groupOffset - 16.0,
-        end: nodeBottom + 8.0,
-        padding: 16.0,
-      );
+      targetOffset = groupOffset - 16.0;
     } else {
-      final targetStart = (nodeTop - rowExtent).clamp(
+      targetOffset = (nodeTop - rowExtent - 16.0).clamp(
         groupOffset - 16.0,
         double.infinity,
       );
-      _scrollToMakeVisibleWithPadding(
-        containerHeight: containerHeight,
-        pixels: pixels,
-        start: targetStart,
-        end: nodeBottom + 8.0,
-        padding: 16.0,
-      );
     }
+
+    _animateToOffset(targetOffset);
   }
 
   Widget _buildGroup(
