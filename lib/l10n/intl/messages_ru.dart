@@ -556,8 +556,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("Глобально"),
     "go": MessageLookupByLibrary.simpleMessage("Перейти"),
     "goDownload": MessageLookupByLibrary.simpleMessage("Перейти к загрузке"),
-    "harmonyFont": MessageLookupByLibrary.simpleMessage("Исправление шрифта"),
-    "harmonyFontDesc": MessageLookupByLibrary.simpleMessage(
+    "harmonyFont": MessageLookupByLibrary.simpleMessage("Пользовательский шрифт"),
+    "harmonyFontDesc": MessageLookupByLibrary.simpleMessage("По умолчанию системный шрифт, включите для загрузки своего"),
       "Встроенный шрифт для исправления отображения",
     ),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage(
@@ -1327,5 +1327,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Требуются права администратора",
     ),
     "years": m14,
+      "selectCustomFont": MessageLookupByLibrary.simpleMessage("Выбрать / изменить шрифт"),
+      "selectCustomFontDesc": MessageLookupByLibrary.simpleMessage("Нажмите, чтобы выбрать файл шрифта .ttf или .otf"),
+      "customFontApplied": MessageLookupByLibrary.simpleMessage("Пользовательский шрифт применен"),
+      "customFontDisabled": MessageLookupByLibrary.simpleMessage("Восстановлен системный шрифт по умолчанию"),
+      "invalidFontFormat": MessageLookupByLibrary.simpleMessage("Поддерживаются только файлы шрифтов .ttf или .otf"),
   };
 }

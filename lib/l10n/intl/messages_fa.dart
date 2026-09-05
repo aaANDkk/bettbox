@@ -533,8 +533,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("سراسر جهان"),
     "go": MessageLookupByLibrary.simpleMessage("رفتن"),
     "goDownload": MessageLookupByLibrary.simpleMessage("رفتن به دانلود"),
-    "harmonyFont": MessageLookupByLibrary.simpleMessage("ترمیم فونت"),
-    "harmonyFontDesc": MessageLookupByLibrary.simpleMessage(
+    "harmonyFont": MessageLookupByLibrary.simpleMessage("فونت سفارشی"),
+    "harmonyFontDesc": MessageLookupByLibrary.simpleMessage("به طور پیش فرض فونت سیستم، برای بارگیری فونت سفارشی فعال کنید"),
       "استفاده از فونت داخلی برای رفع مشکلات نمایش",
     ),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage(
@@ -1308,5 +1308,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "نیازمند دسترسی مدیریت (Admin)",
     ),
     "years": m14,
+      "selectCustomFont": MessageLookupByLibrary.simpleMessage("انتخاب / تغییر فونت"),
+      "selectCustomFontDesc": MessageLookupByLibrary.simpleMessage("برای انتخاب فایل فونت .ttf یا .otf محلی ضربه بزنید"),
+      "customFontApplied": MessageLookupByLibrary.simpleMessage("فونت سفارشی اعمال شد"),
+      "customFontDisabled": MessageLookupByLibrary.simpleMessage("به فونت پیش فرض سیستم بازیابی شد"),
+      "invalidFontFormat": MessageLookupByLibrary.simpleMessage("فقط فرمت های فونت .ttf یا .otf پشتیبانی می شوند"),
   };
 }

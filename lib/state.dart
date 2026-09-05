@@ -24,6 +24,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'common/common.dart';
 import 'controller.dart';
+import 'manager/manager.dart';
 import 'models/models.dart';
 
 typedef UpdateTasks = List<FutureOr Function()>;
@@ -145,6 +146,14 @@ class GlobalState {
         utils.getLocaleForString(config.appSetting.locale) ??
         utils.getSystemLocale();
     await AppLocalizations.load(locale);
+    final hasFont = await FontManager.init(
+      enabled: config.themeProps.useHarmonyFont,
+    );
+    if (!hasFont && config.themeProps.useHarmonyFont) {
+      config = config.copyWith(
+        themeProps: config.themeProps.copyWith(useHarmonyFont: false),
+      );
+    }
   }
 
   bool get isAndroidTV => _isAndroidTV ?? false;

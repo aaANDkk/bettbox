@@ -386,8 +386,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("全局"),
     "go": MessageLookupByLibrary.simpleMessage("前往"),
     "goDownload": MessageLookupByLibrary.simpleMessage("前往下载"),
-    "harmonyFont": MessageLookupByLibrary.simpleMessage("字体修复"),
-    "harmonyFontDesc": MessageLookupByLibrary.simpleMessage("使用内置字体解决显示异常问题"),
+    "harmonyFont": MessageLookupByLibrary.simpleMessage("自定义字体"),
+    "harmonyFontDesc": MessageLookupByLibrary.simpleMessage("默认系统字体，开启后可加载自定义字体文件"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage("是否缓存修改"),
     "healthCheckTimeout": MessageLookupByLibrary.simpleMessage("超时时间"),
     "healthCheckTimeoutDesc": MessageLookupByLibrary.simpleMessage(
@@ -913,5 +913,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystem": MessageLookupByLibrary.simpleMessage("写入系统"),
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage("需要管理员权限"),
     "years": m14,
+      "selectCustomFont": MessageLookupByLibrary.simpleMessage("选择 / 更换字体"),
+      "selectCustomFontDesc": MessageLookupByLibrary.simpleMessage("点击选择本地 .ttf 或 .otf 字体文件"),
+      "customFontApplied": MessageLookupByLibrary.simpleMessage("已应用自定义字体"),
+      "customFontDisabled": MessageLookupByLibrary.simpleMessage("已恢复系统默认字体"),
+      "invalidFontFormat": MessageLookupByLibrary.simpleMessage("仅支持 .ttf 或 .otf 格式的字体文件"),
   };
 }

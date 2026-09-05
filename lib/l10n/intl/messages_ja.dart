@@ -428,8 +428,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("グローバル"),
     "go": MessageLookupByLibrary.simpleMessage("移動"),
     "goDownload": MessageLookupByLibrary.simpleMessage("ダウンロードへ"),
-    "harmonyFont": MessageLookupByLibrary.simpleMessage("フォント修復"),
-    "harmonyFontDesc": MessageLookupByLibrary.simpleMessage(
+    "harmonyFont": MessageLookupByLibrary.simpleMessage("カスタムフォント"),
+    "harmonyFontDesc": MessageLookupByLibrary.simpleMessage("デフォルトはシステムフォント、有効にしてカスタムフォントを読み込む"),
       "表示異常を改善するため内蔵フォントを使用",
     ),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage("変更をキャッシュしますか？"),
@@ -1021,5 +1021,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystem": MessageLookupByLibrary.simpleMessage("システムへ適用"),
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage("管理者権限が必要です"),
     "years": m14,
+      "selectCustomFont": MessageLookupByLibrary.simpleMessage("フォントの選択 / 変更"),
+      "selectCustomFontDesc": MessageLookupByLibrary.simpleMessage("タップしてローカルの .ttf または .otf フォントを選択"),
+      "customFontApplied": MessageLookupByLibrary.simpleMessage("カスタムフォントを適用しました"),
+      "customFontDisabled": MessageLookupByLibrary.simpleMessage("システムデフォルトのフォントに戻しました"),
+      "invalidFontFormat": MessageLookupByLibrary.simpleMessage(".ttf または .otf 形式のフォントファイルのみサポートされています"),
   };
 }

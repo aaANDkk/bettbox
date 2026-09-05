@@ -539,8 +539,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("Global"),
     "go": MessageLookupByLibrary.simpleMessage("Go"),
     "goDownload": MessageLookupByLibrary.simpleMessage("Download Now"),
-    "harmonyFont": MessageLookupByLibrary.simpleMessage("Font Fix"),
-    "harmonyFontDesc": MessageLookupByLibrary.simpleMessage(
+    "harmonyFont": MessageLookupByLibrary.simpleMessage("Custom Font"),
+    "harmonyFontDesc": MessageLookupByLibrary.simpleMessage("Use system font by default, enable to load custom font"),
       "Use built-in font to fix display issues",
     ),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage(
@@ -1272,5 +1272,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Requires administrator privileges",
     ),
     "years": m14,
+      "selectCustomFont": MessageLookupByLibrary.simpleMessage("Select / Change Font"),
+      "selectCustomFontDesc": MessageLookupByLibrary.simpleMessage("Tap to select a local .ttf or .otf font file"),
+      "customFontApplied": MessageLookupByLibrary.simpleMessage("Custom font applied"),
+      "customFontDisabled": MessageLookupByLibrary.simpleMessage("Restored to system default font"),
+      "invalidFontFormat": MessageLookupByLibrary.simpleMessage("Only .ttf and .otf font formats are supported"),
   };
 }

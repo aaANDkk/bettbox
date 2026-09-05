@@ -5710,4 +5710,30 @@ class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {
     }
     return false;
   }
+
+  /// `Select / Change Font`
+  String get selectCustomFont {
+    return Intl.message('Select / Change Font', name: 'selectCustomFont', desc: '', args: []);
+  }
+
+  /// `Tap to select a local .ttf or .otf font file`
+  String get selectCustomFontDesc {
+    return Intl.message('Tap to select a local .ttf or .otf font file', name: 'selectCustomFontDesc', desc: '', args: []);
+  }
+
+  /// `Custom font applied`
+  String get customFontApplied {
+    return Intl.message('Custom font applied', name: 'customFontApplied', desc: '', args: []);
+  }
+
+  /// `Restored to system default font`
+  String get customFontDisabled {
+    return Intl.message('Restored to system default font', name: 'customFontDisabled', desc: '', args: []);
+  }
+
+  /// `Only .ttf and .otf font formats are supported`
+  String get invalidFontFormat {
+    return Intl.message('Only .ttf and .otf font formats are supported', name: 'invalidFontFormat', desc: '', args: []);
+  }
+
 }

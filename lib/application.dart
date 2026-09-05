@@ -199,11 +199,17 @@ class ApplicationState extends ConsumerState<Application>
               appSettingProvider.select((state) => state.locale),
             );
             final themeProps = ref.watch(themeSettingProvider);
-            final fontFamily = themeProps.useHarmonyFont
-                ? 'Sleek'
-                : null;
 
-            return MaterialApp(
+            return ValueListenableBuilder<String?>(
+              valueListenable: FontManager.fontFamilyNotifier,
+              builder: (_, customFontFamily, _) {
+                final fontFamily = (themeProps.useHarmonyFont &&
+                        customFontFamily != null &&
+                        customFontFamily.isNotEmpty)
+                    ? customFontFamily
+                    : null;
+
+                return MaterialApp(
               debugShowCheckedModeBanner: false,
               navigatorKey: globalState.navigatorKey,
               localizationsDelegates: const [
@@ -429,8 +435,10 @@ class ApplicationState extends ConsumerState<Application>
               home: child!,
             );
           },
-          child: const HomePage(),
-        ),
+        );
+      },
+      child: const HomePage(),
+    ),
       ),
     );
   }

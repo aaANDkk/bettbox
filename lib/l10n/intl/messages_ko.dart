@@ -438,8 +438,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("글로벌"),
     "go": MessageLookupByLibrary.simpleMessage("이동"),
     "goDownload": MessageLookupByLibrary.simpleMessage("다운로드 이동"),
-    "harmonyFont": MessageLookupByLibrary.simpleMessage("글꼴 복구"),
-    "harmonyFontDesc": MessageLookupByLibrary.simpleMessage(
+    "harmonyFont": MessageLookupByLibrary.simpleMessage("사용자 정의 글꼴"),
+    "harmonyFontDesc": MessageLookupByLibrary.simpleMessage("기본 시스템 글꼴, 사용자 정의 글꼴을 로드하려면 활성화"),
       "표시 이상 해결을 위해 내장 글꼴 사용",
     ),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage("수정 사항을 캐시하시겠습니까?"),
@@ -1031,5 +1031,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystem": MessageLookupByLibrary.simpleMessage("시스템 적용"),
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage("관리자 권한이 필요합니다"),
     "years": m14,
+      "selectCustomFont": MessageLookupByLibrary.simpleMessage("글꼴 선택 / 변경"),
+      "selectCustomFontDesc": MessageLookupByLibrary.simpleMessage("로컬 .ttf 또는 .otf 글꼴 파일을 선택하려면 탭하세요"),
+      "customFontApplied": MessageLookupByLibrary.simpleMessage("사용자 정의 글꼴이 적용되었습니다"),
+      "customFontDisabled": MessageLookupByLibrary.simpleMessage("시스템 기본 글꼴로 복원되었습니다"),
+      "invalidFontFormat": MessageLookupByLibrary.simpleMessage(".ttf 또는 .otf 형식의 글꼴 파일만 지원됩니다"),
   };
 }
