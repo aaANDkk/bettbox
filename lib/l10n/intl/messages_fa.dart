@@ -535,8 +535,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "goDownload": MessageLookupByLibrary.simpleMessage("رفتن به دانلود"),
     "harmonyFont": MessageLookupByLibrary.simpleMessage("فونت سفارشی"),
     "harmonyFontDesc": MessageLookupByLibrary.simpleMessage("به طور پیش فرض فونت سیستم، برای بارگیری فونت سفارشی فعال کنید"),
-      "استفاده از فونت داخلی برای رفع مشکلات نمایش",
-    ),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage(
       "آیا تغییرات ذخیره شوند؟",
     ),

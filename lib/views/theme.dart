@@ -46,11 +46,11 @@ class ThemeView extends ConsumerWidget {
     );
 
     final toggleItems = [
-      const _CustomFontItem(),
-      if (useHarmonyFont) const _SelectCustomFontItem(),
       if (system.isAndroid) const _DarkIconItem(),
       if (system.isWindows) _TrayIconInvertItem(),
       _TextScaleFactorItem(),
+      const _CustomFontItem(),
+      if (useHarmonyFont) const _SelectCustomFontItem(),
     ];
 
     final items = [

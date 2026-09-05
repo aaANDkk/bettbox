@@ -440,8 +440,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "goDownload": MessageLookupByLibrary.simpleMessage("다운로드 이동"),
     "harmonyFont": MessageLookupByLibrary.simpleMessage("사용자 정의 글꼴"),
     "harmonyFontDesc": MessageLookupByLibrary.simpleMessage("기본 시스템 글꼴, 사용자 정의 글꼴을 로드하려면 활성화"),
-      "표시 이상 해결을 위해 내장 글꼴 사용",
-    ),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage("수정 사항을 캐시하시겠습니까?"),
     "healthCheckTimeout": MessageLookupByLibrary.simpleMessage("타임아웃 시간"),
     "healthCheckTimeoutDesc": MessageLookupByLibrary.simpleMessage(
