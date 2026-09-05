@@ -207,6 +207,7 @@ class CommonCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       style: ButtonStyle(
         padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+        shape: WidgetStatePropertyAll(
           RoundedSuperellipseBorder(
             borderRadius: BorderRadius.circular(actualRadius),
           ),
