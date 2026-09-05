@@ -1235,7 +1235,7 @@ class AppController {
   Future<void> init() async {
     FlutterError.onError = (details) {
       if (kDebugMode) {
-        commonPrint.log(details.stack.toString());
+        FlutterError.dumpErrorToConsole(details);
       }
     };
 
