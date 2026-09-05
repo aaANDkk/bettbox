@@ -133,6 +133,9 @@ class GlobalState {
           patchClashConfig: system.isAndroid
               ? const ClashConfig(findProcessMode: FindProcessMode.always)
               : defaultClashConfig,
+          networkProps: defaultNetworkProps.copyWith(
+            systemProxy: system.isDesktop,
+          ),
           appSetting: defaultAppSettingProps.copyWith(
             showStartSwitch: _isAndroidTV ?? false,
           ),
@@ -317,6 +320,9 @@ class GlobalState {
 
     if (system.isAndroid) {
       await service?.setQuickResponse(config.vpnProps.quickResponse);
+      await service?.setHighPriorityNotification(
+        config.vpnProps.highPriorityNotification,
+      );
     }
     await startUpdateTasks(tasks);
   }

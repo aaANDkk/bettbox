@@ -125,8 +125,6 @@ class _IpDetailDialogState extends State<_IpDetailDialog> {
         tooltip: appLocalizations.copy,
         onPressed: () => _copyIp(context),
       ),
-      onTap: () => _copyIp(context),
-      onLongPress: () => _copyIp(context),
     );
   }
 
@@ -247,7 +245,7 @@ class _IpDetailDialogState extends State<_IpDetailDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. IP 地址（点击/长按一键复制）
+          // 1. IP 地址（右侧图标复制）
           _buildIpTile(context),
           // 2. 国家 / 地区（EmojiText 精准基线对齐）
           if (countryText.isNotEmpty || flagEmoji.isNotEmpty)
